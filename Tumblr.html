@@ -53,6 +53,65 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     observer.observe(notes, { childList: true, subtree: true });
   }
+
+  // ترجمة نافذة مساعدة النص البديل
+  function prepareAltTextPopover(popover) {
+    if (!popover) return;
+
+    popover.setAttribute('dir', 'rtl');
+    popover.style.direction = 'rtl';
+    popover.style.display = 'flex';
+    popover.style.flexDirection = 'column';
+    popover.style.alignItems = 'stretch';
+    popover.style.gap = '12px';
+    popover.style.textAlign = 'right';
+    popover.style.maxWidth = '320px';
+    popover.style.width = 'min(320px, calc(100vw - 40px))';
+    popover.style.padding = '16px 20px';
+    popover.style.boxSizing = 'border-box';
+    popover.style.whiteSpace = 'normal';
+
+    const titleEl = popover.querySelector('.title');
+    if (titleEl) {
+      titleEl.textContent = 'وصف الصورة';
+      titleEl.style.margin = '0';
+      titleEl.style.fontSize = '18px';
+      titleEl.style.lineHeight = '1.5';
+      titleEl.style.textAlign = 'inherit';
+    }
+
+    const contentEl = popover.querySelector('.content');
+    if (contentEl) {
+      contentEl.style.margin = '0';
+      contentEl.style.lineHeight = '1.7';
+      contentEl.style.textAlign = 'inherit';
+    }
+
+    const closeButton = popover.querySelector('.ok_button');
+    if (closeButton) {
+      closeButton.textContent = 'إغلاق';
+      closeButton.style.alignSelf = 'flex-end';
+      closeButton.style.width = 'auto';
+      closeButton.style.minWidth = '96px';
+      closeButton.style.padding = '6px 18px';
+      closeButton.style.position = 'static';
+      closeButton.style.marginInlineStart = 'auto';
+    }
+
+  }
+
+  function localizeAltTextHelper() {
+    const popovers = document.querySelectorAll('.popover.tutorial.alt-text-helper_step');
+    popovers.forEach(prepareAltTextPopover);
+  }
+
+  localizeAltTextHelper();
+
+  const altTextObserver = new MutationObserver(() => {
+    localizeAltTextHelper();
+  });
+
+  altTextObserver.observe(document.body, { childList: true, subtree: true });
 });
 </script>
 
@@ -915,6 +974,19 @@ document.addEventListener("DOMContentLoaded", function () {
             
             /* جعل القائمة عمودية على الشاشات الصغيرة (الجوال) */
             .popover.tutorial.alt-text-helper_step {
+<<<<<<< codex/fix-display-issue-in-popover-fy44pb
+                display: flex !important;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                text-align: right;
+                direction: rtl;
+                max-width: 320px;
+                width: min(320px, calc(100vw - 40px));
+                padding: 16px 20px;
+                box-sizing: border-box;
+                white-space: normal;
+=======
                 display: flex;
                 flex-direction: column;
                 gap: 12px;
@@ -924,6 +996,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 width: calc(100vw - 40px);
                 padding: 16px 20px;
                 box-sizing: border-box;
+>>>>>>> main
             }
 
             .popover.tutorial.alt-text-helper_step .title {
@@ -931,11 +1004,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 font-size: 18px;
                 line-height: 1.5;
                 width: 100%;
+<<<<<<< codex/fix-display-issue-in-popover-fy44pb
+                text-align: inherit;
+=======
+>>>>>>> main
             }
 
             .popover.tutorial.alt-text-helper_step .content {
                 margin: 0;
                 line-height: 1.7;
+<<<<<<< codex/fix-display-issue-in-popover-fy44pb
+                text-align: inherit;
+            }
+
+            .popover.tutorial.alt-text-helper_step .ok_button {
+                align-self: flex-end;
+                width: auto;
+                min-width: 96px;
+                padding: 6px 18px;
+                position: static !important;
+=======
                 white-space: normal;
             }
 
@@ -944,6 +1032,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 width: auto;
                 min-width: 96px;
                 padding: 6px 18px;
+>>>>>>> main
             }
 
             @media screen and (max-width: 768px) {
