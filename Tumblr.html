@@ -55,19 +55,54 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // ترجمة نافذة مساعدة النص البديل
+  function prepareAltTextPopover(popover) {
+    if (!popover) return;
+
+    popover.setAttribute('dir', 'rtl');
+    popover.style.direction = 'rtl';
+    popover.style.display = 'flex';
+    popover.style.flexDirection = 'column';
+    popover.style.alignItems = 'stretch';
+    popover.style.gap = '12px';
+    popover.style.textAlign = 'right';
+    popover.style.maxWidth = '320px';
+    popover.style.width = 'min(320px, calc(100vw - 40px))';
+    popover.style.padding = '16px 20px';
+    popover.style.boxSizing = 'border-box';
+    popover.style.whiteSpace = 'normal';
+
+    const titleEl = popover.querySelector('.title');
+    if (titleEl) {
+      titleEl.textContent = 'وصف الصورة';
+      titleEl.style.margin = '0';
+      titleEl.style.fontSize = '18px';
+      titleEl.style.lineHeight = '1.5';
+      titleEl.style.textAlign = 'inherit';
+    }
+
+    const contentEl = popover.querySelector('.content');
+    if (contentEl) {
+      contentEl.style.margin = '0';
+      contentEl.style.lineHeight = '1.7';
+      contentEl.style.textAlign = 'inherit';
+    }
+
+    const closeButton = popover.querySelector('.ok_button');
+    if (closeButton) {
+      closeButton.textContent = 'إغلاق';
+      closeButton.style.alignSelf = 'flex-end';
+      closeButton.style.width = 'auto';
+      closeButton.style.minWidth = '96px';
+      closeButton.style.padding = '6px 18px';
+      closeButton.style.position = 'static';
+      closeButton.style.marginInlineStart = 'auto';
+    }
+
+  }
+
   function localizeAltTextHelper() {
     const popovers = document.querySelectorAll('.popover.tutorial.alt-text-helper_step');
-    popovers.forEach((popover) => {
-      const titleEl = popover.querySelector('.title');
-      if (titleEl && titleEl.textContent.trim().toLowerCase() === 'image description') {
-        titleEl.textContent = 'وصف الصورة';
-      }
-
-      const closeButton = popover.querySelector('.ok_button');
-      if (closeButton && closeButton.textContent.trim().toLowerCase() === 'close') {
-        closeButton.textContent = 'إغلاق';
-      }
-    });
+    popovers.forEach(prepareAltTextPopover);
   }
 
   localizeAltTextHelper();
