@@ -914,6 +914,38 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             /* جعل القائمة عمودية على الشاشات الصغيرة (الجوال) */
+            .popover.tutorial.alt-text-helper_step {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+                direction: rtl;
+                max-width: 320px;
+                width: calc(100vw - 40px);
+                padding: 16px 20px;
+                box-sizing: border-box;
+            }
+
+            .popover.tutorial.alt-text-helper_step .title {
+                margin: 0;
+                font-size: 18px;
+                line-height: 1.5;
+                width: 100%;
+            }
+
+            .popover.tutorial.alt-text-helper_step .content {
+                margin: 0;
+                line-height: 1.7;
+                white-space: normal;
+            }
+
+            .popover.tutorial.alt-text-helper_step .ok_button {
+                align-self: center;
+                width: auto;
+                min-width: 96px;
+                padding: 6px 18px;
+            }
+
             @media screen and (max-width: 768px) {
                 .navigation {
                     text-align: center; /* محاذاة النصوص في المنتصف */
