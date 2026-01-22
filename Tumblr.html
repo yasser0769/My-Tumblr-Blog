@@ -118,19 +118,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 <style>
-/* تغيير لون النص عند التظليل */
 ::selection {
-  background: #891c03;   /* اللون اللي تبيه */
-  color: #fff;           /* لون النص داخل التظليل */
+  background: #891c03;
+  color: #fff;
 }
 
-/* بعض المتصفحات تحتاج بادئات */
 ::-moz-selection {
   background: #891c03;
   color: #fff;
 }
 
-/* استخدم نفس اسم العائلة "Dubai" عشان ما تغيّر أي أماكن ثانية */
 @font-face{
   font-family: 'Handicrafts';
   src: url('https://static.tumblr.com/8cspwwp/wwGt151fi/theyearofhandicrafts-medium.otf') format('opentype');
@@ -306,23 +303,23 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             #myBtn {
-                display: none; /* Hidden by default */
-                position: fixed; /* Fixed/sticky position */
-                bottom: 20px; /* Place the button at the bottom of the page */
+                display: none;
+                position: fixed;
+                bottom: 20px;
                 inset-inline-start: 20px; /* RTL-safe positioning */
-                z-index: 99; /* Make sure it does not overlap */
-                border: none; /* Remove borders */
-                outline: none; /* Remove outline */
-                background-color: #553000; /* Set a background color */
-                color: white; /* Text color */
-                cursor: pointer; /* Add a mouse pointer on hover */
-                padding: 10px; /* Some padding */
-                border-radius: 100%; /* Rounded corners */
+                z-index: 99;
+                border: none;
+                outline: none;
+                background-color: #553000;
+                color: white;
+                cursor: pointer;
+                padding: 10px;
+                border-radius: 100%;
                 transition: 1s;
 }
 
 #myBtn:hover {
-    background-color: #555; /* Add a dark-grey background on hover */
+    background-color: #555;
 }
 
             h1, h2, h3, h4, h5 {
@@ -853,6 +850,7 @@ document.addEventListener("DOMContentLoaded", function () {
                  margin-inline-end: auto;
              }
              
+             /* Normalize action icon hit targets across iframe/SVG/sprite */
              .like {
                  display: inline-flex;
                  float: none;
@@ -1157,9 +1155,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
 
-<!-- Big Background -->
     <div class="big-background {block:IfBackgroundSolidColor}bg-color{/block:IfBackgroundSolidColor}"></div>
-<!--Abovehead-->
 <div class="above-head">
 
 
@@ -1170,7 +1166,6 @@ document.addEventListener("DOMContentLoaded", function () {
             </a>
         </div>
     {/block:ShowAvatar}
-    <!--Navigation-->
         <div class="navigation">
             <ul>
                 <li><a href="{BlogURL}" class="home-link">الرئيسية</a></li>
@@ -1191,7 +1186,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     شاركني التدوين
                 </a></li>
                 <li class="nav-social">
-                    <!-- Add font awesome icons -->
                     <ul class="social-icons">
                         <li>
                             <a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X">
@@ -1215,7 +1209,6 @@ document.addEventListener("DOMContentLoaded", function () {
     <div class="clearfix"></div>
 </div>
 
-<!-- Header -->
 {block:IndexPage} 
     <div class="header {block:HideHeaderImage}no-image{/block:HideHeaderImage}">
     
@@ -1240,7 +1233,6 @@ document.addEventListener("DOMContentLoaded", function () {
         
     </div>
 {/block:IndexPage} 
-<!-- Content -->    
     <div class="wrapper">
         {block:IndexPage} 
             {block:Description}
@@ -1410,15 +1402,11 @@ function topFunction() {
 }
 </script>
 
- <!-- yyyy -->
-
         {/block:Posts}
-        <!-- Posts -->
     </div>
     
     
 
-    <!-- Pagination --> 
             {block:Pagination}
                 <div class="pagination">
                     <ul class="clearfix">
@@ -1437,7 +1425,6 @@ function topFunction() {
             {/block:Pagination}
 </div>
 
-    <!-- Foot --> 
     <div class="footer">
         <div class="copyright">© {CopyrightYears} - {Title}</div>
         <div class="info">
@@ -1451,11 +1438,7 @@ function topFunction() {
         });
     </script>
     
-    <!-- yyyy -->
-    
 <button id="myBtn"><i class="fa-solid fa-arrow-up" aria-hidden="true" style="font-size:290%;"></i></button>
-
-<!-- باقي الأكواد السابقة -->
 
 
 <script>
