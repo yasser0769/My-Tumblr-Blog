@@ -440,19 +440,31 @@ document.addEventListener("DOMContentLoaded", function () {
                 background:{BackgroundColor}!important;
             }
 
-            .above-head { 
+            .head-shell {
                 max-width:{select:Page Width}!important;
                 margin:0 auto;
                 position: relative;
-                padding: 10px 0;
                 z-index: 3;
-                -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-                -moz-box-sizing: border-box; /* Firefox, other Gecko */
-                box-sizing: border-box; /* Opera/IE 8+ */
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 10px 0;
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+
+            .above-head { 
+                max-width: 100%;
+                margin: 0;
+                position: relative;
+                display: flex;
+                align-items: center;
+                gap: 12px;
             }
             
             .avatar {
-                float: right;
+                float: none;
             }
 
             .avatar img.circle {
@@ -703,8 +715,28 @@ document.addEventListener("DOMContentLoaded", function () {
                     display: block;
                 }
 
+                .offcanvas .navigation {
+                    float: right;
+                    text-transform: uppercase;
+                }
+
                 .offcanvas .navigation ul {
                     flex-direction: row;
+                }
+
+                .offcanvas .navigation li {
+                    display: inline-block;
+                    padding: 17px 15px 0;
+                }
+
+                .offcanvas .navigation a {
+                    padding: 0;
+                    border-radius: 0;
+                }
+
+                .offcanvas .navigation a:hover,
+                .offcanvas .navigation a:focus-visible {
+                    background: transparent;
                 }
             }
             
@@ -1289,63 +1321,63 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     <div class="big-background {block:IfBackgroundSolidColor}bg-color{/block:IfBackgroundSolidColor}"></div>
-<div class="above-head">
-
-
-    {block:ShowAvatar}
-        <div class="avatar">
-            <a href="/">
-                <img src="{PortraitURL-48}" class="{AvatarShape}" alt="{Title}">
-            </a>
-        </div>
-    {/block:ShowAvatar}
-        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">☰</button>
-        <aside id="site-menu" class="offcanvas" aria-hidden="true">
-            <button class="menu-close" type="button" aria-label="Close menu">×</button>
-            <div class="navigation">
-                <ul>
-                    <li><a href="{BlogURL}" class="home-link">الرئيسية</a></li>
-                    <li><a href="/WhoAmI" class="home-link">من أنا</a></li>
-                    {block:HasPages}
-                        {block:Pages}<li><a href="{URL}" class="home-link">{Label}</a></li>{/block:Pages}
-                    {/block:HasPages}
-                    {block:AskEnabled}<li><a href="/ask" class="home-link">
-                        اسألني
-                    </a></li>{/block:AskEnabled}
-                    {block:IfShowArchive}<li><a href="/archive" class="home-link">
-                        الإرشيف
-                    </a></li>{/block:IfShowArchive}
-                    <li><a href="/random" class="home-link">
-                        عشوائي
-                    </a></li>
-                    <li><a href="/submit" class="home-link">
-                        شاركني التدوين
-                    </a></li>
-                    <li class="nav-social">
-                        <ul class="social-icons">
-                            <li>
-                                <a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X">
-                                    <i class="fa-brands fa-x-twitter"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{text:Instagram URL}" target="_blank" rel="noopener" aria-label="Instagram">
-                                    <i class="fa-brands fa-instagram"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{text:SnapChat URL}" target="_blank" rel="noopener" aria-label="Snapchat">
-                                    <i class="fa-brands fa-snapchat"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
+<div class="head-shell">
+    <div class="above-head">
+        {block:ShowAvatar}
+            <div class="avatar">
+                <a href="/">
+                    <img src="{PortraitURL-48}" class="{AvatarShape}" alt="{Title}">
+                </a>
             </div>
-        </aside>
-        <div class="offcanvas-overlay" hidden></div>
-    <div class="clearfix"></div>
+        {/block:ShowAvatar}
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">☰</button>
+        <div class="clearfix"></div>
+    </div>
+    <aside id="site-menu" class="offcanvas" aria-hidden="true">
+        <button class="menu-close" type="button" aria-label="Close menu">×</button>
+        <div class="navigation">
+            <ul>
+                <li><a href="{BlogURL}" class="home-link">الرئيسية</a></li>
+                <li><a href="/WhoAmI" class="home-link">من أنا</a></li>
+                {block:HasPages}
+                    {block:Pages}<li><a href="{URL}" class="home-link">{Label}</a></li>{/block:Pages}
+                {/block:HasPages}
+                {block:AskEnabled}<li><a href="/ask" class="home-link">
+                    اسألني
+                </a></li>{/block:AskEnabled}
+                {block:IfShowArchive}<li><a href="/archive" class="home-link">
+                    الإرشيف
+                </a></li>{/block:IfShowArchive}
+                <li><a href="/random" class="home-link">
+                    عشوائي
+                </a></li>
+                <li><a href="/submit" class="home-link">
+                    شاركني التدوين
+                </a></li>
+                <li class="nav-social">
+                    <ul class="social-icons">
+                        <li>
+                            <a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X">
+                                <i class="fa-brands fa-x-twitter"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{text:Instagram URL}" target="_blank" rel="noopener" aria-label="Instagram">
+                                <i class="fa-brands fa-instagram"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{text:SnapChat URL}" target="_blank" rel="noopener" aria-label="Snapchat">
+                                <i class="fa-brands fa-snapchat"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </aside>
 </div>
+<div class="offcanvas-overlay" hidden></div>
 
 {block:IndexPage} 
     <div class="header {block:HideHeaderImage}no-image{/block:HideHeaderImage}">
