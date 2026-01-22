@@ -1026,21 +1026,30 @@ document.addEventListener("DOMContentLoaded", function () {
                 list-style: none;
                 padding: 10px 15px;
                 margin: 10px 0;
+                display: inline-flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 6px;
              }
 
              .pagination li {
-                margin: 0 2px 0 2px;
-                display: inline;
+                margin: 0;
+                display: inline-flex;
              }
 
              #pagination a:link, #pageNav a:visited {
-                padding: 0;
-                margin: 0 2px;
+                padding: 4px 8px;
+                margin: 0;
                 text-decoration: none;
+                border-radius: 8px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
              }
 
              #pagination a:hover, #pageNav a:active, #pageNav a.active:link, #pageNav a.active:visited {
-                text-decoration: underline;
+                text-decoration: none;
+                background: rgba(0, 0, 0, 0.06);
              }
 
              #older:after {
@@ -1049,6 +1058,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
              #newer:before {
                 content: "» ";
+             }
+
+             .pagination a.active,
+             .pagination a.active:visited {
+                color: #553000;
+                background: #f1e6d3;
+             }
+
+             .pagination li a:not(#older):not(#newer) {
+                direction: ltr;
+                unicode-bidi: isolate;
              }
 
             @media screen and (max-width: 750px){
