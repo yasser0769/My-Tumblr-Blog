@@ -594,6 +594,119 @@ document.addEventListener("DOMContentLoaded", function () {
             .navigation li:last-child {
                 padding-inline-end: 0;
             }
+
+            .menu-toggle,
+            .menu-close {
+                background: #891C04;
+                color: #fff;
+                border: none;
+                border-radius: 8px;
+                padding: 8px 12px;
+                font-size: 20px;
+                line-height: 1;
+                cursor: pointer;
+            }
+
+            .menu-toggle:focus-visible,
+            .menu-close:focus-visible {
+                outline: 2px solid #553000;
+                outline-offset: 2px;
+            }
+
+            .offcanvas {
+                position: fixed;
+                top: 0;
+                inset-inline-end: 0;
+                height: 100vh;
+                width: min(340px, 85vw);
+                background: #fff8ec;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                z-index: 1000;
+                padding: 20px;
+                box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .offcanvas .navigation {
+                float: none;
+                text-transform: none;
+                width: 100%;
+            }
+
+            .offcanvas .navigation ul {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .offcanvas .navigation li {
+                display: block;
+                padding: 0;
+            }
+
+            .offcanvas .navigation a {
+                display: block;
+                padding: 10px 14px;
+                border-radius: 8px;
+                color: #891C04;
+            }
+
+            .offcanvas .navigation a:hover,
+            .offcanvas .navigation a:focus-visible {
+                background: rgba(0, 0, 0, 0.06);
+            }
+
+            .offcanvas .social-icons {
+                justify-content: flex-start;
+                padding-inline-start: 10px;
+            }
+
+            .offcanvas-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.4);
+                z-index: 900;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            body.menu-open {
+                overflow: hidden;
+            }
+
+            body.menu-open .offcanvas {
+                transform: translateX(0);
+            }
+
+            body.menu-open .offcanvas-overlay {
+                opacity: 1;
+            }
+
+            @media screen and (min-width: 981px) {
+                .menu-toggle,
+                .menu-close,
+                .offcanvas-overlay {
+                    display: none;
+                }
+
+                .offcanvas {
+                    position: static;
+                    transform: none;
+                    height: auto;
+                    width: auto;
+                    background: transparent;
+                    box-shadow: none;
+                    padding: 0;
+                    display: block;
+                }
+
+                .offcanvas .navigation ul {
+                    flex-direction: row;
+                }
+            }
             
             .posts {
                 border-bottom: 2px solid {color:Dividers};
@@ -1186,46 +1299,51 @@ document.addEventListener("DOMContentLoaded", function () {
             </a>
         </div>
     {/block:ShowAvatar}
-        <div class="navigation">
-            <ul>
-                <li><a href="{BlogURL}" class="home-link">الرئيسية</a></li>
-                <li><a href="/WhoAmI" class="home-link">من أنا</a></li>
-                {block:HasPages}
-                    {block:Pages}<li><a href="{URL}" class="home-link">{Label}</a></li>{/block:Pages}
-                {/block:HasPages}
-                {block:AskEnabled}<li><a href="/ask" class="home-link">
-                    اسألني
-                </a></li>{/block:AskEnabled}
-                {block:IfShowArchive}<li><a href="/archive" class="home-link">
-                    الإرشيف
-                </a></li>{/block:IfShowArchive}
-                <li><a href="/random" class="home-link">
-                    عشوائي
-                </a></li>
-                <li><a href="/submit" class="home-link">
-                    شاركني التدوين
-                </a></li>
-                <li class="nav-social">
-                    <ul class="social-icons">
-                        <li>
-                            <a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X">
-                                <i class="fa-brands fa-x-twitter"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{text:Instagram URL}" target="_blank" rel="noopener" aria-label="Instagram">
-                                <i class="fa-brands fa-instagram"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{text:SnapChat URL}" target="_blank" rel="noopener" aria-label="Snapchat">
-                                <i class="fa-brands fa-snapchat"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">☰</button>
+        <aside id="site-menu" class="offcanvas" aria-hidden="true">
+            <button class="menu-close" type="button" aria-label="Close menu">×</button>
+            <div class="navigation">
+                <ul>
+                    <li><a href="{BlogURL}" class="home-link">الرئيسية</a></li>
+                    <li><a href="/WhoAmI" class="home-link">من أنا</a></li>
+                    {block:HasPages}
+                        {block:Pages}<li><a href="{URL}" class="home-link">{Label}</a></li>{/block:Pages}
+                    {/block:HasPages}
+                    {block:AskEnabled}<li><a href="/ask" class="home-link">
+                        اسألني
+                    </a></li>{/block:AskEnabled}
+                    {block:IfShowArchive}<li><a href="/archive" class="home-link">
+                        الإرشيف
+                    </a></li>{/block:IfShowArchive}
+                    <li><a href="/random" class="home-link">
+                        عشوائي
+                    </a></li>
+                    <li><a href="/submit" class="home-link">
+                        شاركني التدوين
+                    </a></li>
+                    <li class="nav-social">
+                        <ul class="social-icons">
+                            <li>
+                                <a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X">
+                                    <i class="fa-brands fa-x-twitter"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{text:Instagram URL}" target="_blank" rel="noopener" aria-label="Instagram">
+                                    <i class="fa-brands fa-instagram"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{text:SnapChat URL}" target="_blank" rel="noopener" aria-label="Snapchat">
+                                    <i class="fa-brands fa-snapchat"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        <div class="offcanvas-overlay" hidden></div>
     <div class="clearfix"></div>
 </div>
 
@@ -1491,6 +1609,42 @@ function scrollToTop() {
 
 // ربط الأيقونة بدالة التمرير
 document.getElementById('myBtn').addEventListener('click', scrollToTop);
+
+const menuToggle = document.querySelector('.menu-toggle');
+const offcanvas = document.getElementById('site-menu');
+const overlay = document.querySelector('.offcanvas-overlay');
+const menuClose = document.querySelector('.menu-close');
+
+function openMenu() {
+    document.body.classList.add('menu-open');
+    menuToggle.setAttribute('aria-expanded', 'true');
+    offcanvas.setAttribute('aria-hidden', 'false');
+    overlay.hidden = false;
+}
+
+function closeMenu() {
+    document.body.classList.remove('menu-open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    offcanvas.setAttribute('aria-hidden', 'true');
+    overlay.hidden = true;
+}
+
+menuToggle.addEventListener('click', () => {
+    if (document.body.classList.contains('menu-open')) {
+        closeMenu();
+    } else {
+        openMenu();
+    }
+});
+
+menuClose.addEventListener('click', closeMenu);
+overlay.addEventListener('click', closeMenu);
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && document.body.classList.contains('menu-open')) {
+        closeMenu();
+    }
+});
 </script>
 
 </body>
