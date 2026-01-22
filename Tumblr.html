@@ -679,14 +679,20 @@ document.addEventListener("DOMContentLoaded", function () {
             
             .meta {
                 display: block;
-                height:14px;
-                line-height:1em;
+                height: auto;
+                line-height: 1.4;
                 font-family: '{select:Google Font}', sans-serif;
                 margin-top: 10px;
                 font-size:11px;
                 color: {color:Post Bottom};
                 text-transform: uppercase;
                 padding-top: 40px;
+                --icon: 18px;
+                --hit: 36px;
+                --gap: 10px;
+                display: flex;
+                align-items: center;
+                gap: var(--gap);
             }
 
             .meta a {
@@ -843,46 +849,105 @@ document.addEventListener("DOMContentLoaded", function () {
              }
                         
              .date-notes {
-                 float: right;
+                 float: none;
+                 margin-inline-end: auto;
              }
              
              .like {
-                 display: inline-block;
-                 float: left;
-                 padding: 3px 0 0;
-                 padding-inline-end: 10px;
+                 display: inline-flex;
+                 float: none;
+                 padding: 0;
+                 width: var(--hit);
+                 height: var(--hit);
+                 align-items: center;
+                 justify-content: center;
+                 border-radius: 10px;
+                 outline: 2px solid transparent;
+                 outline-offset: 2px;
              }
              
              .reblog {
-                 display: inline-block;
-                 float: left;
-                 padding: 3px 0 0 0;
+                 display: inline-flex;
+                 float: none;
+                 padding: 0;
+                 width: var(--hit);
+                 height: var(--hit);
+                 align-items: center;
+                 justify-content: center;
+                 border-radius: 10px;
+                 outline: 2px solid transparent;
+                 outline-offset: 2px;
              }
              .share-control {
-                display: inline-block;
-                float: left;
-                padding: 3px 0 0;
-                padding-inline-end: 10px;
+                display: inline-flex;
+                float: none;
+                padding: 0;
+                width: var(--hit);
+                height: var(--hit);
+                align-items: center;
+                justify-content: center;
                 position: relative;
+                border-radius: 10px;
+                outline: 2px solid transparent;
+                outline-offset: 2px;
             }
             .share-control a.share {
                 color: #a7a7a7;  
-                font-size: 22px;  
-                margin-top: 2px;
-                display: block;  
-                height: 21px;  
-                margin: 1px 0 0;
-                margin-inline-end: 8px;
+                font-size: 22px;
+                display: inline-flex;
+                width: var(--icon);
+                height: var(--icon);
+                align-items: center;
+                justify-content: center;
+                margin: 0;
                 text-decoration: none;
-                width: 21px;
                 cursor: pointer;
+            }
+            .like_button {
+                width: var(--hit);
+                height: var(--hit);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .like_button iframe {
+                width: var(--icon);
+                height: var(--icon);
+                display: block;
+            }
+            .reblog_button {
+                width: var(--hit);
+                height: var(--hit);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .reblog_button svg {
+                width: var(--icon);
+                height: var(--icon);
+                display: block;
+            }
+            .like:hover,
+            .reblog:hover,
+            .share-control:hover {
+                background: rgba(0, 0, 0, 0.06);
+            }
+            .like:focus-within,
+            .reblog:focus-within,
+            .share-control:focus-within {
+                outline-color: rgba(137, 28, 4, 0.6);
+            }
+            .share-control a.share:focus-visible,
+            .reblog_button:focus-visible,
+            .like_button iframe:focus-visible {
+                outline: none;
             }
             .icon-export:before {
                 content: "";
                 background: url('https://static.tumblr.com/kypr3bw/e7pn9xss6/1407433406_share.png');
                 display: block;
-                width: 20px;
-                height: 20px;
+                width: var(--icon);
+                height: var(--icon);
             }
             .pop-menu {
                 display: none;
