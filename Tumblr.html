@@ -238,20 +238,20 @@ document.addEventListener("DOMContentLoaded", function () {
             <meta name="select:Google Font title" content="'Harmattan', sans-serif;" title="Harmattan">
             <meta name="select:Google Font title" content="'Droid Arabic Naskh', serif;" title="Droid Arabic Naskh">
             <meta name="select:Google Font title" content="'Scheherazade', serif;" title="Scheherazade">
-            <meta name="select:Google Font title" content="'ibm-plex-arabic, sans-serif;" title="IBM Plex Arabic">
+            <meta name="select:Google Font title" content="'ibm-plex-arabic', sans-serif;" title="IBM Plex Arabic">
             <meta name="select:Google Font" content="'Droid Arabic Naskh', serif;" title="Droid Arabic Naskh">
             <meta name="select:Google Font" content="'DubaiW23-Light', sans-serif;" title="DubaiW23-Light">
             <meta name="select:Google Font" content="'29ltravi-regular', serif;" title="29ltravi-regular">
             <meta name="select:Google Font" content="'Harmattan', sans-serif;" title="Harmattan">
             <meta name="select:Google Font" content="'Scheherazade', serif;" title="Scheherazade">
-            <meta name="select:Google Font" content="'ibm-plex-arabic, sans-serif;" title="IBM Plex Arabic">
+            <meta name="select:Google Font" content="'ibm-plex-arabic', sans-serif;" title="IBM Plex Arabic">
             <meta name="select:Google Font Quote" content="'Scheherazade', serif;" title="Scheherazade">
             <meta name="select:Google Font Quote" content="'DubaiW23-Light', sans-serif;" title="DubaiW23-Light">
             <meta name="select:Google Font Quote" content="'29ltravi-regular', serif;" title="29ltravi-regular">
             <meta name="select:Google Font Quote" content="'Droid Arabic Naskh', serif;" title="Droid Arabic Naskh">
             <meta name="select:Google Font Quote" content="'Harmattan', sans-serif;" title="Harmattan">
             <meta name="select:Google Font Quote" content="'Lalezar', cursive;" title="Lalezar">
-            <meta name="select:Google Font Quote" content="'ibm-plex-arabic, sans-serif;" title="IBM Plex Arabic">
+            <meta name="select:Google Font Quote" content="'ibm-plex-arabic', sans-serif;" title="IBM Plex Arabic">
             <meta name="select:Bold or Normal Font Quote" content="normal" title="Normal">
             <meta name="select:Bold or Normal Font Quote" content="bold" title="Bold">
             
@@ -278,13 +278,38 @@ document.addEventListener("DOMContentLoaded", function () {
                 font-family: {select:Google Font};
                 font-size: 17px;
                 line-height:2.0em;
+                direction: rtl;
+                text-align: right;
+            }
+            
+            /* RTL: keep numerals/URLs readable when needed */
+            .ltr {
+                direction: ltr;
+                unicode-bidi: isolate;
+            }
+
+            input,
+            textarea,
+            select {
+                direction: rtl;
+                text-align: start;
+            }
+
+            input[type="email"],
+            input[type="url"],
+            input[type="tel"],
+            input[type="number"],
+            input[type="search"] {
+                direction: ltr;
+                unicode-bidi: isolate;
+                text-align: left;
             }
             
             #myBtn {
                 display: none; /* Hidden by default */
                 position: fixed; /* Fixed/sticky position */
                 bottom: 20px; /* Place the button at the bottom of the page */
-                left: 20px; /* Place the button 30px from the right */
+                inset-inline-start: 20px; /* RTL-safe positioning */
                 z-index: 99; /* Make sure it does not overlap */
                 border: none; /* Remove borders */
                 outline: none; /* Remove outline */
@@ -378,7 +403,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             ul { 
                 list-style:disc;
-                margin-left:0;
+                margin-inline-start:0;
             }
 
             ol {
@@ -386,7 +411,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             li{
-                margin-left:0;
+                margin-inline-start:0;
             }
 
             hr {
@@ -430,7 +455,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             .avatar {
-                float: left;
+                float: right;
             }
 
             .avatar img.circle {
@@ -513,7 +538,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             .transparent {
                 top: 0;
-                left: 0;
+                inset-inline-start: 0;
                 background: {color:Header Overlay Color};
                 width: 100%;
                 height: 100%;
@@ -541,6 +566,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 position: relative;
                 margin: 0 auto;
             }
+
+            .navigation ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
                 
             .navigation li {
                 margin: 0;
@@ -564,7 +595,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 opacity: 0.5;
             }
             .navigation li:last-child {
-                padding-right: 0;
+                padding-inline-end: 0;
             }
             
             .posts {
@@ -609,7 +640,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
                         
             .date {
-                margin-right: 20px;
+                margin-inline-end: 20px;
             }
             
             .quote {
@@ -623,10 +654,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             blockquote {
-                margin-right: 20px;
-                padding-right: 15px;
-                border-right: 3px {color:Body Text} solid;
-                
+                margin-inline-start: 20px;
+                padding-inline-start: 15px;
+                border-inline-start: 3px {color:Body Text} solid;
             }
             .tumblr_video_container {
                 max-width: 100%;
@@ -680,7 +710,7 @@ document.addEventListener("DOMContentLoaded", function () {
             
             .tags li {
                 margin: 0;
-                padding-right: 10px;
+                padding-inline-end: 10px;
                 display:inline;
             }
             
@@ -703,7 +733,7 @@ document.addEventListener("DOMContentLoaded", function () {
             
             .social ul li a {
                 padding: 0.5px 0;
-                margin-right: 20px;
+                margin-inline-end: 20px;
                 font-size: 18px;
                 font-weight: 600;
                 color: #545b63;
@@ -754,20 +784,22 @@ document.addEventListener("DOMContentLoaded", function () {
              }
 
              .notes .avatar {
-                margin: 0 5px 0 0;
+                margin: 0;
+                margin-inline-end: 5px;
                 position: relative;
                 top: 5px;
                 width: auto;
              }
 
              .notes blockquote {
-                margin: 10px 0 0 35px;
-                padding-left: 10px;
-                border-left: 3px solid {color:Body Text};
+                margin: 10px 0 0;
+                margin-inline-start: 35px;
+                padding-inline-start: 10px;
+                border-inline-start: 3px solid {color:Body Text};
              }
             a.source {
                 color: {AccentColor};
-                padding-right: 20px;
+                padding-inline-end: 20px;
             }
             
             a.source:hover {
@@ -811,24 +843,26 @@ document.addEventListener("DOMContentLoaded", function () {
              }
                         
              .date-notes {
-                 float: left;
+                 float: right;
              }
              
              .like {
                  display: inline-block;
-                 float: right;
-                 padding: 3px 0 0 10px;
+                 float: left;
+                 padding: 3px 0 0;
+                 padding-inline-end: 10px;
              }
              
              .reblog {
                  display: inline-block;
-                 float: right;
+                 float: left;
                  padding: 3px 0 0 0;
              }
              .share-control {
                 display: inline-block;
-                float: right;
-                padding: 3px 0 0 10px;
+                float: left;
+                padding: 3px 0 0;
+                padding-inline-end: 10px;
                 position: relative;
             }
             .share-control a.share {
@@ -837,7 +871,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 margin-top: 2px;
                 display: block;  
                 height: 21px;  
-                margin: 1px 8px 0 0;
+                margin: 1px 0 0;
+                margin-inline-end: 8px;
                 text-decoration: none;
                 width: 21px;
                 cursor: pointer;
@@ -856,7 +891,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 border-radius: 4px;
                 position: absolute;
                 bottom: 35px;
-                left: -53px;
+                inset-inline-start: -53px;
                 width: 146px;
                 -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
                 -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
@@ -886,7 +921,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 font-size: 14px;
                 height: auto;
                 margin: 0;
-                padding: 10px 40px 10px 10px;
+                padding: 10px;
+                padding-inline-start: 40px;
+                padding-inline-end: 10px;
                 position: relative;
                 text-decoration: none;
                 width: auto;
@@ -894,11 +931,11 @@ document.addEventListener("DOMContentLoaded", function () {
             .pop-menu.south li:last-child:after {
                 content: '';
                 position: absolute;
-                left: 50%;
+                inset-inline-start: 50%;
                 bottom: -6px;
                 height: 12px;
                 width: 12px;
-                margin-left: -6px;
+                margin-inline-start: -6px;
                 background-color: #fff;
                 -webkit-transform: rotate(45deg);
                 -moz-transform: rotate(45deg);
@@ -944,11 +981,11 @@ document.addEventListener("DOMContentLoaded", function () {
              }
 
              #older:after {
-                content: " »";
+                content: " «";
              }
 
              #newer:before {
-                content: "« ";
+                content: "» ";
              }
 
             @media screen and (max-width: 750px){
@@ -972,9 +1009,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
             
+            .social-icons {
+                list-style: none;
+                display: flex;
+                gap: 12px;
+                padding: 0;
+                margin: 0;
+                justify-content: center;
+            }
+
+            .social-icons li {
+                display: inline-flex;
+                align-items: center;
+            }
+
             /* جعل القائمة عمودية على الشاشات الصغيرة (الجوال) */
             .popover.tutorial.alt-text-helper_step {
-<<<<<<< codex/fix-display-issue-in-popover-fy44pb
                 display: flex !important;
                 flex-direction: column;
                 align-items: stretch;
@@ -986,17 +1036,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 padding: 16px 20px;
                 box-sizing: border-box;
                 white-space: normal;
-=======
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-                text-align: center;
-                direction: rtl;
-                max-width: 320px;
-                width: calc(100vw - 40px);
-                padding: 16px 20px;
-                box-sizing: border-box;
->>>>>>> main
             }
 
             .popover.tutorial.alt-text-helper_step .title {
@@ -1004,16 +1043,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 font-size: 18px;
                 line-height: 1.5;
                 width: 100%;
-<<<<<<< codex/fix-display-issue-in-popover-fy44pb
                 text-align: inherit;
-=======
->>>>>>> main
             }
 
             .popover.tutorial.alt-text-helper_step .content {
                 margin: 0;
                 line-height: 1.7;
-<<<<<<< codex/fix-display-issue-in-popover-fy44pb
                 text-align: inherit;
             }
 
@@ -1023,16 +1058,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 min-width: 96px;
                 padding: 6px 18px;
                 position: static !important;
-=======
-                white-space: normal;
-            }
-
-            .popover.tutorial.alt-text-helper_step .ok_button {
-                align-self: center;
-                width: auto;
-                min-width: 96px;
-                padding: 6px 18px;
->>>>>>> main
             }
 
             @media screen and (max-width: 768px) {
@@ -1082,50 +1107,46 @@ document.addEventListener("DOMContentLoaded", function () {
     {/block:ShowAvatar}
     <!--Navigation-->
         <div class="navigation">
-            
-                <li><a href="{BlogURL}" class="home-link">الرئيسية</a>
-                
-                <li><a href="/WhoAmI" class="home-link">من أنا</a>
-                
-                {block:Pages}<li><a href="{URL}"class="home-link">{Label}</a></li>{block:Pages}
-            {/block:HasPages}
-            {block:AskEnabled}<li><a href="/ask" class="home-link">
-                اسألني
-            </a></li>{/block:AskEnabled}
-            {block:IfShowArchive}<li><a href="/archive" class="home-link">
-                الإرشيف
-            </a></li>{/block:IfShowArchive}
-            <li><a href="/random" class="home-link">
-                عشوائي
-            </a></li>
-            <li><a href="/submit" class="home-link">
-                شاركني التدوين
-            </a></li>
-            <li>
-
-<!-- Add font awesome icons -->
-<ul class="social-icons">
-  <li>
-    <a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X">
-      <i class="fa-brands fa-x-twitter"></i>
-    </a>
-  </li>
-  <li>
-    <a href="{text:Instagram URL}" target="_blank" rel="noopener" aria-label="Instagram">
-      <i class="fa-brands fa-instagram"></i>
-    </a>
-  </li>
-  <li>
-    <a href="{text:SnapChat URL}" target="_blank" rel="noopener" aria-label="Snapchat">
-      <i class="fa-brands fa-snapchat"></i>
-    </a>
-  </li>
-</ul>
-
-</li>
-
-
-            </div>
+            <ul>
+                <li><a href="{BlogURL}" class="home-link">الرئيسية</a></li>
+                <li><a href="/WhoAmI" class="home-link">من أنا</a></li>
+                {block:HasPages}
+                    {block:Pages}<li><a href="{URL}" class="home-link">{Label}</a></li>{/block:Pages}
+                {/block:HasPages}
+                {block:AskEnabled}<li><a href="/ask" class="home-link">
+                    اسألني
+                </a></li>{/block:AskEnabled}
+                {block:IfShowArchive}<li><a href="/archive" class="home-link">
+                    الإرشيف
+                </a></li>{/block:IfShowArchive}
+                <li><a href="/random" class="home-link">
+                    عشوائي
+                </a></li>
+                <li><a href="/submit" class="home-link">
+                    شاركني التدوين
+                </a></li>
+                <li class="nav-social">
+                    <!-- Add font awesome icons -->
+                    <ul class="social-icons">
+                        <li>
+                            <a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X">
+                                <i class="fa-brands fa-x-twitter"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{text:Instagram URL}" target="_blank" rel="noopener" aria-label="Instagram">
+                                <i class="fa-brands fa-instagram"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{text:SnapChat URL}" target="_blank" rel="noopener" aria-label="Snapchat">
+                                <i class="fa-brands fa-snapchat"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
     <div class="clearfix"></div>
 </div>
 
@@ -1253,12 +1274,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     
                     
                       
-                            {block:Date}<span class="date"><a href="{Permalink}"><b>{DayOfMOnth}  /    {MonthNumber}    /  {Year} </b></a></span>{/block:Date}
-                        
-                                               
-
-                                
-
+                            {block:Date}<span class="date ltr"><a href="{Permalink}"><b>{DayOfMonth}  /    {MonthNumber}    /  {Year} </b></a></span>{/block:Date}
+                        {block:ContentSource}
+                            <a class="source" href="{SourceURL}">
+                                {block:SourceLogo}
                                     <img src="{BlackLogoURL}" width="{LogoWidth}" height="{LogoHeight}" alt="{SourceTitle}" />
                                 {/block:SourceLogo}
                                 {block:NoSourceLogo}
