@@ -449,6 +449,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 align-items: center;
                 justify-content: space-between;
                 padding: 10px 0;
+                min-height: 56px;
                 -webkit-box-sizing: border-box;
                 -moz-box-sizing: border-box;
                 box-sizing: border-box;
@@ -460,7 +461,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 position: relative;
                 display: flex;
                 align-items: center;
+                justify-content: flex-end;
                 gap: 12px;
+                min-height: 56px;
+                width: 100%;
             }
             
             .avatar {
@@ -619,6 +623,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 cursor: pointer;
             }
 
+            .menu-toggle {
+                margin-inline-start: auto;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
             .menu-toggle:focus-visible,
             .menu-close:focus-visible {
                 outline: 2px solid #553000;
@@ -695,6 +706,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             body.menu-open .offcanvas-overlay {
                 opacity: 1;
+            }
+
+            @media screen and (max-width: 980px) {
+                .navigation {
+                    display: none;
+                }
             }
 
             @media screen and (min-width: 981px) {
@@ -1331,7 +1348,6 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
         {/block:ShowAvatar}
         <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">☰</button>
-        <div class="clearfix"></div>
     </div>
     <aside id="site-menu" class="offcanvas" aria-hidden="true">
         <button class="menu-close" type="button" aria-label="Close menu">×</button>
