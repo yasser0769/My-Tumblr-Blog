@@ -584,18 +584,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 list-style: none;
                 margin: 0;
                 padding: 0;
+                display: flex;
+                align-items: center;
+                flex-wrap: nowrap;
+                white-space: nowrap;
             }
                 
             .navigation li {
                 margin: 0;
                 display: inline-block;
                 padding: 17px 15px 0;
+                white-space: nowrap;
             }
             
             /* تعديل لون الروابط في القائمة الرئيسية */
             .navigation li a {
                 color: #891C04; /* لون أحمر غامق متناسق مع الثيم */
                 font-size: 14px;
+                white-space: nowrap;
             }
             .navigation li a:hover {
                 color: #553000; /* لون بني غامق عند التحويم */
@@ -756,6 +762,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     background: transparent;
                 }
             }
+
+            @media screen and (max-width: 1100px) and (min-width: 981px) {
+                .navigation li a {
+                    font-size: 13px;
+                }
+            }
             
             .posts {
                 border-bottom: 2px solid {color:Dividers};
@@ -778,6 +790,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 line-height: inherit;
                 margin: 0 0 1.2em;
                 text-align: justify;
+            }
+
+            .posts .header-posts {
+                direction: rtl;
             }
             
             h4.post-title {
@@ -828,12 +844,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 font-weight: {select:Bold or Normal Font Quote};
                 font-size: 20px;
                 line-height: 29px;
-                text-align: end;
+                text-align: right;
                 margin-top: 15px;
+                margin-inline-start: auto;
             }
 
             .posts .header-posts .npf_quote + p:before {
                 content: "— ";
+            }
+
+            #quoteSource h4 {
+                text-align: right;
+                margin-inline-start: auto;
             }
             
             blockquote {
@@ -1285,6 +1307,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 padding: 0;
                 margin: 0;
                 justify-content: center;
+                flex-wrap: nowrap;
             }
 
             .social-icons li {
