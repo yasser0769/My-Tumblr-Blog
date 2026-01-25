@@ -444,6 +444,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 max-width:{select:Page Width}!important;
                 margin:0 auto;
                 position: relative;
+                padding: 10px 0;
+                padding-bottom: 26px;
                 z-index: 3;
                 -webkit-box-sizing: border-box;
                 -moz-box-sizing: border-box;
@@ -1213,23 +1215,35 @@ document.addEventListener("DOMContentLoaded", function () {
                 justify-content: center;
                 align-items: center;
                 column-gap: 28px;
-                row-gap: 8px;
+                row-gap: 6px;
             }
 
             @media screen and (max-width: 600px) {
-                .nav-wrap {
+                .above-head {
                     max-width: 100% !important;
                     width: 100%;
                     margin: 0;
                     padding-inline: 12px;
+                    padding-bottom: 14px;
+                }
+
+                .nav-wrap {
+                    max-width: 100% !important;
+                    width: 100%;
+                    margin: 0;
+                    padding-inline: 0;
                 }
 
                 .navigation ul {
                     display: grid;
                     grid-template-columns: repeat(3, minmax(0, 1fr));
-                    gap: 10px 12px;
+                    gap: 6px 12px;
                     justify-items: center;
                     align-items: center;
+                }
+
+                .navigation li {
+                    padding: 0;
                 }
 
                 .navigation li a {
