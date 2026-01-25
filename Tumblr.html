@@ -445,30 +445,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 margin:0 auto;
                 position: relative;
                 z-index: 3;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 10px 0;
-                min-height: 56px;
                 -webkit-box-sizing: border-box;
                 -moz-box-sizing: border-box;
                 box-sizing: border-box;
             }
-
-            .above-head { 
-                max-width: 100%;
-                margin: 0;
-                position: relative;
-                display: flex;
-                align-items: center;
-                justify-content: flex-end;
-                gap: 12px;
-                min-height: 56px;
-                width: 100%;
-            }
             
             .avatar {
-                float: none;
+                float: right;
             }
 
             .avatar img.circle {
@@ -617,151 +600,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 padding-inline-end: 0;
             }
 
-            .menu-toggle,
-            .menu-close {
-                background: #891C04;
-                color: #fff;
-                border: none;
-                border-radius: 8px;
-                padding: 8px 12px;
-                font-size: 20px;
-                line-height: 1;
-                cursor: pointer;
-            }
-
-            .menu-toggle {
-                margin-inline-start: auto;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .menu-toggle:focus-visible,
-            .menu-close:focus-visible {
-                outline: 2px solid #553000;
-                outline-offset: 2px;
-            }
-
-            .offcanvas {
-                position: fixed;
-                top: 0;
-                inset-inline-end: 0;
-                height: 100vh;
-                width: min(340px, 85vw);
-                background: #fff8ec;
-                transform: translateX(100%);
-                transition: transform 0.3s ease;
-                z-index: 1000;
-                padding: 20px;
-                box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
-            }
-
-            .offcanvas .navigation {
-                float: none;
-                text-transform: none;
-                width: 100%;
-            }
-
-            .offcanvas .navigation ul {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .offcanvas .navigation li {
-                display: block;
-                padding: 0;
-            }
-
-            .offcanvas .navigation a {
-                display: block;
-                padding: 10px 14px;
-                border-radius: 8px;
-                color: #891C04;
-            }
-
-            .offcanvas .navigation a:hover,
-            .offcanvas .navigation a:focus-visible {
-                background: rgba(0, 0, 0, 0.06);
-            }
-
-            .offcanvas .social-icons {
-                justify-content: flex-start;
-                padding-inline-start: 10px;
-            }
-
-            .offcanvas-overlay {
-                position: fixed;
-                inset: 0;
-                background: rgba(0, 0, 0, 0.4);
-                z-index: 900;
-                opacity: 0;
-                transition: opacity 0.3s ease;
-            }
-
-            body.menu-open {
-                overflow: hidden;
-            }
-
-            body.menu-open .offcanvas {
-                transform: translateX(0);
-            }
-
-            body.menu-open .offcanvas-overlay {
-                opacity: 1;
-            }
-
-            @media screen and (max-width: 980px) {
-                .navigation {
-                    display: none;
-                }
-            }
-
-            @media screen and (min-width: 981px) {
-                .menu-toggle,
-                .menu-close,
-                .offcanvas-overlay {
-                    display: none;
-                }
-
-                .offcanvas {
-                    position: static;
-                    transform: none;
-                    height: auto;
-                    width: auto;
-                    background: transparent;
-                    box-shadow: none;
-                    padding: 0;
-                    display: block;
-                }
-
-                .offcanvas .navigation {
-                    float: right;
-                    text-transform: uppercase;
-                }
-
-                .offcanvas .navigation ul {
-                    flex-direction: row;
-                }
-
-                .offcanvas .navigation li {
-                    display: inline-block;
-                    padding: 17px 15px 0;
-                }
-
-                .offcanvas .navigation a {
-                    padding: 0;
-                    border-radius: 0;
-                }
-
-                .offcanvas .navigation a:hover,
-                .offcanvas .navigation a:focus-visible {
-                    background: transparent;
-                }
-            }
 
             @media screen and (max-width: 1100px) and (min-width: 981px) {
                 .navigation li a {
@@ -1385,19 +1223,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     <div class="big-background {block:IfBackgroundSolidColor}bg-color{/block:IfBackgroundSolidColor}"></div>
-<div class="head-shell">
-    <div class="above-head">
-        {block:ShowAvatar}
-            <div class="avatar">
-                <a href="/">
-                    <img src="{PortraitURL-48}" class="{AvatarShape}" alt="{Title}">
-                </a>
-            </div>
-        {/block:ShowAvatar}
-        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">☰</button>
-    </div>
-    <aside id="site-menu" class="offcanvas" aria-hidden="true">
-        <button class="menu-close" type="button" aria-label="Close menu">×</button>
+<div class="above-head">
+    {block:ShowAvatar}
+        <div class="avatar">
+            <a href="/">
+                <img src="{PortraitURL-48}" class="{AvatarShape}" alt="{Title}">
+            </a>
+        </div>
+    {/block:ShowAvatar}
         <div class="navigation">
             <ul>
                 <li><a href="{BlogURL}" class="home-link">الرئيسية</a></li>
@@ -1438,7 +1271,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </li>
             </ul>
         </div>
-    </aside>
+    <div class="clearfix"></div>
 </div>
 <div class="offcanvas-overlay" hidden></div>
 
