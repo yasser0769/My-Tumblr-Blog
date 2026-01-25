@@ -1206,6 +1206,46 @@ document.addEventListener("DOMContentLoaded", function () {
                     padding: 10px 0; /* إضافة مسافات عمودية بين العناصر */
                 }
             }
+
+            .navigation ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                column-gap: 28px;
+                row-gap: 8px;
+            }
+
+            @media screen and (max-width: 600px) {
+                .nav-wrap {
+                    max-width: 100% !important;
+                    width: 100%;
+                    margin: 0;
+                    padding-inline: 12px;
+                }
+
+                .navigation ul {
+                    display: grid;
+                    grid-template-columns: repeat(3, minmax(0, 1fr));
+                    gap: 10px 12px;
+                    justify-items: center;
+                    align-items: center;
+                }
+
+                .navigation li a {
+                    font-size: 13px;
+                    white-space: nowrap;
+                }
+
+                .navigation .nav-social {
+                    grid-column: 1 / -1;
+                    justify-self: center;
+                }
+
+                .navigation .nav-social .social-icons {
+                    justify-content: center;
+                }
+            }
             
             {CustomCSS}
         </style>
