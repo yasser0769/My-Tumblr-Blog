@@ -118,19 +118,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 <style>
-/* تغيير لون النص عند التظليل */
 ::selection {
-  background: #891c03;   /* اللون اللي تبيه */
-  color: #fff;           /* لون النص داخل التظليل */
+  background: #891c03;
+  color: #fff;
 }
 
-/* بعض المتصفحات تحتاج بادئات */
 ::-moz-selection {
   background: #891c03;
   color: #fff;
 }
 
-/* استخدم نفس اسم العائلة "Dubai" عشان ما تغيّر أي أماكن ثانية */
 @font-face{
   font-family: 'Handicrafts';
   src: url('https://static.tumblr.com/8cspwwp/wwGt151fi/theyearofhandicrafts-medium.otf') format('opentype');
@@ -238,20 +235,20 @@ document.addEventListener("DOMContentLoaded", function () {
             <meta name="select:Google Font title" content="'Harmattan', sans-serif;" title="Harmattan">
             <meta name="select:Google Font title" content="'Droid Arabic Naskh', serif;" title="Droid Arabic Naskh">
             <meta name="select:Google Font title" content="'Scheherazade', serif;" title="Scheherazade">
-            <meta name="select:Google Font title" content="'ibm-plex-arabic, sans-serif;" title="IBM Plex Arabic">
+            <meta name="select:Google Font title" content="'ibm-plex-arabic', sans-serif;" title="IBM Plex Arabic">
             <meta name="select:Google Font" content="'Droid Arabic Naskh', serif;" title="Droid Arabic Naskh">
             <meta name="select:Google Font" content="'DubaiW23-Light', sans-serif;" title="DubaiW23-Light">
             <meta name="select:Google Font" content="'29ltravi-regular', serif;" title="29ltravi-regular">
             <meta name="select:Google Font" content="'Harmattan', sans-serif;" title="Harmattan">
             <meta name="select:Google Font" content="'Scheherazade', serif;" title="Scheherazade">
-            <meta name="select:Google Font" content="'ibm-plex-arabic, sans-serif;" title="IBM Plex Arabic">
+            <meta name="select:Google Font" content="'ibm-plex-arabic', sans-serif;" title="IBM Plex Arabic">
             <meta name="select:Google Font Quote" content="'Scheherazade', serif;" title="Scheherazade">
             <meta name="select:Google Font Quote" content="'DubaiW23-Light', sans-serif;" title="DubaiW23-Light">
             <meta name="select:Google Font Quote" content="'29ltravi-regular', serif;" title="29ltravi-regular">
             <meta name="select:Google Font Quote" content="'Droid Arabic Naskh', serif;" title="Droid Arabic Naskh">
             <meta name="select:Google Font Quote" content="'Harmattan', sans-serif;" title="Harmattan">
             <meta name="select:Google Font Quote" content="'Lalezar', cursive;" title="Lalezar">
-            <meta name="select:Google Font Quote" content="'ibm-plex-arabic, sans-serif;" title="IBM Plex Arabic">
+            <meta name="select:Google Font Quote" content="'ibm-plex-arabic', sans-serif;" title="IBM Plex Arabic">
             <meta name="select:Bold or Normal Font Quote" content="normal" title="Normal">
             <meta name="select:Bold or Normal Font Quote" content="bold" title="Bold">
             
@@ -278,26 +275,51 @@ document.addEventListener("DOMContentLoaded", function () {
                 font-family: {select:Google Font};
                 font-size: 17px;
                 line-height:2.0em;
+                direction: rtl;
+                text-align: right;
+            }
+            
+            /* RTL: keep numerals/URLs readable when needed */
+            .ltr {
+                direction: ltr;
+                unicode-bidi: isolate;
+            }
+
+            input,
+            textarea,
+            select {
+                direction: rtl;
+                text-align: start;
+            }
+
+            input[type="email"],
+            input[type="url"],
+            input[type="tel"],
+            input[type="number"],
+            input[type="search"] {
+                direction: ltr;
+                unicode-bidi: isolate;
+                text-align: left;
             }
             
             #myBtn {
-                display: none; /* Hidden by default */
-                position: fixed; /* Fixed/sticky position */
-                bottom: 20px; /* Place the button at the bottom of the page */
-                left: 20px; /* Place the button 30px from the right */
-                z-index: 99; /* Make sure it does not overlap */
-                border: none; /* Remove borders */
-                outline: none; /* Remove outline */
-                background-color: #553000; /* Set a background color */
-                color: white; /* Text color */
-                cursor: pointer; /* Add a mouse pointer on hover */
-                padding: 10px; /* Some padding */
-                border-radius: 100%; /* Rounded corners */
+                display: none;
+                position: fixed;
+                bottom: 20px;
+                inset-inline-start: 20px; /* RTL-safe positioning */
+                z-index: 99;
+                border: none;
+                outline: none;
+                background-color: #553000;
+                color: white;
+                cursor: pointer;
+                padding: 10px;
+                border-radius: 100%;
                 transition: 1s;
 }
 
 #myBtn:hover {
-    background-color: #555; /* Add a dark-grey background on hover */
+    background-color: #555;
 }
 
             h1, h2, h3, h4, h5 {
@@ -378,7 +400,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             ul { 
                 list-style:disc;
-                margin-left:0;
+                margin-inline-start:0;
             }
 
             ol {
@@ -386,7 +408,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             li{
-                margin-left:0;
+                margin-inline-start:0;
             }
 
             hr {
@@ -424,13 +446,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 position: relative;
                 padding: 10px 0;
                 z-index: 3;
-                -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-                -moz-box-sizing: border-box; /* Firefox, other Gecko */
-                box-sizing: border-box; /* Opera/IE 8+ */
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+            }
+
+            .nav-wrap {
+                max-width:{select:Page Width}!important;
+                margin-inline: auto;
+                padding-inline: 60px;
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
             }
             
             .avatar {
-                float: left;
+                float: right;
             }
 
             .avatar img.circle {
@@ -513,7 +544,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             .transparent {
                 top: 0;
-                left: 0;
+                inset-inline-start: 0;
                 background: {color:Header Overlay Color};
                 width: 100%;
                 height: 100%;
@@ -541,6 +572,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 position: relative;
                 margin: 0 auto;
             }
+
+            .navigation ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                column-gap: 20px;
+                row-gap: 8px;
+            }
                 
             .navigation li {
                 margin: 0;
@@ -564,9 +606,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 opacity: 0.5;
             }
             .navigation li:last-child {
-                padding-right: 0;
+                padding-inline-end: 0;
             }
-            
+
+
             .posts {
                 border-bottom: 2px solid {color:Dividers};
                 padding-bottom: 30px;
@@ -589,6 +632,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 margin: 0 0 1.2em;
                 text-align: justify;
             }
+
+            .posts .header-posts {
+                direction: rtl;
+            }
             
             h4.post-title {
                 color: #891C04;
@@ -609,7 +656,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
                         
             .date {
-                margin-right: 20px;
+                margin-inline-end: 20px;
             }
             
             .quote {
@@ -621,12 +668,41 @@ document.addEventListener("DOMContentLoaded", function () {
                 background: url(https://static.tumblr.com/8cspwwp/d7wp3fo9i/bg.png);
                 background-repeat: no-repeat;
             }
+
+            .posts .header-posts .npf_quote {
+                font-size: 25px;
+                letter-spacing: 0px;
+                min-height: 110px;
+                line-height: 180%;
+                padding-bottom: 50px;
+                background: url(https://static.tumblr.com/8cspwwp/d7wp3fo9i/bg.png);
+                background-repeat: no-repeat;
+            }
+
+            .posts .header-posts .npf_quote + p {
+                color: {color:Source Quote};
+                font-family: {select:Google Font Quote};
+                font-weight: {select:Bold or Normal Font Quote};
+                font-size: 20px;
+                line-height: 29px;
+                text-align: right;
+                margin-top: 15px;
+                margin-inline-start: auto;
+            }
+
+            .posts .header-posts .npf_quote + p:before {
+                content: "— ";
+            }
+
+            #quoteSource h4 {
+                text-align: right;
+                margin-inline-start: auto;
+            }
             
             blockquote {
-                margin-right: 20px;
-                padding-right: 15px;
-                border-right: 3px {color:Body Text} solid;
-                
+                margin-inline-start: 20px;
+                padding-inline-start: 15px;
+                border-inline-start: 3px {color:Body Text} solid;
             }
             .tumblr_video_container {
                 max-width: 100%;
@@ -649,14 +725,20 @@ document.addEventListener("DOMContentLoaded", function () {
             
             .meta {
                 display: block;
-                height:14px;
-                line-height:1em;
+                height: auto;
+                line-height: 1.4;
                 font-family: '{select:Google Font}', sans-serif;
                 margin-top: 10px;
                 font-size:11px;
                 color: {color:Post Bottom};
                 text-transform: uppercase;
                 padding-top: 40px;
+                --icon: 18px;
+                --hit: 36px;
+                --gap: 10px;
+                display: flex;
+                align-items: center;
+                gap: var(--gap);
             }
 
             .meta a {
@@ -680,7 +762,7 @@ document.addEventListener("DOMContentLoaded", function () {
             
             .tags li {
                 margin: 0;
-                padding-right: 10px;
+                padding-inline-end: 10px;
                 display:inline;
             }
             
@@ -703,7 +785,7 @@ document.addEventListener("DOMContentLoaded", function () {
             
             .social ul li a {
                 padding: 0.5px 0;
-                margin-right: 20px;
+                margin-inline-end: 20px;
                 font-size: 18px;
                 font-weight: 600;
                 color: #545b63;
@@ -754,20 +836,22 @@ document.addEventListener("DOMContentLoaded", function () {
              }
 
              .notes .avatar {
-                margin: 0 5px 0 0;
+                margin: 0;
+                margin-inline-end: 5px;
                 position: relative;
                 top: 5px;
                 width: auto;
              }
 
              .notes blockquote {
-                margin: 10px 0 0 35px;
-                padding-left: 10px;
-                border-left: 3px solid {color:Body Text};
+                margin: 10px 0 0;
+                margin-inline-start: 35px;
+                padding-inline-start: 10px;
+                border-inline-start: 3px solid {color:Body Text};
              }
             a.source {
                 color: {AccentColor};
-                padding-right: 20px;
+                padding-inline-end: 20px;
             }
             
             a.source:hover {
@@ -811,43 +895,106 @@ document.addEventListener("DOMContentLoaded", function () {
              }
                         
              .date-notes {
-                 float: left;
+                 float: none;
+                 margin-inline-end: auto;
              }
              
+             /* Normalize action icon hit targets across iframe/SVG/sprite */
              .like {
-                 display: inline-block;
-                 float: right;
-                 padding: 3px 0 0 10px;
+                 display: inline-flex;
+                 float: none;
+                 padding: 0;
+                 width: var(--hit);
+                 height: var(--hit);
+                 align-items: center;
+                 justify-content: center;
+                 border-radius: 10px;
+                 outline: 2px solid transparent;
+                 outline-offset: 2px;
              }
              
              .reblog {
-                 display: inline-block;
-                 float: right;
-                 padding: 3px 0 0 0;
+                 display: inline-flex;
+                 float: none;
+                 padding: 0;
+                 width: var(--hit);
+                 height: var(--hit);
+                 align-items: center;
+                 justify-content: center;
+                 border-radius: 10px;
+                 outline: 2px solid transparent;
+                 outline-offset: 2px;
              }
              .share-control {
-                display: inline-block;
-                float: right;
-                padding: 3px 0 0 10px;
+                display: inline-flex;
+                float: none;
+                padding: 0;
+                width: var(--hit);
+                height: var(--hit);
+                align-items: center;
+                justify-content: center;
                 position: relative;
+                border-radius: 10px;
+                outline: 2px solid transparent;
+                outline-offset: 2px;
             }
             .share-control a.share {
                 color: #a7a7a7;  
-                font-size: 22px;  
-                margin-top: 2px;
-                display: block;  
-                height: 21px;  
-                margin: 1px 8px 0 0;
+                font-size: 22px;
+                display: inline-flex;
+                width: var(--icon);
+                height: var(--icon);
+                align-items: center;
+                justify-content: center;
+                margin: 0;
                 text-decoration: none;
-                width: 21px;
                 cursor: pointer;
+            }
+            .like_button {
+                width: var(--hit);
+                height: var(--hit);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .like_button iframe {
+                width: var(--icon);
+                height: var(--icon);
+                display: block;
+            }
+            .reblog_button {
+                width: var(--hit);
+                height: var(--hit);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .reblog_button svg {
+                width: var(--icon);
+                height: var(--icon);
+                display: block;
+            }
+            .like:hover,
+            .reblog:hover,
+            .share-control:hover {
+                background: rgba(0, 0, 0, 0.06);
+            }
+            .like:focus-within,
+            .reblog:focus-within,
+            .share-control:focus-within {
+                outline-color: rgba(137, 28, 4, 0.6);
+            }
+            .share-control a.share:focus-visible,
+            .reblog_button:focus-visible,
+            .like_button iframe:focus-visible {
+                outline: none;
             }
             .icon-export:before {
                 content: "";
                 background: url('https://static.tumblr.com/kypr3bw/e7pn9xss6/1407433406_share.png');
                 display: block;
-                width: 20px;
-                height: 20px;
+                width: var(--icon);
+                height: var(--icon);
             }
             .pop-menu {
                 display: none;
@@ -856,7 +1003,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 border-radius: 4px;
                 position: absolute;
                 bottom: 35px;
-                left: -53px;
+                inset-inline-start: -53px;
                 width: 146px;
                 -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
                 -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
@@ -886,7 +1033,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 font-size: 14px;
                 height: auto;
                 margin: 0;
-                padding: 10px 40px 10px 10px;
+                padding: 10px;
+                padding-inline-start: 40px;
+                padding-inline-end: 10px;
                 position: relative;
                 text-decoration: none;
                 width: auto;
@@ -894,11 +1043,11 @@ document.addEventListener("DOMContentLoaded", function () {
             .pop-menu.south li:last-child:after {
                 content: '';
                 position: absolute;
-                left: 50%;
+                inset-inline-start: 50%;
                 bottom: -6px;
                 height: 12px;
                 width: 12px;
-                margin-left: -6px;
+                margin-inline-start: -6px;
                 background-color: #fff;
                 -webkit-transform: rotate(45deg);
                 -moz-transform: rotate(45deg);
@@ -926,29 +1075,49 @@ document.addEventListener("DOMContentLoaded", function () {
                 list-style: none;
                 padding: 10px 15px;
                 margin: 10px 0;
+                display: inline-flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 6px;
              }
 
              .pagination li {
-                margin: 0 2px 0 2px;
-                display: inline;
+                margin: 0;
+                display: inline-flex;
              }
 
              #pagination a:link, #pageNav a:visited {
-                padding: 0;
-                margin: 0 2px;
+                padding: 4px 8px;
+                margin: 0;
                 text-decoration: none;
+                border-radius: 8px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
              }
 
              #pagination a:hover, #pageNav a:active, #pageNav a.active:link, #pageNav a.active:visited {
-                text-decoration: underline;
+                text-decoration: none;
+                background: rgba(0, 0, 0, 0.06);
              }
 
              #older:after {
-                content: " »";
+                content: " «";
              }
 
              #newer:before {
-                content: "« ";
+                content: "» ";
+             }
+
+             .pagination a.active,
+             .pagination a.active:visited {
+                color: #553000;
+                background: #f1e6d3;
+             }
+
+             .pagination li a:not(#older):not(#newer) {
+                direction: ltr;
+                unicode-bidi: isolate;
              }
 
             @media screen and (max-width: 750px){
@@ -970,11 +1139,28 @@ document.addEventListener("DOMContentLoaded", function () {
                 .social {
                     margin: 0 -15px;
                 }
+                .nav-wrap {
+                    padding-inline: 15px;
+                }
             }
             
+            .social-icons {
+                list-style: none;
+                display: flex;
+                gap: 12px;
+                padding: 0;
+                margin: 0;
+                justify-content: center;
+                flex-wrap: nowrap;
+            }
+
+            .social-icons li {
+                display: inline-flex;
+                align-items: center;
+            }
+
             /* جعل القائمة عمودية على الشاشات الصغيرة (الجوال) */
             .popover.tutorial.alt-text-helper_step {
-<<<<<<< codex/fix-display-issue-in-popover-fy44pb
                 display: flex !important;
                 flex-direction: column;
                 align-items: stretch;
@@ -986,17 +1172,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 padding: 16px 20px;
                 box-sizing: border-box;
                 white-space: normal;
-=======
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-                text-align: center;
-                direction: rtl;
-                max-width: 320px;
-                width: calc(100vw - 40px);
-                padding: 16px 20px;
-                box-sizing: border-box;
->>>>>>> main
             }
 
             .popover.tutorial.alt-text-helper_step .title {
@@ -1004,16 +1179,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 font-size: 18px;
                 line-height: 1.5;
                 width: 100%;
-<<<<<<< codex/fix-display-issue-in-popover-fy44pb
                 text-align: inherit;
-=======
->>>>>>> main
             }
 
             .popover.tutorial.alt-text-helper_step .content {
                 margin: 0;
                 line-height: 1.7;
-<<<<<<< codex/fix-display-issue-in-popover-fy44pb
                 text-align: inherit;
             }
 
@@ -1023,16 +1194,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 min-width: 96px;
                 padding: 6px 18px;
                 position: static !important;
-=======
-                white-space: normal;
-            }
-
-            .popover.tutorial.alt-text-helper_step .ok_button {
-                align-self: center;
-                width: auto;
-                min-width: 96px;
-                padding: 6px 18px;
->>>>>>> main
             }
 
             @media screen and (max-width: 768px) {
@@ -1042,6 +1203,46 @@ document.addEventListener("DOMContentLoaded", function () {
                 .navigation li {
                     display: block; /* جعل العناصر عمودية بدلاً من أفقية */
                     padding: 10px 0; /* إضافة مسافات عمودية بين العناصر */
+                }
+            }
+
+            .navigation ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                column-gap: 28px;
+                row-gap: 8px;
+            }
+
+            @media screen and (max-width: 600px) {
+                .nav-wrap {
+                    max-width: 100% !important;
+                    width: 100%;
+                    margin: 0;
+                    padding-inline: 12px;
+                }
+
+                .navigation ul {
+                    display: grid;
+                    grid-template-columns: repeat(3, minmax(0, 1fr));
+                    gap: 10px 12px;
+                    justify-items: center;
+                    align-items: center;
+                }
+
+                .navigation li a {
+                    font-size: 13px;
+                    white-space: nowrap;
+                }
+
+                .navigation .nav-social {
+                    grid-column: 1 / -1;
+                    justify-self: center;
+                }
+
+                .navigation .nav-social .social-icons {
+                    justify-content: center;
                 }
             }
             
@@ -1067,69 +1268,60 @@ document.addEventListener("DOMContentLoaded", function () {
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
 
-<!-- Big Background -->
     <div class="big-background {block:IfBackgroundSolidColor}bg-color{/block:IfBackgroundSolidColor}"></div>
-<!--Abovehead-->
 <div class="above-head">
-
-
-    {block:ShowAvatar}
-        <div class="avatar">
-            <a href="/">
-                <img src="{PortraitURL-48}" class="{AvatarShape}" alt="{Title}">
-            </a>
-        </div>
-    {/block:ShowAvatar}
-    <!--Navigation-->
-        <div class="navigation">
-            
-                <li><a href="{BlogURL}" class="home-link">الرئيسية</a>
-                
-                <li><a href="/WhoAmI" class="home-link">من أنا</a>
-                
-                {block:Pages}<li><a href="{URL}"class="home-link">{Label}</a></li>{block:Pages}
-            {/block:HasPages}
-            {block:AskEnabled}<li><a href="/ask" class="home-link">
-                اسألني
-            </a></li>{/block:AskEnabled}
-            {block:IfShowArchive}<li><a href="/archive" class="home-link">
-                الإرشيف
-            </a></li>{/block:IfShowArchive}
-            <li><a href="/random" class="home-link">
-                عشوائي
-            </a></li>
-            <li><a href="/submit" class="home-link">
-                شاركني التدوين
-            </a></li>
-            <li>
-
-<!-- Add font awesome icons -->
-<ul class="social-icons">
-  <li>
-    <a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X">
-      <i class="fa-brands fa-x-twitter"></i>
-    </a>
-  </li>
-  <li>
-    <a href="{text:Instagram URL}" target="_blank" rel="noopener" aria-label="Instagram">
-      <i class="fa-brands fa-instagram"></i>
-    </a>
-  </li>
-  <li>
-    <a href="{text:SnapChat URL}" target="_blank" rel="noopener" aria-label="Snapchat">
-      <i class="fa-brands fa-snapchat"></i>
-    </a>
-  </li>
-</ul>
-
-</li>
-
-
+    <div class="nav-wrap">
+        {block:ShowAvatar}
+            <div class="avatar">
+                <a href="/">
+                    <img src="{PortraitURL-48}" class="{AvatarShape}" alt="{Title}">
+                </a>
             </div>
-    <div class="clearfix"></div>
+        {/block:ShowAvatar}
+            <div class="navigation">
+                <ul>
+                    <li><a href="{BlogURL}" class="home-link">الرئيسية</a></li>
+                    <li><a href="/WhoAmI" class="home-link">من أنا</a></li>
+                    {block:HasPages}
+                        {block:Pages}<li><a href="{URL}" class="home-link">{Label}</a></li>{/block:Pages}
+                    {/block:HasPages}
+                    {block:AskEnabled}<li><a href="/ask" class="home-link">
+                        اسألني
+                    </a></li>{/block:AskEnabled}
+                    {block:IfShowArchive}<li><a href="/archive" class="home-link">
+                        الإرشيف
+                    </a></li>{/block:IfShowArchive}
+                    <li><a href="/random" class="home-link">
+                        عشوائي
+                    </a></li>
+                    <li><a href="/submit" class="home-link">
+                        شاركني التدوين
+                    </a></li>
+                    <li class="nav-social">
+                        <ul class="social-icons">
+                            <li>
+                                <a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X">
+                                    <i class="fa-brands fa-x-twitter"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{text:Instagram URL}" target="_blank" rel="noopener" aria-label="Instagram">
+                                    <i class="fa-brands fa-instagram"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{text:SnapChat URL}" target="_blank" rel="noopener" aria-label="Snapchat">
+                                    <i class="fa-brands fa-snapchat"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        <div class="clearfix"></div>
+    </div>
 </div>
 
-<!-- Header -->
 {block:IndexPage} 
     <div class="header {block:HideHeaderImage}no-image{/block:HideHeaderImage}">
     
@@ -1154,7 +1346,6 @@ document.addEventListener("DOMContentLoaded", function () {
         
     </div>
 {/block:IndexPage} 
-<!-- Content -->    
     <div class="wrapper">
         {block:IndexPage} 
             {block:Description}
@@ -1253,12 +1444,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     
                     
                       
-                            {block:Date}<span class="date"><a href="{Permalink}"><b>{DayOfMOnth}  /    {MonthNumber}    /  {Year} </b></a></span>{/block:Date}
-                        
-                                               
-
-                                
-
+                            {block:Date}<span class="date ltr"><a href="{Permalink}"><b>{DayOfMonth}  /    {MonthNumber}    /  {Year} </b></a></span>{/block:Date}
+                        {block:ContentSource}
+                            <a class="source" href="{SourceURL}">
+                                {block:SourceLogo}
                                     <img src="{BlackLogoURL}" width="{LogoWidth}" height="{LogoHeight}" alt="{SourceTitle}" />
                                 {/block:SourceLogo}
                                 {block:NoSourceLogo}
@@ -1326,15 +1515,11 @@ function topFunction() {
 }
 </script>
 
- <!-- yyyy -->
-
         {/block:Posts}
-        <!-- Posts -->
     </div>
     
     
 
-    <!-- Pagination --> 
             {block:Pagination}
                 <div class="pagination">
                     <ul class="clearfix">
@@ -1353,7 +1538,6 @@ function topFunction() {
             {/block:Pagination}
 </div>
 
-    <!-- Foot --> 
     <div class="footer">
         <div class="copyright">© {CopyrightYears} - {Title}</div>
         <div class="info">
@@ -1367,11 +1551,7 @@ function topFunction() {
         });
     </script>
     
-    <!-- yyyy -->
-    
 <button id="myBtn"><i class="fa-solid fa-arrow-up" aria-hidden="true" style="font-size:290%;"></i></button>
-
-<!-- باقي الأكواد السابقة -->
 
 
 <script>
