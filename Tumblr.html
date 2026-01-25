@@ -449,6 +449,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 -moz-box-sizing: border-box;
                 box-sizing: border-box;
             }
+
+            .nav-wrap {
+                max-width:{select:Page Width}!important;
+                margin-inline: auto;
+                padding-inline: 60px;
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                box-sizing: border-box;
+            }
             
             .avatar {
                 float: right;
@@ -1131,6 +1140,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 .social {
                     margin: 0 -15px;
                 }
+                .nav-wrap {
+                    padding-inline: 15px;
+                }
             }
             
             .social-icons {
@@ -1219,54 +1231,56 @@ document.addEventListener("DOMContentLoaded", function () {
 
     <div class="big-background {block:IfBackgroundSolidColor}bg-color{/block:IfBackgroundSolidColor}"></div>
 <div class="above-head">
-    {block:ShowAvatar}
-        <div class="avatar">
-            <a href="/">
-                <img src="{PortraitURL-48}" class="{AvatarShape}" alt="{Title}">
-            </a>
-        </div>
-    {/block:ShowAvatar}
-        <div class="navigation">
-            <ul>
-                <li><a href="{BlogURL}" class="home-link">الرئيسية</a></li>
-                <li><a href="/WhoAmI" class="home-link">من أنا</a></li>
-                {block:HasPages}
-                    {block:Pages}<li><a href="{URL}" class="home-link">{Label}</a></li>{/block:Pages}
-                {/block:HasPages}
-                {block:AskEnabled}<li><a href="/ask" class="home-link">
-                    اسألني
-                </a></li>{/block:AskEnabled}
-                {block:IfShowArchive}<li><a href="/archive" class="home-link">
-                    الإرشيف
-                </a></li>{/block:IfShowArchive}
-                <li><a href="/random" class="home-link">
-                    عشوائي
-                </a></li>
-                <li><a href="/submit" class="home-link">
-                    شاركني التدوين
-                </a></li>
-                <li class="nav-social">
-                    <ul class="social-icons">
-                        <li>
-                            <a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X">
-                                <i class="fa-brands fa-x-twitter"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{text:Instagram URL}" target="_blank" rel="noopener" aria-label="Instagram">
-                                <i class="fa-brands fa-instagram"></i>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{text:SnapChat URL}" target="_blank" rel="noopener" aria-label="Snapchat">
-                                <i class="fa-brands fa-snapchat"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    <div class="clearfix"></div>
+    <div class="nav-wrap">
+        {block:ShowAvatar}
+            <div class="avatar">
+                <a href="/">
+                    <img src="{PortraitURL-48}" class="{AvatarShape}" alt="{Title}">
+                </a>
+            </div>
+        {/block:ShowAvatar}
+            <div class="navigation">
+                <ul>
+                    <li><a href="{BlogURL}" class="home-link">الرئيسية</a></li>
+                    <li><a href="/WhoAmI" class="home-link">من أنا</a></li>
+                    {block:HasPages}
+                        {block:Pages}<li><a href="{URL}" class="home-link">{Label}</a></li>{/block:Pages}
+                    {/block:HasPages}
+                    {block:AskEnabled}<li><a href="/ask" class="home-link">
+                        اسألني
+                    </a></li>{/block:AskEnabled}
+                    {block:IfShowArchive}<li><a href="/archive" class="home-link">
+                        الإرشيف
+                    </a></li>{/block:IfShowArchive}
+                    <li><a href="/random" class="home-link">
+                        عشوائي
+                    </a></li>
+                    <li><a href="/submit" class="home-link">
+                        شاركني التدوين
+                    </a></li>
+                    <li class="nav-social">
+                        <ul class="social-icons">
+                            <li>
+                                <a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X">
+                                    <i class="fa-brands fa-x-twitter"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{text:Instagram URL}" target="_blank" rel="noopener" aria-label="Instagram">
+                                    <i class="fa-brands fa-instagram"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{text:SnapChat URL}" target="_blank" rel="noopener" aria-label="Snapchat">
+                                    <i class="fa-brands fa-snapchat"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        <div class="clearfix"></div>
+    </div>
 </div>
 <div class="offcanvas-overlay" hidden></div>
 
