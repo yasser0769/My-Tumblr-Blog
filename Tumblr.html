@@ -569,8 +569,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 padding: 0;
                 display: flex;
                 align-items: center;
-                flex-wrap: nowrap;
-                white-space: nowrap;
+                flex-wrap: wrap;
+                column-gap: 20px;
+                row-gap: 8px;
             }
                 
             .navigation li {
@@ -601,12 +602,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            @media screen and (max-width: 1100px) and (min-width: 981px) {
-                .navigation li a {
-                    font-size: 13px;
-                }
-            }
-            
             .posts {
                 border-bottom: 2px solid {color:Dividers};
                 padding-bottom: 30px;
