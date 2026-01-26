@@ -1260,6 +1260,63 @@ document.addEventListener("DOMContentLoaded", function () {
                     justify-content: center;
                 }
             }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            html,
+            body {
+                overflow-x: hidden;
+                max-width: 100%;
+            }
+
+            .nav-wrap {
+                max-width: 980px;
+                margin: 0 auto;
+                padding-bottom: 26px;
+            }
+
+            .above-head .navigation > ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                column-gap: 32px;
+                row-gap: 6px;
+            }
+
+            @media screen and (max-width: 600px) {
+                .nav-wrap {
+                    max-width: 100%;
+                    width: 100%;
+                    margin: 0;
+                    padding-inline: 12px;
+                    padding-bottom: 14px;
+                }
+
+                .above-head .navigation > ul {
+                    display: grid;
+                    grid-template-columns: repeat(3, minmax(0, 1fr));
+                    gap: 10px 12px;
+                    justify-items: center;
+                    align-items: center;
+                }
+
+                .above-head .navigation > ul > li {
+                    padding: 0;
+                }
+
+                .above-head .navigation > ul > li a {
+                    font-size: 13px;
+                    white-space: nowrap;
+                }
+
+                .above-head .navigation .nav-social {
+                    grid-column: 1 / -1;
+                    justify-self: center;
+                }
+            }
             
             {CustomCSS}
         </style>
