@@ -440,7 +440,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 background:{BackgroundColor}!important;
             }
 
-            .above-head { 
+            .head-shell {
                 max-width:{select:Page Width}!important;
                 margin:0 auto;
                 position: relative;
@@ -589,12 +589,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 margin: 0;
                 display: inline-block;
                 padding: 17px 15px 0;
+                white-space: nowrap;
             }
             
             /* تعديل لون الروابط في القائمة الرئيسية */
             .navigation li a {
                 color: #891C04; /* لون أحمر غامق متناسق مع الثيم */
                 font-size: 14px;
+                white-space: nowrap;
             }
             .navigation li a:hover {
                 color: #553000; /* لون بني غامق عند التحويم */
@@ -1396,6 +1398,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="clearfix"></div>
     </div>
 </div>
+<div class="offcanvas-overlay" hidden></div>
 
 {block:IndexPage} 
     <div class="header {block:HideHeaderImage}no-image{/block:HideHeaderImage}">
