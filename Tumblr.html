@@ -661,11 +661,6 @@ document.addEventListener("DOMContentLoaded", function () {
             .date {
                 margin-inline-end: 20px;
             }
-
-            .post-date-ar {
-                direction: rtl;
-                unicode-bidi: plaintext;
-            }
             
             .quote {
                 font-size: 25px;
@@ -1265,63 +1260,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     justify-content: center;
                 }
             }
-
-            * {
-                box-sizing: border-box;
-            }
-
-            html,
-            body {
-                overflow-x: hidden;
-                max-width: 100%;
-            }
-
-            .nav-wrap {
-                max-width: 980px;
-                margin: 0 auto;
-                padding-bottom: 26px;
-            }
-
-            .above-head .navigation > ul {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                align-items: center;
-                column-gap: 32px;
-                row-gap: 6px;
-            }
-
-            @media screen and (max-width: 600px) {
-                .nav-wrap {
-                    max-width: 100%;
-                    width: 100%;
-                    margin: 0;
-                    padding-inline: 12px;
-                    padding-bottom: 14px;
-                }
-
-                .above-head .navigation > ul {
-                    display: grid;
-                    grid-template-columns: repeat(3, minmax(0, 1fr));
-                    gap: 10px 12px;
-                    justify-items: center;
-                    align-items: center;
-                }
-
-                .above-head .navigation > ul > li {
-                    padding: 0;
-                }
-
-                .above-head .navigation > ul > li a {
-                    font-size: 13px;
-                    white-space: nowrap;
-                }
-
-                .above-head .navigation .nav-social {
-                    grid-column: 1 / -1;
-                    justify-self: center;
-                }
-            }
             
             {CustomCSS}
         </style>
@@ -1522,7 +1460,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     
                     
                       
-                            {block:Date}<span class="date"><a href="{Permalink}"><b><span class="post-date-ar" data-day="{DayOfMonth}" data-month="{Month}" data-year="{Year}"></span></b></a></span>{/block:Date}
+                            {block:Date}<span class="date ltr"><a href="{Permalink}"><b>{DayOfMonth}  /    {MonthNumber}    /  {Year} </b></a></span>{/block:Date}
                         {block:ContentSource}
                             <a class="source" href="{SourceURL}">
                                 {block:SourceLogo}
@@ -1663,27 +1601,40 @@ function scrollToTop() {
 // ربط الأيقونة بدالة التمرير
 document.getElementById('myBtn').addEventListener('click', scrollToTop);
 
-// Arabic month labels for post dates (keeps Western numerals)
-document.querySelectorAll('.post-date-ar').forEach((node) => {
-    const day = node.getAttribute('data-day') || '';
-    const month = node.getAttribute('data-month') || '';
-    const year = node.getAttribute('data-year') || '';
-    const months = {
-        January: 'يناير',
-        February: 'فبراير',
-        March: 'مارس',
-        April: 'أبريل',
-        May: 'مايو',
-        June: 'يونيو',
-        July: 'يوليو',
-        August: 'أغسطس',
-        September: 'سبتمبر',
-        October: 'أكتوبر',
-        November: 'نوفمبر',
-        December: 'ديسمبر'
-    };
-    const arabicMonth = months[month] || month;
-    node.textContent = `${day} ${arabicMonth} ${year}م`;
+const menuToggle = document.querySelector('.menu-toggle');
+const offcanvas = document.getElementById('site-menu');
+const overlay = document.querySelector('.offcanvas-overlay');
+const menuClose = document.querySelector('.menu-close');
+
+function openMenu() {
+    document.body.classList.add('menu-open');
+    menuToggle.setAttribute('aria-expanded', 'true');
+    offcanvas.setAttribute('aria-hidden', 'false');
+    overlay.hidden = false;
+}
+
+function closeMenu() {
+    document.body.classList.remove('menu-open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    offcanvas.setAttribute('aria-hidden', 'true');
+    overlay.hidden = true;
+}
+
+menuToggle.addEventListener('click', () => {
+    if (document.body.classList.contains('menu-open')) {
+        closeMenu();
+    } else {
+        openMenu();
+    }
+});
+
+menuClose.addEventListener('click', closeMenu);
+overlay.addEventListener('click', closeMenu);
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && document.body.classList.contains('menu-open')) {
+        closeMenu();
+    }
 });
 </script>
 
