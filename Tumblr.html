@@ -285,6 +285,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 unicode-bidi: isolate;
             }
 
+            .post-date-ar {
+                direction: rtl;
+                unicode-bidi: plaintext;
+            }
+
             input,
             textarea,
             select {
@@ -465,6 +470,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 float: right;
             }
 
+            @supports (float: inline-end) {
+                .avatar {
+                    float: inline-end;
+                }
+            }
+
             .avatar img.circle {
                 border-radius: 30%;
             }
@@ -572,6 +583,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 float: right;
                 position: relative;
                 margin: 0 auto;
+            }
+
+            @supports (float: inline-end) {
+                .navigation {
+                    float: inline-end;
+                }
             }
 
             .navigation ul {
@@ -1006,7 +1023,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 border-radius: 4px;
                 position: absolute;
                 bottom: 35px;
-                inset-inline-start: -53px;
+                inset-inline-start: 50%;
+                transform: translateX(-50%);
                 width: 146px;
                 -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
                 -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
@@ -1105,11 +1123,11 @@ document.addEventListener("DOMContentLoaded", function () {
              }
 
              #older:after {
-                content: " «";
+                content: " ←";
              }
 
              #newer:before {
-                content: "» ";
+                content: "→ ";
              }
 
              .pagination a.active,
@@ -1460,7 +1478,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     
                     
                       
-                            {block:Date}<span class="date ltr"><a href="{Permalink}"><b>{DayOfMonth}  /    {MonthNumber}    /  {Year} </b></a></span>{/block:Date}
+                            {block:Date}<span class="date"><a href="{Permalink}"><b><span class="post-date-ar" data-day="{DayOfMonth}" data-month="{Month}" data-month-number="{MonthNumber}" data-year="{Year}"></span></b></a></span>{/block:Date}
                         {block:ContentSource}
                             <a class="source" href="{SourceURL}">
                                 {block:SourceLogo}
@@ -1635,6 +1653,61 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && document.body.classList.contains('menu-open')) {
         closeMenu();
     }
+});
+</script>
+
+<script>
+const monthNameMap = {
+    January: 'يناير',
+    February: 'فبراير',
+    March: 'مارس',
+    April: 'أبريل',
+    May: 'مايو',
+    June: 'يونيو',
+    July: 'يوليو',
+    August: 'أغسطس',
+    September: 'سبتمبر',
+    October: 'أكتوبر',
+    November: 'نوفمبر',
+    December: 'ديسمبر'
+};
+
+const monthNumberMap = {
+    '1': 'يناير',
+    '01': 'يناير',
+    '2': 'فبراير',
+    '02': 'فبراير',
+    '3': 'مارس',
+    '03': 'مارس',
+    '4': 'أبريل',
+    '04': 'أبريل',
+    '5': 'مايو',
+    '05': 'مايو',
+    '6': 'يونيو',
+    '06': 'يونيو',
+    '7': 'يوليو',
+    '07': 'يوليو',
+    '8': 'أغسطس',
+    '08': 'أغسطس',
+    '9': 'سبتمبر',
+    '09': 'سبتمبر',
+    '10': 'أكتوبر',
+    '11': 'نوفمبر',
+    '12': 'ديسمبر'
+};
+
+document.querySelectorAll('.post-date-ar').forEach((el) => {
+    const day = (el.dataset.day || '').trim();
+    const month = (el.dataset.month || '').trim();
+    const monthNumber = (el.dataset.monthNumber || '').trim();
+    const year = (el.dataset.year || '').trim();
+    const arabicMonth = monthNameMap[month] || monthNumberMap[monthNumber] || monthNumberMap[month] || month;
+
+    if (!day || !year || !arabicMonth) {
+        return;
+    }
+
+    el.textContent = `${day} ${arabicMonth} ${year}م`;
 });
 </script>
 
