@@ -1657,57 +1657,59 @@ document.addEventListener('keydown', (event) => {
 </script>
 
 <script>
-const monthNameMap = {
-    January: 'يناير',
-    February: 'فبراير',
-    March: 'مارس',
-    April: 'أبريل',
-    May: 'مايو',
-    June: 'يونيو',
-    July: 'يوليو',
-    August: 'أغسطس',
-    September: 'سبتمبر',
-    October: 'أكتوبر',
-    November: 'نوفمبر',
-    December: 'ديسمبر'
-};
+document.addEventListener('DOMContentLoaded', function() {
+    const monthNameMap = {
+        January: 'يناير',
+        February: 'فبراير',
+        March: 'مارس',
+        April: 'أبريل',
+        May: 'مايو',
+        June: 'يونيو',
+        July: 'يوليو',
+        August: 'أغسطس',
+        September: 'سبتمبر',
+        October: 'أكتوبر',
+        November: 'نوفمبر',
+        December: 'ديسمبر'
+    };
 
-const monthNumberMap = {
-    '1': 'يناير',
-    '01': 'يناير',
-    '2': 'فبراير',
-    '02': 'فبراير',
-    '3': 'مارس',
-    '03': 'مارس',
-    '4': 'أبريل',
-    '04': 'أبريل',
-    '5': 'مايو',
-    '05': 'مايو',
-    '6': 'يونيو',
-    '06': 'يونيو',
-    '7': 'يوليو',
-    '07': 'يوليو',
-    '8': 'أغسطس',
-    '08': 'أغسطس',
-    '9': 'سبتمبر',
-    '09': 'سبتمبر',
-    '10': 'أكتوبر',
-    '11': 'نوفمبر',
-    '12': 'ديسمبر'
-};
+    const monthNumberMap = {
+        '1': 'يناير',
+        '01': 'يناير',
+        '2': 'فبراير',
+        '02': 'فبراير',
+        '3': 'مارس',
+        '03': 'مارس',
+        '4': 'أبريل',
+        '04': 'أبريل',
+        '5': 'مايو',
+        '05': 'مايو',
+        '6': 'يونيو',
+        '06': 'يونيو',
+        '7': 'يوليو',
+        '07': 'يوليو',
+        '8': 'أغسطس',
+        '08': 'أغسطس',
+        '9': 'سبتمبر',
+        '09': 'سبتمبر',
+        '10': 'أكتوبر',
+        '11': 'نوفمبر',
+        '12': 'ديسمبر'
+    };
 
-document.querySelectorAll('.post-date-ar').forEach((el) => {
-    const day = (el.dataset.day || '').trim();
-    const month = (el.dataset.month || '').trim();
-    const monthNumber = (el.dataset.monthNumber || '').trim();
-    const year = (el.dataset.year || '').trim();
-    const arabicMonth = monthNameMap[month] || monthNumberMap[monthNumber] || monthNumberMap[month] || month;
+    document.querySelectorAll('.post-date-ar').forEach(function(el) {
+        const day = (el.dataset.day || '').trim();
+        const month = (el.dataset.month || '').trim();
+        const monthNumber = (el.dataset.monthNumber || '').trim();
+        const year = (el.dataset.year || '').trim();
+        const arabicMonth = monthNameMap[month] || monthNumberMap[monthNumber] || monthNumberMap[month] || month;
 
-    if (!day || !year || !arabicMonth) {
-        return;
-    }
+        if (!day || !year || !arabicMonth) {
+            return;
+        }
 
-    el.textContent = `${day} ${arabicMonth} ${year}م`;
+        el.textContent = day + ' ' + arabicMonth + ' ' + year + ' م';
+    });
 });
 </script>
 
