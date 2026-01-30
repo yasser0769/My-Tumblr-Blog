@@ -291,9 +291,16 @@ document.addEventListener("DOMContentLoaded", function () {
             .post-date-ar {
                 direction: rtl;
                 unicode-bidi: plaintext;
-                /* تعديل: تمييز التاريخ بلون وخط عريض */
+                /* إصلاح: لون رمادي مثل أيقونات التفاعل */
+                color: #B3B3B3;
+                font-weight: 500;
+                transition: color 0.2s ease;
+            }
+
+            /* لون مميز عند التحويم */
+            .date a:hover .post-date-ar,
+            a:hover .post-date-ar {
                 color: #891C04;
-                font-weight: 600;
             }
 
             input,
@@ -1020,21 +1027,49 @@ document.addEventListener("DOMContentLoaded", function () {
             .quote {
                 font-size: 28px; /* تعديل: تكبير حجم خط الاقتباسات */
                 letter-spacing: 0px;
-                min-height: 110px;
+                min-height: 80px;
                 line-height: 200%; /* تعديل: زيادة المسافة بين الأسطر */
                 padding-bottom: 25px; /* تعديل: تقليل المسافة تحت الاقتباس */
-                background: url(https://static.tumblr.com/8cspwwp/d7wp3fo9i/bg.png);
-                background-repeat: no-repeat;
+                /* إصلاح: استخدام pseudo-element بدلاً من background للتحكم بحجم علامة الاقتباس */
+                position: relative;
+                padding-right: 80px; /* مساحة لعلامة الاقتباس */
+            }
+
+            /* علامة الاقتباس الكبيرة */
+            .quote::before {
+                content: '\201C'; /* علامة اقتباس عربية */
+                position: absolute;
+                right: 0;
+                top: -10px;
+                font-size: 140px;
+                line-height: 1;
+                color: rgba(200, 180, 150, 0.25); /* لون بيج شفاف */
+                font-family: Georgia, 'Times New Roman', serif;
+                pointer-events: none;
             }
 
             .posts .header-posts .npf_quote {
                 font-size: 28px; /* تعديل: تكبير حجم خط الاقتباسات */
                 letter-spacing: 0px;
-                min-height: 110px;
+                min-height: 80px;
                 line-height: 200%; /* تعديل: زيادة المسافة بين الأسطر */
                 padding-bottom: 25px; /* تعديل: تقليل المسافة تحت الاقتباس */
-                background: url(https://static.tumblr.com/8cspwwp/d7wp3fo9i/bg.png);
-                background-repeat: no-repeat;
+                /* إصلاح: استخدام pseudo-element للتحكم بحجم علامة الاقتباس */
+                position: relative;
+                padding-right: 80px;
+            }
+
+            /* علامة الاقتباس للـ npf_quote */
+            .posts .header-posts .npf_quote::before {
+                content: '\201C';
+                position: absolute;
+                right: 0;
+                top: -10px;
+                font-size: 140px;
+                line-height: 1;
+                color: rgba(200, 180, 150, 0.25);
+                font-family: Georgia, 'Times New Roman', serif;
+                pointer-events: none;
             }
 
             .posts .header-posts .npf_quote + p {
@@ -1614,6 +1649,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 .navigation .nav-social .social-icons {
                     justify-content: center;
+                }
+
+                /* إصلاح: تباعد الكلمات على الجوال */
+                .quote,
+                .header-posts,
+                .header-posts p,
+                .posts .header-posts .npf_quote {
+                    text-align: right !important;
+                    word-spacing: normal;
                 }
             }
             
