@@ -270,13 +270,16 @@ document.addEventListener("DOMContentLoaded", function () {
         <style type="text/css">
             html { -webkit-font-smoothing: antialiased; }
             body {
-                color: {color:Body Text};
+                color: #666666; /* تعديل: لون أفتح يريح العين */
                 margin: 0;
                 font-family: {select:Google Font};
                 font-size: 17px;
-                line-height:2.0em;
+                line-height: 2.2em; /* تعديل: زيادة المسافة بين الأسطر */
                 direction: rtl;
                 text-align: right;
+                /* تعديل: خلفية بتدرج خفيف لإعطاء عمق */
+                background: linear-gradient(135deg, #fff8ec 0%, #fef6e8 50%, #fff9ef 100%);
+                background-attachment: fixed;
             }
             
             /* RTL: keep numerals/URLs readable when needed */
@@ -288,6 +291,9 @@ document.addEventListener("DOMContentLoaded", function () {
             .post-date-ar {
                 direction: rtl;
                 unicode-bidi: plaintext;
+                /* تعديل: تمييز التاريخ بلون وخط عريض */
+                color: #891C04;
+                font-weight: 600;
             }
 
             input,
@@ -494,6 +500,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
                 -moz-box-sizing: border-box; /* Firefox, other Gecko */
                 box-sizing: border-box; /* Opera/IE 8+ */
+                /* تعديل: ظل خفيف تحت صورة الهيدر لإعطاء عمق */
+                -webkit-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                -moz-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             }
             
                .myelement {
@@ -524,7 +534,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .wrapper {
                 max-width:{select:Page Width}!important;
                 margin: 0 auto;
-                padding: 60px 60px 0;
+                padding: 70px 70px 0; /* تعديل: زيادة المساحة البيضاء حول المحتوى */
                 background: #fff8ec;
                 position: relative;
                 z-index: 3;
@@ -961,7 +971,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .posts {
                 border-bottom: 2px solid {color:Dividers};
                 padding-bottom: 30px;
-                margin-bottom: 60px;
+                margin-bottom: 70px; /* تعديل: زيادة المسافة بين التدوينات */
                 font-size: 19px;
             }
 
@@ -1008,21 +1018,21 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             .quote {
-                font-size: 25px;
+                font-size: 28px; /* تعديل: تكبير حجم خط الاقتباسات */
                 letter-spacing: 0px;
                 min-height: 110px;
-                line-height: 180%;
-                padding-bottom: 50px;
+                line-height: 200%; /* تعديل: زيادة المسافة بين الأسطر */
+                padding-bottom: 25px; /* تعديل: تقليل المسافة تحت الاقتباس */
                 background: url(https://static.tumblr.com/8cspwwp/d7wp3fo9i/bg.png);
                 background-repeat: no-repeat;
             }
 
             .posts .header-posts .npf_quote {
-                font-size: 25px;
+                font-size: 28px; /* تعديل: تكبير حجم خط الاقتباسات */
                 letter-spacing: 0px;
                 min-height: 110px;
-                line-height: 180%;
-                padding-bottom: 50px;
+                line-height: 200%; /* تعديل: زيادة المسافة بين الأسطر */
+                padding-bottom: 25px; /* تعديل: تقليل المسافة تحت الاقتباس */
                 background: url(https://static.tumblr.com/8cspwwp/d7wp3fo9i/bg.png);
                 background-repeat: no-repeat;
             }
@@ -1039,7 +1049,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .posts .header-posts .npf_quote + p:before {
-                content: "— ";
+                content: "- "; /* تعديل: شرطة قصيرة بدلاً من الطويلة */
             }
 
             #quoteSource h4 {
@@ -1080,9 +1090,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 font-size:11px;
                 color: {color:Post Bottom};
                 text-transform: uppercase;
-                padding-top: 40px;
-                --icon: 18px;
-                --hit: 36px;
+                padding-top: 20px; /* تعديل: تقليل المسافة فوق التاريخ */
+                --icon: 22px; /* تعديل: تكبير أيقونات التفاعل */
+                --hit: 42px; /* تعديل: تكبير منطقة النقر للأيقونات */
                 --gap: 10px;
                 display: flex;
                 align-items: center;
@@ -1812,7 +1822,7 @@ document.addEventListener("DOMContentLoaded", function () {
                   
                     {block:Quote}
                         <div class="quote">{Quote}</div>
-                        {block:Source}<div id="quoteSource"><h4>— {Source}</h4></div>{/block:Source}
+                        {block:Source}<div id="quoteSource"><h4>- {Source}</h4></div>{/block:Source}
                     {/block:Quote}      
                   
                     {block:Chat}
