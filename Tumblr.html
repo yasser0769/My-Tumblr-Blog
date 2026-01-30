@@ -629,6 +629,334 @@ document.addEventListener("DOMContentLoaded", function () {
                 padding-inline-end: 0;
             }
 
+            /* ===== SITE HEADER STYLES ===== */
+            .site-header {
+                background: #fff8ec;
+                border-bottom: 1px solid #e8dcc8;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                direction: rtl;
+            }
+
+            .header-container {
+                max-width: {select:Page Width};
+                margin: 0 auto;
+                padding: 12px 30px;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                box-sizing: border-box;
+            }
+
+            /* عنوان المدونة */
+            .header-brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                flex-shrink: 0;
+            }
+
+            .brand-avatar img {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                display: block;
+            }
+
+            .brand-title {
+                font-family: {TitleFont};
+                font-size: 18px;
+                font-weight: 700;
+                color: #891C04;
+                text-decoration: none;
+                white-space: nowrap;
+            }
+
+            .brand-title:hover {
+                color: #553000;
+            }
+
+            /* الروابط الرئيسية */
+            .header-nav {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .nav-main {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .nav-main li a {
+                display: block;
+                padding: 8px 14px;
+                color: #891C04;
+                text-decoration: none;
+                font-size: 14px;
+                font-weight: 500;
+                border-radius: 6px;
+                transition: background 0.2s, color 0.2s;
+            }
+
+            .nav-main li a:hover {
+                background: rgba(137, 28, 4, 0.08);
+                color: #553000;
+            }
+
+            /* زر المزيد والقائمة المنسدلة */
+            .dropdown {
+                position: relative;
+            }
+
+            .dropdown-toggle {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding: 8px 14px;
+                background: transparent;
+                border: 1px solid #d4c4a8;
+                border-radius: 6px;
+                color: #891C04;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                font-family: inherit;
+                transition: background 0.2s, border-color 0.2s;
+            }
+
+            .dropdown-toggle:hover {
+                background: rgba(137, 28, 4, 0.05);
+                border-color: #891C04;
+            }
+
+            .dropdown-icon {
+                font-size: 10px;
+                transition: transform 0.2s;
+            }
+
+            .dropdown.open .dropdown-icon {
+                transform: rotate(180deg);
+            }
+
+            .dropdown-menu {
+                position: absolute;
+                top: calc(100% + 8px);
+                left: 0;
+                min-width: 200px;
+                background: #fff;
+                border: 1px solid #e8dcc8;
+                border-radius: 8px;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(-10px);
+                transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+                z-index: 100;
+            }
+
+            .dropdown.open .dropdown-menu {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
+            }
+
+            .dropdown-links {
+                list-style: none;
+                margin: 0;
+                padding: 8px 0;
+                border-bottom: 1px solid #e8dcc8;
+            }
+
+            .dropdown-links li a {
+                display: block;
+                padding: 10px 16px;
+                color: #553000;
+                text-decoration: none;
+                font-size: 14px;
+                transition: background 0.2s;
+            }
+
+            .dropdown-links li a:hover {
+                background: #fff8ec;
+                color: #891C04;
+            }
+
+            .dropdown-social {
+                padding: 12px 16px;
+            }
+
+            .dropdown-social-title {
+                display: block;
+                font-size: 12px;
+                color: #888;
+                margin-bottom: 10px;
+                font-weight: 500;
+            }
+
+            .dropdown-social-icons {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                gap: 12px;
+            }
+
+            .dropdown-social-icons li a {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 32px;
+                height: 32px;
+                background: #f5efe6;
+                border-radius: 50%;
+                color: #891C04;
+                font-size: 14px;
+                transition: background 0.2s, transform 0.2s;
+            }
+
+            .dropdown-social-icons li a:hover {
+                background: #891C04;
+                color: #fff;
+                transform: scale(1.1);
+            }
+
+            /* زر القائمة للجوال */
+            .mobile-menu-toggle {
+                display: none;
+                padding: 8px 12px;
+                background: transparent;
+                border: 1px solid #d4c4a8;
+                border-radius: 6px;
+                cursor: pointer;
+                margin-right: auto;
+                margin-left: 0;
+            }
+
+            .hamburger-icon {
+                font-size: 20px;
+                color: #891C04;
+                line-height: 1;
+            }
+
+            /* قائمة الجوال */
+            .mobile-menu {
+                display: none;
+                background: #fff;
+                border-top: 1px solid #e8dcc8;
+                padding: 16px;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease, padding 0.3s ease;
+            }
+
+            .mobile-menu.open {
+                max-height: 500px;
+                padding: 16px;
+            }
+
+            .mobile-menu-links {
+                list-style: none;
+                margin: 0 0 16px 0;
+                padding: 0;
+            }
+
+            .mobile-menu-links li a {
+                display: block;
+                padding: 12px 0;
+                color: #891C04;
+                text-decoration: none;
+                font-size: 15px;
+                font-weight: 500;
+                border-bottom: 1px solid #f0e8dc;
+            }
+
+            .mobile-menu-links li:last-child a {
+                border-bottom: none;
+            }
+
+            .mobile-menu-links li a:hover {
+                color: #553000;
+            }
+
+            .mobile-menu-social {
+                padding-top: 12px;
+                border-top: 1px solid #e8dcc8;
+            }
+
+            .mobile-social-title {
+                display: block;
+                font-size: 13px;
+                color: #888;
+                margin-bottom: 12px;
+                font-weight: 500;
+            }
+
+            .mobile-social-icons {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                gap: 12px;
+            }
+
+            .mobile-social-icons li a {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                background: #f5efe6;
+                border-radius: 50%;
+                color: #891C04;
+                font-size: 16px;
+                transition: background 0.2s;
+            }
+
+            .mobile-social-icons li a:hover {
+                background: #891C04;
+                color: #fff;
+            }
+
+            /* استجابة الجوال */
+            @media screen and (max-width: 768px) {
+                .header-container {
+                    padding: 10px 15px;
+                }
+
+                .header-nav {
+                    display: none;
+                }
+
+                .mobile-menu-toggle {
+                    display: block;
+                }
+
+                .mobile-menu {
+                    display: block;
+                }
+
+                .mobile-menu[hidden] {
+                    display: none;
+                }
+
+                .brand-title {
+                    font-size: 16px;
+                }
+            }
+
+            /* إخفاء العناصر القديمة */
+            .above-head,
+            .nav-wrap,
+            .navigation {
+                display: none !important;
+            }
+            /* ===== END SITE HEADER STYLES ===== */
 
             .posts {
                 border-bottom: 2px solid {color:Dividers};
@@ -1302,58 +1630,83 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     <div class="big-background {block:IfBackgroundSolidColor}bg-color{/block:IfBackgroundSolidColor}"></div>
-<div class="above-head">
-    <div class="nav-wrap">
-        {block:ShowAvatar}
-            <div class="avatar">
-                <a href="/">
-                    <img src="{PortraitURL-48}" class="{AvatarShape}" alt="{Title}">
-                </a>
-            </div>
-        {/block:ShowAvatar}
-            <div class="navigation">
-                <ul>
-                    <li><a href="{BlogURL}" class="home-link">الرئيسية</a></li>
-                    <li><a href="/WhoAmI" class="home-link">من أنا</a></li>
-                    {block:HasPages}
-                        {block:Pages}<li><a href="{URL}" class="home-link">{Label}</a></li>{/block:Pages}
-                    {/block:HasPages}
-                    {block:AskEnabled}<li><a href="/ask" class="home-link">
-                        اسألني
-                    </a></li>{/block:AskEnabled}
-                    {block:IfShowArchive}<li><a href="/archive" class="home-link">
-                        الإرشيف
-                    </a></li>{/block:IfShowArchive}
-                    <li><a href="/random" class="home-link">
-                        عشوائي
-                    </a></li>
-                    <li><a href="/submit" class="home-link">
-                        شاركني التدوين
-                    </a></li>
-                    <li class="nav-social">
-                        <ul class="social-icons">
-                            <li>
-                                <a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X">
-                                    <i class="fa-brands fa-x-twitter"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{text:Instagram URL}" target="_blank" rel="noopener" aria-label="Instagram">
-                                    <i class="fa-brands fa-instagram"></i>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{text:SnapChat URL}" target="_blank" rel="noopener" aria-label="Snapchat">
-                                    <i class="fa-brands fa-snapchat"></i>
-                                </a>
-                            </li>
+<!-- ===== HEADER START ===== -->
+<header class="site-header">
+    <div class="header-container">
+        <!-- عنوان المدونة -->
+        <div class="header-brand">
+            {block:ShowAvatar}
+            <a href="/" class="brand-avatar">
+                <img src="{PortraitURL-48}" class="{AvatarShape}" alt="{Title}">
+            </a>
+            {/block:ShowAvatar}
+            <a href="/" class="brand-title">مدونة ياسر الشهري</a>
+        </div>
+
+        <!-- الروابط الرئيسية (دسكتوب) -->
+        <nav class="header-nav" aria-label="التنقل الرئيسي">
+            <ul class="nav-main">
+                <li><a href="/">الرئيسية</a></li>
+                <li><a href="/archive">الأرشيف</a></li>
+                <li><a href="/WhoAmI">من أنا</a></li>
+            </ul>
+
+            <!-- زر المزيد + القائمة المنسدلة -->
+            <div class="dropdown">
+                <button type="button" class="dropdown-toggle" id="moreMenuBtn" aria-expanded="false" aria-controls="moreMenu">
+                    المزيد <i class="fa-solid fa-chevron-down dropdown-icon"></i>
+                </button>
+                <div class="dropdown-menu" id="moreMenu" role="menu" aria-labelledby="moreMenuBtn">
+                    <ul class="dropdown-links">
+                        {block:AskEnabled}<li><a href="/ask" role="menuitem">اسألني</a></li>{/block:AskEnabled}
+                        <li><a href="/random" role="menuitem">عشوائي</a></li>
+                        <li><a href="/submit" role="menuitem">شاركني التدوين</a></li>
+                        {block:HasPages}
+                            {block:Pages}<li><a href="{URL}" role="menuitem">{Label}</a></li>{/block:Pages}
+                        {/block:HasPages}
+                    </ul>
+                    <div class="dropdown-social">
+                        <span class="dropdown-social-title">تابعني</span>
+                        <ul class="dropdown-social-icons">
+                            <li><a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a></li>
+                            <li><a href="{text:Instagram URL}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
+                            <li><a href="{text:SnapChat URL}" target="_blank" rel="noopener" aria-label="Snapchat"><i class="fa-brands fa-snapchat"></i></a></li>
                         </ul>
-                    </li>
-                </ul>
+                    </div>
+                </div>
             </div>
-        <div class="clearfix"></div>
+        </nav>
+
+        <!-- زر القائمة للجوال -->
+        <button type="button" class="mobile-menu-toggle" id="mobileMenuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="فتح القائمة">
+            <span class="hamburger-icon">☰</span>
+        </button>
     </div>
-</div>
+
+    <!-- قائمة الجوال -->
+    <nav class="mobile-menu" id="mobileMenu" aria-label="قائمة الجوال" hidden>
+        <ul class="mobile-menu-links">
+            <li><a href="/">الرئيسية</a></li>
+            <li><a href="/archive">الأرشيف</a></li>
+            <li><a href="/WhoAmI">من أنا</a></li>
+            {block:AskEnabled}<li><a href="/ask">اسألني</a></li>{/block:AskEnabled}
+            <li><a href="/random">عشوائي</a></li>
+            <li><a href="/submit">شاركني التدوين</a></li>
+            {block:HasPages}
+                {block:Pages}<li><a href="{URL}">{Label}</a></li>{/block:Pages}
+            {/block:HasPages}
+        </ul>
+        <div class="mobile-menu-social">
+            <span class="mobile-social-title">تابعني</span>
+            <ul class="mobile-social-icons">
+                <li><a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a></li>
+                <li><a href="{text:Instagram URL}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
+                <li><a href="{text:SnapChat URL}" target="_blank" rel="noopener" aria-label="Snapchat"><i class="fa-brands fa-snapchat"></i></a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+<!-- ===== HEADER END ===== -->
 <div class="offcanvas-overlay" hidden></div>
 
 {block:IndexPage} 
@@ -1712,6 +2065,122 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+<!-- ===== HEADER MENU SCRIPTS ===== -->
+<script>
+(function() {
+    'use strict';
+
+    // عناصر القائمة المنسدلة (دسكتوب)
+    var dropdown = document.querySelector('.dropdown');
+    var dropdownBtn = document.getElementById('moreMenuBtn');
+    var dropdownMenu = document.getElementById('moreMenu');
+
+    // عناصر قائمة الجوال
+    var mobileBtn = document.getElementById('mobileMenuBtn');
+    var mobileMenu = document.getElementById('mobileMenu');
+
+    // فتح/إغلاق القائمة المنسدلة
+    function toggleDropdown() {
+        var isOpen = dropdown.classList.contains('open');
+        if (isOpen) {
+            closeDropdown();
+        } else {
+            openDropdown();
+        }
+    }
+
+    function openDropdown() {
+        dropdown.classList.add('open');
+        dropdownBtn.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeDropdown() {
+        dropdown.classList.remove('open');
+        dropdownBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    // فتح/إغلاق قائمة الجوال
+    function toggleMobileMenu() {
+        var isOpen = mobileMenu.classList.contains('open');
+        if (isOpen) {
+            closeMobileMenu();
+        } else {
+            openMobileMenu();
+        }
+    }
+
+    function openMobileMenu() {
+        mobileMenu.removeAttribute('hidden');
+        // تأخير بسيط للسماح بتطبيق الأنيميشن
+        setTimeout(function() {
+            mobileMenu.classList.add('open');
+        }, 10);
+        mobileBtn.setAttribute('aria-expanded', 'true');
+        mobileBtn.querySelector('.hamburger-icon').textContent = '✕';
+    }
+
+    function closeMobileMenu() {
+        mobileMenu.classList.remove('open');
+        mobileBtn.setAttribute('aria-expanded', 'false');
+        mobileBtn.querySelector('.hamburger-icon').textContent = '☰';
+        // إخفاء بعد انتهاء الأنيميشن
+        setTimeout(function() {
+            if (!mobileMenu.classList.contains('open')) {
+                mobileMenu.setAttribute('hidden', '');
+            }
+        }, 300);
+    }
+
+    // إغلاق كل القوائم
+    function closeAllMenus() {
+        closeDropdown();
+        closeMobileMenu();
+    }
+
+    // أحداث النقر
+    if (dropdownBtn) {
+        dropdownBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleDropdown();
+        });
+    }
+
+    if (mobileBtn) {
+        mobileBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleMobileMenu();
+        });
+    }
+
+    // إغلاق عند النقر خارج القائمة
+    document.addEventListener('click', function(e) {
+        // إغلاق القائمة المنسدلة
+        if (dropdown && !dropdown.contains(e.target)) {
+            closeDropdown();
+        }
+        // إغلاق قائمة الجوال عند النقر خارجها
+        if (mobileMenu && mobileBtn && !mobileMenu.contains(e.target) && !mobileBtn.contains(e.target)) {
+            closeMobileMenu();
+        }
+    });
+
+    // إغلاق عند الضغط على ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAllMenus();
+        }
+    });
+
+    // إغلاق قائمة الجوال عند تغيير حجم الشاشة
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            closeMobileMenu();
+        }
+    });
+})();
+</script>
+<!-- ===== END HEADER MENU SCRIPTS ===== -->
 
 </body>
 </html>
