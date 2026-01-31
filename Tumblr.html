@@ -1808,7 +1808,131 @@ document.addEventListener("DOMContentLoaded", function () {
                     word-spacing: normal;
                 }
             }
-            
+
+            /* ===== Custom CSS - Yasser ===== */
+            :root { --yasser-font: 'Handicrafts', sans-serif; }
+            body, h1, h2, h3, h4, h5, h6, p, li, a,
+            .npf_quote, .navigation li a { font-family: var(--yasser-font) !important; }
+
+            /* اخفِ رابط "View post" أينما جاء داخل الاقتباسات */
+            blockquote a[title="View post" i] {
+              display: none !important;
+            }
+
+            /* ===== Date + notes spacing fix ===== */
+            .meta .date-notes{
+              display: inline-flex;
+              align-items: center;
+              gap: 10px;
+            }
+
+            /* ===== Mobile Nav Centering ===== */
+            @media (max-width: 600px) {
+
+              .above-head .nav-wrap {
+                width: 100%;
+                padding: 14px 12px;
+                text-align: center;
+              }
+
+              .above-head .navigation > ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                gap: 10px 18px;
+                margin: 0;
+                padding: 0;
+                list-style: none;
+              }
+
+              .above-head .navigation > ul > li {
+                display: flex;
+                justify-content: center;
+              }
+
+              .above-head .navigation > ul > li > a {
+                display: inline-block;
+                white-space: nowrap;
+                text-align: center;
+                font-size: 16px;
+              }
+
+              .above-head .navigation > ul > li.nav-social {
+                width: 100%;
+                margin-top: 6px;
+              }
+
+              .above-head .navigation .social-icons {
+                display: flex;
+                justify-content: center;
+                gap: 18px;
+                padding: 0;
+                margin: 0;
+                list-style: none;
+              }
+            }
+
+            html, body {
+              width: 100%;
+              max-width: 100%;
+              overflow-x: hidden;
+            }
+
+            .above-head,
+            .nav-wrap,
+            .navigation {
+              width: 100%;
+              max-width: 100%;
+              overflow-x: hidden;
+              box-sizing: border-box;
+            }
+
+            @media (max-width: 600px) {
+
+              .above-head {
+                padding: 0;
+              }
+
+              .nav-wrap {
+                width: 100%;
+                padding: 14px 12px;
+                box-sizing: border-box;
+              }
+
+              .navigation > ul {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: center;
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                box-sizing: border-box;
+              }
+
+              .navigation > ul > li {
+                margin: 6px 12px;
+                white-space: nowrap;
+              }
+
+              .navigation > ul > li.nav-social {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                margin-top: 8px;
+              }
+
+              .navigation .social-icons {
+                display: flex;
+                gap: 18px;
+                padding: 0;
+                margin: 0;
+                list-style: none;
+              }
+            }
+            /* ===== End Custom CSS ===== */
+
             {CustomCSS}
         </style>
         
