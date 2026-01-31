@@ -2002,27 +2002,33 @@ document.addEventListener("DOMContentLoaded", function () {
                إصلاح قائمة المشاركة والتفاعلات للجوال
                ======================================== */
 
-            /* قائمة المشاركة - تظهر داخل الشاشة */
+            /* قائمة المشاركة - فوق الزر مع سهم يشير للزر */
             @media screen and (max-width: 768px) {
                 .share-control .pop-menu,
                 .pop-menu.share-menu,
                 .pop-menu.share-menu.south,
                 div.pop-menu {
-                    position: fixed !important;
-                    bottom: auto !important;
-                    top: 50% !important;
-                    left: 50% !important;
+                    position: absolute !important;
+                    bottom: 100% !important;
+                    margin-bottom: 12px !important;
+                    top: auto !important;
+
+                    /* المربع يبدأ من اليسار */
+                    left: 0 !important;
                     right: auto !important;
-                    transform: translate(-50%, -50%) !important;
+                    transform: none !important;
+
+                    /* ألغِ أي توسيط قديم */
                     inset-inline-start: unset !important;
                     inset-inline-end: unset !important;
+
                     z-index: 99999 !important;
-                    width: 200px !important;
-                    min-width: 200px !important;
+                    width: 160px !important;
+                    min-width: 160px !important;
                     background: #fff !important;
-                    border-radius: 12px !important;
-                    box-shadow: 0 10px 40px rgba(0,0,0,0.3) !important;
-                    padding: 10px 0 !important;
+                    border-radius: 10px !important;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.2) !important;
+                    padding: 8px 0 !important;
                 }
 
                 .pop-menu ul {
@@ -2041,12 +2047,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 .pop-menu ul li a,
                 .pop-menu ul li a.share-item {
                     display: block !important;
-                    padding: 14px 20px !important;
-                    text-align: center !important;
+                    padding: 12px 16px !important;
+                    text-align: right !important;
                     color: #333 !important;
-                    font-size: 16px !important;
+                    font-size: 14px !important;
                     text-decoration: none !important;
-                    border-bottom: 1px solid #eee !important;
+                    border-bottom: 1px solid #f0f0f0 !important;
                 }
 
                 .pop-menu ul li:last-child a {
@@ -2054,11 +2060,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 .pop-menu ul li a:hover {
-                    background: #f5f5f5 !important;
+                    background: #f8f8f8 !important;
+                }
+
+                /* السهم يشير للزر */
+                .pop-menu::after {
+                    content: '' !important;
+                    display: block !important;
+                    position: absolute !important;
+                    bottom: -8px !important;
+                    left: 15px !important;
+                    right: auto !important;
+                    transform: rotate(45deg) !important;
+                    width: 14px !important;
+                    height: 14px !important;
+                    background: #fff !important;
+                    box-shadow: 2px 2px 4px rgba(0,0,0,0.1) !important;
+                    z-index: -1 !important;
                 }
 
                 /* إخفاء السهم القديم */
-                .pop-menu::after,
                 .pop-menu.south li:last-child::after {
                     display: none !important;
                 }
