@@ -1021,6 +1021,38 @@ document.addEventListener("DOMContentLoaded", function () {
                     max-width: 100%;
                     padding: 0 10px;
                 }
+
+                /* إصلاح: التاريخ ومرات التفاعل في سطر واحد */
+                .meta {
+                    flex-wrap: nowrap;
+                    gap: 6px;
+                    font-size: 10px;
+                    --icon: 16px;
+                    --hit: 30px;
+                    padding-top: 15px;
+                }
+
+                .like,
+                .reblog,
+                .share-control {
+                    width: 30px !important;
+                    height: 30px !important;
+                }
+
+                .date {
+                    margin-inline-end: 8px;
+                }
+
+                .date-notes {
+                    white-space: nowrap;
+                    font-size: 10px;
+                }
+
+                /* تقليل padding الـ wrapper على الجوال */
+                .wrapper {
+                    padding-left: 15px;
+                    padding-right: 15px;
+                }
             }
 
             /* إخفاء العناصر القديمة */
@@ -1497,20 +1529,20 @@ document.addEventListener("DOMContentLoaded", function () {
             .pop-menu.south li:last-child:after {
                 content: '';
                 position: absolute;
-                /* إصلاح: توسيط السهم في RTL */
+                /* إصلاح: توسيط السهم بشكل صحيح */
                 left: 50%;
                 right: auto;
                 inset-inline-start: unset;
                 bottom: -6px;
                 height: 12px;
                 width: 12px;
-                margin-left: -6px;
+                margin-left: 0;
                 background-color: #fff;
-                -webkit-transform: rotate(45deg);
-                -moz-transform: rotate(45deg);
-                -ms-transform: rotate(45deg);
-                -o-transform: rotate(45deg);
-                transform: rotate(45deg);
+                -webkit-transform: translateX(-50%) rotate(45deg);
+                -moz-transform: translateX(-50%) rotate(45deg);
+                -ms-transform: translateX(-50%) rotate(45deg);
+                -o-transform: translateX(-50%) rotate(45deg);
+                transform: translateX(-50%) rotate(45deg);
                 -webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
                 -moz-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
                 box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
