@@ -699,6 +699,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 display: flex;
                 align-items: center;
                 gap: 8px;
+                /* إصلاح: توزيع العناصر بين اليمين واليسار */
+                flex: 1;
+                justify-content: space-between;
             }
 
             .nav-main {
@@ -1179,8 +1182,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 color: {color:Post Bottom};
                 text-transform: uppercase;
                 padding-top: 20px; /* تعديل: تقليل المسافة فوق التاريخ */
-                --icon: 22px; /* تعديل: تكبير أيقونات التفاعل */
-                --hit: 42px; /* تعديل: تكبير منطقة النقر للأيقونات */
+                --icon: 18px; /* إصلاح: تصغير الأيقونات لتتناسق مع أيقونة المشاركة */
+                --hit: 36px; /* إصلاح: تصغير منطقة النقر */
                 --gap: 10px;
                 display: flex;
                 align-items: center;
@@ -1449,7 +1452,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 border-radius: 4px;
                 position: absolute;
                 bottom: 35px;
-                inset-inline-start: 50%;
+                /* إصلاح: توسيط القائمة تحت الزر في RTL */
+                left: 50%;
+                right: auto;
+                inset-inline-start: unset;
+                inset-inline-end: unset;
                 transform: translateX(-50%);
                 width: 146px;
                 -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
@@ -1490,11 +1497,14 @@ document.addEventListener("DOMContentLoaded", function () {
             .pop-menu.south li:last-child:after {
                 content: '';
                 position: absolute;
-                inset-inline-start: 50%;
+                /* إصلاح: توسيط السهم في RTL */
+                left: 50%;
+                right: auto;
+                inset-inline-start: unset;
                 bottom: -6px;
                 height: 12px;
                 width: 12px;
-                margin-inline-start: -6px;
+                margin-left: -6px;
                 background-color: #fff;
                 -webkit-transform: rotate(45deg);
                 -moz-transform: rotate(45deg);
