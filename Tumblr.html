@@ -970,29 +970,43 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 /* علامة الاقتباس: نقلها للوسط فوق النص */
                 .quote {
-                    padding-right: 0;
-                    padding-top: 90px;
-                    text-align: center;
+                    padding-right: 15px !important;
+                    padding-left: 15px !important;
+                    padding-top: 80px;
+                    margin-left: 0;
+                    margin-right: 0;
+                    width: 100%;
+                    box-sizing: border-box;
+                    text-align: right;
+                    position: relative;
                 }
 
                 .quote::before {
-                    right: 50%;
-                    transform: translateX(50%);
+                    right: auto !important; /* إلغاء right القديم */
+                    left: 50%;
+                    transform: translateX(-50%);
                     top: 0;
-                    font-size: 120px;
+                    font-size: 100px;
                 }
 
                 .posts .header-posts .npf_quote {
-                    padding-right: 0;
-                    padding-top: 90px;
-                    text-align: center;
+                    padding-right: 15px !important;
+                    padding-left: 15px !important;
+                    padding-top: 80px;
+                    margin-left: 0;
+                    margin-right: 0;
+                    width: 100%;
+                    box-sizing: border-box;
+                    text-align: right;
+                    position: relative;
                 }
 
                 .posts .header-posts .npf_quote::before {
-                    right: 50%;
-                    transform: translateX(50%);
+                    right: auto !important;
+                    left: 50%;
+                    transform: translateX(-50%);
                     top: 0;
-                    font-size: 120px;
+                    font-size: 100px;
                 }
 
                 /* عبارة الوصف: سطر واحد */
