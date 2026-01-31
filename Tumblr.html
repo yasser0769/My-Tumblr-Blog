@@ -1301,27 +1301,58 @@ document.addEventListener("DOMContentLoaded", function () {
                 color: {color:Footer Text Color};
             }
 
+            /* === إعادة تنسيق قسم التفاعلات/الملاحظات === */
             .notes {
                 border-bottom: 3px solid {color:Dividers};
                 list-style: none;
                 padding: 20px 0 50px 0;
                 margin: 30px 0 0 0;
-                line-height: 2.2em;
+                direction: rtl;
+                text-align: right;
              }
-             
+
              .notes li {
-                margin: 0;
+                margin: 0 0 12px 0;
                 float: none;
-                display: block;
-                padding: 0;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 6px;
+                padding: 8px 0;
+                line-height: 1.8;
+                border-bottom: 1px solid #f0e8dc;
+             }
+
+             .notes li:last-child {
+                border-bottom: none;
              }
 
              .notes .avatar {
+                flex-shrink: 0;
                 margin: 0;
-                margin-inline-end: 5px;
-                position: relative;
-                top: 5px;
+                margin-inline-end: 8px;
                 width: auto;
+             }
+
+             .notes .avatar img {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                vertical-align: middle;
+                display: block;
+             }
+
+             /* الأسماء الإنجليزية */
+             .notes a {
+                unicode-bidi: isolate;
+                direction: ltr;
+                display: inline;
+             }
+
+             /* النص العربي */
+             .notes li .action,
+             .notes li span {
+                unicode-bidi: plaintext;
              }
 
              .notes blockquote {
@@ -1329,6 +1360,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 margin-inline-start: 35px;
                 padding-inline-start: 10px;
                 border-inline-start: 3px solid {color:Body Text};
+                width: 100%;
+             }
+
+             /* الجوال */
+             @media screen and (max-width: 768px) {
+                .notes li {
+                    font-size: 13px;
+                    padding: 10px 0;
+                    gap: 5px;
+                }
+
+                .notes .avatar img {
+                    width: 20px;
+                    height: 20px;
+                }
              }
             a.source {
                 color: {AccentColor};
@@ -1478,81 +1524,88 @@ document.addEventListener("DOMContentLoaded", function () {
                 height: var(--icon);
             }
             .pop-menu {
+                /* === إعادة كتابة قائمة المشاركة من الصفر === */
                 display: none;
-                opacity: 0;
-                background: #fff;
-                border-radius: 4px;
                 position: absolute;
-                bottom: 35px;
-                /* إصلاح: توسيط القائمة تحت الزر في RTL */
-                left: 50%;
-                right: auto;
-                inset-inline-start: unset;
-                inset-inline-end: unset;
-                transform: translateX(-50%);
-                width: 146px;
-                -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
-                -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
-                box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
-                z-index: 10;
-                -webkit-transition: all .3s;
-                -moz-transition: all .3s;
-                transition: all .3s;
+
+                /* الموقع: فوق الزر */
+                bottom: 100% !important;
+                margin-bottom: 10px;
+
+                /* التوسيط */
+                left: 50% !important;
+                right: auto !important;
+                transform: translateX(-50%) !important;
+
+                /* إلغاء أي قيم RTL متعارضة */
+                inset-inline-start: unset !important;
+                inset-inline-end: unset !important;
+
+                /* الشكل */
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+                min-width: 160px;
+                width: auto;
+                z-index: 9999;
+                padding: 8px 0;
+                opacity: 1;
             }
+
             .pop-menu ul {
-                float: none;  
-                margin: 0 !important;  
-                padding: 0;
                 list-style: none;
+                margin: 0 !important;
+                padding: 0;
             }
+
             .pop-menu ul li {
-                border-left: none;
-                float: none;
-                height: auto;
-                position: relative;
-                width: auto;
-            }
-            .pop-menu ul li a {
-                background: none;
-                color: #444;
-                display: block;
-                font-size: 14px;
-                height: auto;
                 margin: 0;
-                padding: 10px;
-                padding-inline-start: 40px;
-                padding-inline-end: 10px;
+                padding: 0;
+                float: none;
+                display: block;
                 position: relative;
-                text-decoration: none;
-                width: auto;
             }
-            .pop-menu.south li:last-child:after {
+
+            .pop-menu ul li a {
+                display: block;
+                padding: 10px 20px;
+                color: #444;
+                text-decoration: none;
+                text-align: right;
+                white-space: nowrap;
+                font-size: 14px;
+                background: none;
+            }
+
+            .pop-menu ul li a:hover {
+                background: #f5f5f5;
+            }
+
+            /* السهم المثلث تحت القائمة */
+            .pop-menu::after {
                 content: '';
                 position: absolute;
-                /* إصلاح: توسيط السهم بشكل صحيح */
+                bottom: -7px;
                 left: 50%;
-                right: auto;
-                inset-inline-start: unset;
-                bottom: -6px;
-                height: 12px;
-                width: 12px;
-                margin-left: 0;
-                background-color: #fff;
-                -webkit-transform: translateX(-50%) rotate(45deg);
-                -moz-transform: translateX(-50%) rotate(45deg);
-                -ms-transform: translateX(-50%) rotate(45deg);
-                -o-transform: translateX(-50%) rotate(45deg);
                 transform: translateX(-50%) rotate(45deg);
-                -webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
-                -moz-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
-                box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
+                width: 14px;
+                height: 14px;
+                background: #fff;
+                box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.08);
+                z-index: -1;
             }
+
+            /* إخفاء السهم القديم */
+            .pop-menu.south li:last-child:after {
+                display: none !important;
+            }
+
             a.share-item:hover {
-                background: rgba(199, 199, 255, 0.24);
+                background: #f5f5f5;
             }
+
             .share-control.pop .pop-menu {
-                display: block!important;
-                opacity: 1;
+                display: block !important;
             }
              .pagination {
                 text-align: center;
