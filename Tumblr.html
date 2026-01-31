@@ -1053,6 +1053,72 @@ document.addEventListener("DOMContentLoaded", function () {
                     padding-left: 15px;
                     padding-right: 15px;
                 }
+
+                /* === إصلاح قائمة المشاركة على الجوال === */
+                .pop-menu {
+                    /* إبقاء القائمة داخل الشاشة */
+                    left: auto !important;
+                    right: 0 !important;
+                    transform: none !important;
+                    min-width: 140px;
+                    width: auto;
+                }
+
+                .pop-menu::after {
+                    /* نقل السهم ليشير للزر */
+                    left: auto;
+                    right: 15px;
+                    transform: rotate(45deg);
+                }
+
+                /* === إصلاح قسم التفاعلات (Notes) على الجوال === */
+                .notes {
+                    padding: 15px 0 30px 0;
+                    direction: rtl;
+                    text-align: right;
+                }
+
+                .notes li {
+                    display: block !important;
+                    padding: 12px 0;
+                    margin: 0;
+                    border-bottom: 1px solid #f0e8dc;
+                    line-height: 1.8;
+                    font-size: 14px;
+                    text-align: right;
+                    word-wrap: break-word;
+                    overflow-wrap: break-word;
+                }
+
+                .notes li:last-child {
+                    border-bottom: none;
+                }
+
+                .notes .avatar {
+                    display: inline-block;
+                    vertical-align: middle;
+                    margin-inline-end: 8px;
+                }
+
+                .notes .avatar img {
+                    width: 28px;
+                    height: 28px;
+                    border-radius: 50%;
+                }
+
+                .notes a {
+                    color: #891C04;
+                    font-weight: 600;
+                    unicode-bidi: isolate;
+                    direction: ltr;
+                    display: inline;
+                }
+
+                .notes li .action,
+                .notes li span:not(.avatar) {
+                    display: inline;
+                    unicode-bidi: plaintext;
+                }
             }
 
             /* إخفاء العناصر القديمة */
