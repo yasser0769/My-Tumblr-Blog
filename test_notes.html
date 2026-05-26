@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار التعليقات</title>
+    <style>
+        ol.notes {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            direction: rtl;
+            text-align: right;
+        }
+
+        li.note {
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #eee;
+            line-height: 1.6;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        li.note.like {
+            background: #f9f9f9;
+        }
+
+        li.note.reblog {
+            background: #fff;
+        }
+
+        .avatar_frame {
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .avatar {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: block;
+        }
+
+        .action, .source_tumblelog {
+            display: inline;
+            flex: 1;
+        }
+
+        .clear {
+            clear: both;
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+            word-break: break-word;
+        }
+
+        a:hover {
+            color: #0074d9;
+        }
+
+        /* للجوال */
+        @media (max-width: 768px) {
+            li.note {
+                padding: 10px 12px;
+                margin-bottom: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <ol class="notes">
+        <!-- START NOTES -->
+        <li class="note like tumblelog_m2000na without_commentary">
+            <a rel="nofollow" class="avatar_frame" target="_blank" href="https://m2000na.tumblr.com/ " title="بَتَلة🌱!. ">
+                <img src="https://64.media.tumblr.com/66459add3344998332cd0e382efaf37f/88dca9283f3420fc-14/s16x16u_c1/8faa8ca73a158506715c48c36aaf6786922481ae.pnj " class="avatar " alt="">
+            </a>
+            <span class="action">
+                <a rel="nofollow" href="https://m2000na.tumblr.com/ " title="بَتَلة🌱!.">m2000na</a> أعجبه هذا المنشور
+            </span>
+            <div class="clear"></div>
+        </li>
+        <li class="note reblog tumblelog_yasser1410 original_post without_commentary">
+            <a rel="nofollow" class="avatar_frame" target="_blank" href="https://yasser1410.tumblr.com/ " title="مدونة ياسر الشهري">
+                <img src="https://64.media.tumblr.com/9e5834889bc1852a3bf7dfde93ae7b66/4d43ef45484ac751-b4/s16x16u_c1/522bf98ce01e6492bd2552551cb8025d654b185e.jpg " class="avatar " alt="">
+            </a>
+            <a rel="nofollow" href="https://yasser1410.tumblr.com/ " class="source_tumblelog" title="مدونة ياسر الشهري">yasser1410</a> أرسله إلى 
+            <a rel="nofollow" href="https://yasser1410.tumblr.com/ " class="source_tumblelog" title="مدونة ياسر الشهري">yasser1410</a>
+            <div class="clear"></div>
+        </li>
+        <!-- END NOTES -->
+    </ol>
+</body>
+</html>
