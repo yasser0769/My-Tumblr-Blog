@@ -9,6 +9,9 @@
     Version: 1.0.0
 -->
 
+    <link rel="preload" href="https://static.tumblr.com/8cspwwp/gmItgiiy0/thmanyahserifdisplay-bold.otf" as="font" type="font/otf" crossorigin>
+    <link rel="preload" href="https://static.tumblr.com/8cspwwp/ax0tgiizn/thmanyahseriftext-regular.otf" as="font" type="font/otf" crossorigin>
+    <link rel="preload" href="https://static.tumblr.com/8cspwwp/javtgij0l/thmanyahsans-medium.otf" as="font" type="font/otf" crossorigin>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -469,7 +472,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 direction: rtl;
                 unicode-bidi: plaintext;
                 /* إصلاح: لون رمادي مثل أيقونات التفاعل */
-                color: #B3B3B3;
+                color: #7e715b;
                 font-weight: 500;
                 transition: color 0.2s ease;
             }
@@ -498,24 +501,39 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             #myBtn {
-                display: none;
                 position: fixed;
-                bottom: 20px;
-                inset-inline-start: 20px; /* RTL-safe positioning */
+                bottom: 24px;
+                inset-inline-start: 24px; /* RTL-safe positioning */
                 z-index: 99;
                 border: none;
                 outline: none;
-                background-color: #553000;
+                background-color: #891C04;
                 color: white;
                 cursor: pointer;
-                padding: 10px;
-                border-radius: 100%;
-                transition: 1s;
-}
+                width: 48px;
+                height: 48px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                box-shadow: 0 4px 12px rgba(137, 28, 4, 0.25);
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(10px);
+                transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s, opacity 0.3s, visibility 0.3s;
+            }
 
-#myBtn:hover {
-    background-color: #555;
-}
+            #myBtn.show {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
+            }
+
+            #myBtn.show:hover {
+                background-color: #553000;
+                transform: translateY(-4px);
+                box-shadow: 0 6px 16px rgba(85, 48, 0, 0.35);
+            }
 
             h1, h2, h3, h4, h5 {
                 font-weight: 400;
@@ -825,12 +843,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
             /* ===== SITE HEADER STYLES ===== */
             .site-header {
-                background: #fff8ec;
-                border-bottom: 1px solid #e8dcc8;
+                background: rgba(255, 248, 236, 0.85);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border-bottom: 1px solid rgba(137, 28, 4, 0.12);
                 position: sticky;
                 top: 0;
                 z-index: 1000;
                 direction: rtl;
+                transition: background 0.3s, border-color 0.3s;
             }
 
             .header-container {
@@ -946,10 +967,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 top: calc(100% + 8px);
                 left: 0;
                 min-width: 200px;
-                background: #fff;
-                border: 1px solid #e8dcc8;
+                background: rgba(255, 255, 255, 0.9);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                border: 1px solid rgba(137, 28, 4, 0.15);
                 border-radius: 8px;
-                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 8px 32px rgba(137, 28, 4, 0.08);
                 opacity: 0;
                 visibility: hidden;
                 transform: translateY(-10px);
@@ -1044,8 +1067,10 @@ document.addEventListener("DOMContentLoaded", function () {
             /* قائمة الجوال */
             .mobile-menu {
                 display: none;
-                background: #fff;
-                border-top: 1px solid #e8dcc8;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border-top: 1px solid rgba(137, 28, 4, 0.12);
                 padding: 16px;
                 max-height: 0;
                 overflow: hidden;
@@ -1466,7 +1491,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .meta a {
-                color: {color:Post Bottom};
+                color: #7e715b;
             }
 
             .tags {
@@ -1474,7 +1499,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             .tags a {
-                color: {color:Post Bottom};
+                color: #7e715b;
             }
             
             .tags ul {
@@ -1832,10 +1857,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 bottom: 100% !important;
                 margin-bottom: 10px;
 
-                /* التوسيط */
-                left: 50% !important;
+                /* محاذاة المربع مع بداية إطار أيقونة المشاركة */
+                left: 0 !important;
                 right: auto !important;
-                transform: translateX(-50%) !important;
+                transform: none !important;
 
                 /* إلغاء أي قيم RTL متعارضة */
                 inset-inline-start: unset !important;
@@ -2202,12 +2227,26 @@ document.addEventListener("DOMContentLoaded", function () {
               border: 0 !important;
               list-style: none !important;
               margin: 34px 0 0 !important;
-              padding: 0 0 18px !important;
+              padding: 0 8px 18px !important;
               direction: rtl !important;
               text-align: right !important;
-              overflow: visible !important;
+              max-height: 380px;
+              overflow-y: auto !important;
               font-size: 15px !important;
               line-height: 1.75 !important;
+              scrollbar-width: thin;
+              scrollbar-color: rgba(137, 28, 4, 0.3) transparent;
+            }
+
+            /* Custom scrollbar for webkit browsers */
+            ol.notes::-webkit-scrollbar,
+            .notes::-webkit-scrollbar {
+              width: 6px;
+            }
+            ol.notes::-webkit-scrollbar-thumb,
+            .notes::-webkit-scrollbar-thumb {
+              background-color: rgba(137, 28, 4, 0.3);
+              border-radius: 3px;
             }
 
             ol.notes li,
@@ -2514,9 +2553,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     display: block !important;
                     position: absolute !important;
                     bottom: -8px !important;
-                    left: 15px !important;
+                    left: 50% !important;
                     right: auto !important;
-                    transform: rotate(45deg) !important;
+                    transform: translateX(-50%) rotate(45deg) !important;
                     width: 14px !important;
                     height: 14px !important;
                     background: #fff !important;
@@ -2534,19 +2573,33 @@ document.addEventListener("DOMContentLoaded", function () {
                إصلاح قسم التفاعلات (Notes) للجوال
                ======================================== */
             @media screen and (max-width: 768px) {
-                ol.notes,
-                .notes {
-                    direction: rtl !important;
-                    text-align: right !important;
-                    padding: 0 0 12px !important;
-                    margin: 20px 0 0 0 !important;
-                    list-style: none !important;
-                    width: 100% !important;
-                    overflow: visible !important;
-                    border: 0 !important;
-                    font-size: 13px !important;
-                    line-height: 1.8 !important;
-                }
+                 ol.notes,
+                 .notes {
+                     direction: rtl !important;
+                     text-align: right !important;
+                     padding: 0 8px 12px !important;
+                     margin: 20px 0 0 0 !important;
+                     list-style: none !important;
+                     width: 100% !important;
+                     max-height: 320px;
+                     overflow-y: auto !important;
+                     border: 0 !important;
+                     font-size: 13px !important;
+                     line-height: 1.8 !important;
+                     scrollbar-width: thin;
+                     scrollbar-color: rgba(137, 28, 4, 0.3) transparent;
+                 }
+
+                 /* Custom scrollbar for webkit browsers */
+                 ol.notes::-webkit-scrollbar,
+                 .notes::-webkit-scrollbar {
+                     width: 6px;
+                 }
+                 ol.notes::-webkit-scrollbar-thumb,
+                 .notes::-webkit-scrollbar-thumb {
+                     background-color: rgba(137, 28, 4, 0.3);
+                     border-radius: 3px;
+                 }
 
                 ol.notes li,
                 .notes li,
@@ -2626,28 +2679,129 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
+            /* ===== Custom Audio Player Styles ===== */
+            .custom-audio-player {
+                background: rgba(255, 248, 236, 0.6);
+                border: 1px solid rgba(137, 28, 4, 0.15);
+                border-radius: 12px;
+                padding: 14px 18px;
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                direction: rtl;
+                box-sizing: border-box;
+                margin-bottom: 20px;
+                box-shadow: 0 4px 15px rgba(137, 28, 4, 0.03);
+            }
+
+            .custom-audio-player .play-pause-btn {
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                background-color: #891C04;
+                color: #fff;
+                border: none;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                transition: background-color 0.2s, transform 0.2s;
+                box-shadow: 0 4px 12px rgba(137, 28, 4, 0.2);
+            }
+
+            .custom-audio-player .play-pause-btn:hover {
+                background-color: #553000;
+                transform: scale(1.05);
+            }
+
+            .custom-audio-player .play-pause-btn svg {
+                display: block;
+            }
+
+            .audio-progress-container {
+                flex-grow: 1;
+                cursor: pointer;
+                padding: 8px 0;
+            }
+
+            .audio-progress-bar {
+                height: 6px;
+                background: #e8dcc8;
+                border-radius: 3px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .audio-progress-fill {
+                height: 100%;
+                width: 0%;
+                background: #891C04;
+                border-radius: 3px;
+                transition: width 0.1s linear;
+            }
+
+            .audio-time {
+                font-family: var(--font-ui), sans-serif !important;
+                font-size: 13px;
+                color: #7e715b;
+                font-weight: 600;
+                min-width: 45px;
+                text-align: center;
+            }
+
+            /* تنسيق مشغل تمبلر الافتراضي */
+            .tumblr-native-audio {
+                background: rgba(255, 248, 236, 0.6);
+                border: 1px solid rgba(137, 28, 4, 0.15);
+                border-radius: 12px;
+                padding: 12px;
+                margin-bottom: 20px;
+                display: flex;
+                justify-content: center;
+            }
+
+            .tumblr-native-audio iframe {
+                border-radius: 8px;
+            }
+
+            /* تنسيق التضمينات الخارجية */
+            .audio-embed-container {
+                background: rgba(255, 248, 236, 0.6);
+                border: 1px solid rgba(137, 28, 4, 0.15);
+                border-radius: 12px;
+                padding: 12px;
+                margin-bottom: 20px;
+                overflow: hidden;
+            }
+
+            .audio-embed-container iframe {
+                border-radius: 8px;
+                width: 100%;
+                display: block;
+            }
+
+            .audio-caption {
+                margin-top: 10px;
+                font-size: 15px;
+                color: #555;
+                line-height: 1.6;
+            }
+
             /* ===== End Custom CSS ===== */
 
             {CustomCSS}
         </style>
         
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-59765096-1', 'auto');
-  ga('send', 'pageview');
-
-</script>
+<!-- Google Analytics: تمت إزالة الكود القديم (Universal Analytics / UA-) المتوقف منذ يوليو 2023.
+     للتفعيل لاحقاً، استخدم gtag.js مع معرّف GA4 (G-XXXXXXX). -->
 
 
     </head>
     
 <body>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
 
 
     <div class="big-background {block:IfBackgroundSolidColor}bg-color{/block:IfBackgroundSolidColor}"></div>
@@ -2658,7 +2812,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="header-brand">
             {block:ShowAvatar}
             <a href="/" class="brand-avatar">
-                <img src="{PortraitURL-48}" class="{AvatarShape}" alt="{Title}">
+                <img src="{PortraitURL-48}" class="{AvatarShape}" alt="{Title}" decoding="async">
             </a>
             {/block:ShowAvatar}
             <a href="/" class="brand-title">مدونة ياسر الشهري</a>
@@ -2675,7 +2829,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <!-- زر المزيد + القائمة المنسدلة -->
             <div class="dropdown">
                 <button type="button" class="dropdown-toggle" id="moreMenuBtn" aria-expanded="false" aria-controls="moreMenu">
-                    المزيد <i class="fa-solid fa-chevron-down dropdown-icon"></i>
+                    المزيد <svg class="dropdown-icon" viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-inline-start: 4px; transition:transform 0.2s;"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </button>
                 <div class="dropdown-menu" id="moreMenu" role="menu" aria-labelledby="moreMenuBtn">
                     <ul class="dropdown-links">
@@ -2689,9 +2843,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="dropdown-social">
                         <span class="dropdown-social-title">تابعني</span>
                         <ul class="dropdown-social-icons">
-                            <li><a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a></li>
-                            <li><a href="{text:Instagram URL}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
-                            <li><a href="{text:SnapChat URL}" target="_blank" rel="noopener" aria-label="Snapchat"><i class="fa-brands fa-snapchat"></i></a></li>
+                            <li><a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" style="display:block;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a></li>
+                            <li><a href="{text:Instagram URL}" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a></li>
+                            <li><a href="{text:SnapChat URL}" target="_blank" rel="noopener" aria-label="Snapchat"><svg viewBox="0 0 512 512" width="15" height="15" fill="currentColor" style="display:block;"><path d="M496,347.21a190.31,190.31,0,0,1-32.79-5.31c-27.28-6.63-54.84-24.26-68.12-52.43-6.9-14.63-2.64-18.59,11.86-24,14.18-5.27,29.8-7.72,36.86-23,5.89-12.76,1.13-27.76-10.41-35.49-15.71-10.53-30.35-.21-46.62,2.07,3.73-46.66,8.66-88.57-22.67-127.73C338.14,48.86,297.34,32,256.29,32S174.43,48.86,148.48,81.33c-31.38,39.26-26.4,81.18-22.67,127.92C109.49,207,95,196.46,79.18,207.07c-14.72,9.85-17,29.76-5.44,43s31.64,9.5,43.45,20.6c6.49,6.09,3.49,12.61-.35,20.14-14.48,28.4-39.26,45.74-69.84,51.56-4,.76-22.31,2.87-31,3.65,0,9.28.52,16.78,1.63,21.73,2.94,13.06,12.32,23.58,23.69,30.1C52.5,404.25,76.8,404.28,83,413.36c3,4.48,1.76,12.28,5.33,17.38a23.8,23.8,0,0,0,15.37,9.75c18.61,3.61,37.32-7.2,56.42-2.1,14.85,3.95,26.52,15.87,39.26,24,15.51,9.85,32.34,16.42,50.83,17.49,38.1,2.21,59.93-18.91,90.58-36.42,19.5-11.14,38.15-3.86,58.88-2.68,20.1,1.15,23.53-9.25,29.62-24.88a27.37,27.37,0,0,0,1.54-4.85,10.52,10.52,0,0,0,2.28-1.47c2-1.57,10.55-2.34,12.76-2.86,10.28-2.44,20.34-5.15,29.17-11.2,11.31-7.76,17.65-18.5,19.58-32.64A93.73,93.73,0,0,0,496,347.21ZM208,128c8.84,0,16,10.74,16,24s-7.16,24-16,24-16-10.74-16-24S199.16,128,208,128Zm103.62,77.7c-15.25,15-35,23.3-55.62,23.3a78.37,78.37,0,0,1-55.66-23.34,8,8,0,0,1,11.32-11.32A62.46,62.46,0,0,0,256,213c16.39,0,32.15-6.64,44.39-18.7a8,8,0,0,1,11.23,11.4ZM304,176c-8.84,0-16-10.75-16-24s7.16-24,16-24,16,10.75,16,24S312.84,176,304,176Z"/></svg></a></li>
                         </ul>
                     </div>
                 </div>
@@ -2720,9 +2874,9 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="mobile-menu-social">
             <span class="mobile-social-title">تابعني</span>
             <ul class="mobile-social-icons">
-                <li><a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a></li>
-                <li><a href="{text:Instagram URL}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
-                <li><a href="{text:SnapChat URL}" target="_blank" rel="noopener" aria-label="Snapchat"><i class="fa-brands fa-snapchat"></i></a></li>
+                <li><a href="{text:Twitter URL}" target="_blank" rel="noopener" aria-label="X"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="display:block;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a></li>
+                <li><a href="{text:Instagram URL}" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a></li>
+                <li><a href="{text:SnapChat URL}" target="_blank" rel="noopener" aria-label="Snapchat"><svg viewBox="0 0 512 512" width="16" height="16" fill="currentColor" style="display:block;"><path d="M496,347.21a190.31,190.31,0,0,1-32.79-5.31c-27.28-6.63-54.84-24.26-68.12-52.43-6.9-14.63-2.64-18.59,11.86-24,14.18-5.27,29.8-7.72,36.86-23,5.89-12.76,1.13-27.76-10.41-35.49-15.71-10.53-30.35-.21-46.62,2.07,3.73-46.66,8.66-88.57-22.67-127.73C338.14,48.86,297.34,32,256.29,32S174.43,48.86,148.48,81.33c-31.38,39.26-26.4,81.18-22.67,127.92C109.49,207,95,196.46,79.18,207.07c-14.72,9.85-17,29.76-5.44,43s31.64,9.5,43.45,20.6c6.49,6.09,3.49,12.61-.35,20.14-14.48,28.4-39.26,45.74-69.84,51.56-4,.76-22.31,2.87-31,3.65,0,9.28.52,16.78,1.63,21.73,2.94,13.06,12.32,23.58,23.69,30.1C52.5,404.25,76.8,404.28,83,413.36c3,4.48,1.76,12.28,5.33,17.38a23.8,23.8,0,0,0,15.37,9.75c18.61,3.61,37.32-7.2,56.42-2.1,14.85,3.95,26.52,15.87,39.26,24,15.51,9.85,32.34,16.42,50.83,17.49,38.1,2.21,59.93-18.91,90.58-36.42,19.5-11.14,38.15-3.86,58.88-2.68,20.1,1.15,23.53-9.25,29.62-24.88a27.37,27.37,0,0,0,1.54-4.85,10.52,10.52,0,0,0,2.28-1.47c2-1.57,10.55-2.34,12.76-2.86,10.28-2.44,20.34-5.15,29.17-11.2,11.31-7.76,17.65-18.5,19.58-32.64A93.73,93.73,0,0,0,496,347.21ZM208,128c8.84,0,16,10.74,16,24s-7.16,24-16,24-16-10.74-16-24S199.16,128,208,128Zm103.62,77.7c-15.25,15-35,23.3-55.62,23.3a78.37,78.37,0,0,1-55.66-23.34,8,8,0,0,1,11.32-11.32A62.46,62.46,0,0,0,256,213c16.39,0,32.15-6.64,44.39-18.7a8,8,0,0,1,11.23,11.4ZM304,176c-8.84,0-16-10.75-16-24s7.16-24,16-24,16,10.75,16,24S312.84,176,304,176Z"/></svg></a></li>
             </ul>
         </div>
     </nav>
@@ -2781,21 +2935,44 @@ document.addEventListener("DOMContentLoaded", function () {
                 {/block:Photoset}
                
                 {block:Audio}
-                {block:AudioEmbed} 
-<div class="audioembed">
-{AudioEmbed-640}</div>
-  <div class="has-caption perma-photo {block:caption}in-caption normal-caption{/block:caption} {block:HasTags}in-caption{/block:HasTags}">
-             {caption}
-         </div>
-         {/block:AudioEmbed} 
-         
-         
-                    <div class="audioleft">
-                        <div class="audioc">
-                            <div class="audio">{AudioPlayerBlack}</div>
-                        </div>
+                    <div class="audio-container">
+                        {block:AudioPlayer}
+                            {block:RawAudioURL}
+                                <!-- مشغل مخصص بالكامل للملفات المرفوعة مباشرة -->
+                                <div class="custom-audio-player">
+                                    <audio src="{RawAudioURL}" preload="metadata"></audio>
+                                    <button type="button" class="play-pause-btn" aria-label="تشغيل">
+                                        <svg class="play-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                        <svg class="pause-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                                    </button>
+                                    <div class="audio-progress-container">
+                                        <div class="audio-progress-bar">
+                                            <div class="audio-progress-fill"></div>
+                                        </div>
+                                    </div>
+                                    <span class="audio-time">00:00</span>
+                                </div>
+                            {/block:RawAudioURL}
+
+                            {block:IfNotRawAudioURL}
+                                <!-- المشغل الافتراضي لتمبلر مغلف بحاوية منسقة -->
+                                <div class="tumblr-native-audio">
+                                    {AudioPlayer}
+                                </div>
+                            {/block:IfNotRawAudioURL}
+                        {/block:AudioPlayer}
+
+                        {block:AudioEmbed}
+                            <!-- تضمينات المنصات الخارجية مغلفة بحاوية منسقة -->
+                            <div class="audio-embed-container">
+                                {AudioEmbed}
+                            </div>
+                        {/block:AudioEmbed}
+
+                        {block:Caption}
+                            <div class="audio-caption">{Caption}</div>
+                        {/block:Caption}
                     </div>
-                    <div class="audioClear"></div>
                 {/block:Audio}
              
                 {block:Video}
@@ -2876,7 +3053,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     
                     <div class="share-control">
                         <a class="share selector icon-export"></a>
-                        <div class="pop-menu share-menu south" id="share_236">
+                        <div class="pop-menu share-menu south">
                             <ul>
                                 <li><a href="https://www.facebook.com/sharer/sharer.php?u={Permalink}" class="share-item facebook" target="_blank">
                                     فيس بوك
@@ -2893,33 +3070,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 {/block:PostNotes}
 
             </div>
-                    
-                    {block:Ifpostedthis}
-            <div id="Ifpostedthis">
-                <script type="text/javascript"
-                src="posted this={text:Flickr Username}">
-                </script>
-            </div>
-        {/block:Ifpostedthis}
-                    
-                    
-                    
+
                     <script type="text/javascript">
                     // When the user scrolls down 20px from the top of the document, show the button
-window.onscroll = function() {scrollFunction()};
+window.addEventListener('scroll', scrollFunction);
 
 function scrollFunction() {
-    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-        document.getElementById("myBtn").style.display = "block";
+    var btn = document.getElementById("myBtn");
+    if (!btn) return;
+    if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+        btn.classList.add("show");
     } else {
-        document.getElementById("myBtn").style.display = "none";
+        btn.classList.remove("show");
     }
-}
-
-// When the user clicks on the button, scroll to the top of the document
-function topFunction() {
-    document.body.scrollTop = 0; // For Chrome, Safari and Opera 
-    document.documentElement.scrollTop = 0; // For IE and Firefox
 }
 </script>
 
@@ -2952,14 +3115,29 @@ function topFunction() {
 {text:Title down}
         </div>
     </div>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
     <script>
-        $( ".share-control" ).click(function() {
-          $( this ).toggleClass( "pop" );
+        document.querySelectorAll('.share-control').forEach(function(el) {
+            el.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var wasOpen = this.classList.contains('pop');
+                document.querySelectorAll('.share-control.pop').forEach(function(openEl) {
+                    openEl.classList.remove('pop');
+                });
+                if (!wasOpen) {
+                    this.classList.add('pop');
+                }
+            });
+        });
+        document.addEventListener('click', function(e) {
+            document.querySelectorAll('.share-control.pop').forEach(function(el) {
+                if (!el.contains(e.target)) {
+                    el.classList.remove('pop');
+                }
+            });
         });
     </script>
     
-<button id="myBtn"><i class="fa-solid fa-arrow-up" aria-hidden="true" style="font-size:290%;"></i></button>
+<button id="myBtn" aria-label="العودة لأعلى الصفحة"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button>
 
 
 <script>
@@ -2993,43 +3171,10 @@ function scrollToTop() {
 // ربط الأيقونة بدالة التمرير
 document.getElementById('myBtn').addEventListener('click', scrollToTop);
 
-const menuToggle = document.querySelector('.menu-toggle');
-const offcanvas = document.getElementById('site-menu');
+// إخفاء overlay عند الضغط على Escape (عنصر .offcanvas-overlay موجود في HTML،
+// لكن عناصر .menu-toggle / #site-menu / .menu-close لم تعد مستخدمة فحُذف منطقها).
 const overlay = document.querySelector('.offcanvas-overlay');
-const menuClose = document.querySelector('.menu-close');
-
-if (menuToggle && offcanvas && overlay && menuClose) {
-    function openMenu() {
-        document.body.classList.add('menu-open');
-        menuToggle.setAttribute('aria-expanded', 'true');
-        offcanvas.setAttribute('aria-hidden', 'false');
-        overlay.hidden = false;
-    }
-
-    function closeMenu() {
-        document.body.classList.remove('menu-open');
-        menuToggle.setAttribute('aria-expanded', 'false');
-        offcanvas.setAttribute('aria-hidden', 'true');
-        overlay.hidden = true;
-    }
-
-    menuToggle.addEventListener('click', () => {
-        if (document.body.classList.contains('menu-open')) {
-            closeMenu();
-        } else {
-            openMenu();
-        }
-    });
-
-    menuClose.addEventListener('click', closeMenu);
-    overlay.addEventListener('click', closeMenu);
-
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && document.body.classList.contains('menu-open')) {
-            closeMenu();
-        }
-    });
-} else if (overlay) {
+if (overlay) {
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
             overlay.hidden = true;
@@ -3091,6 +3236,89 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         el.textContent = day + ' ' + arabicMonth + ' ' + year + ' م';
+    });
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".custom-audio-player").forEach(function(player) {
+        var audio = player.querySelector("audio");
+        var btn = player.querySelector(".play-pause-btn");
+        var playIcon = btn.querySelector(".play-icon");
+        var pauseIcon = btn.querySelector(".pause-icon");
+        var progressContainer = player.querySelector(".audio-progress-container");
+        var progressFill = player.querySelector(".audio-progress-fill");
+        var timeDisplay = player.querySelector(".audio-time");
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "00:00";
+            var m = Math.floor(seconds / 60);
+            var s = Math.floor(seconds % 60);
+            return (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+        }
+
+        btn.addEventListener("click", function() {
+            if (audio.paused) {
+                // Pause all other audio players on the page first
+                document.querySelectorAll(".custom-audio-player audio").forEach(function(otherAudio) {
+                    if (otherAudio !== audio && !otherAudio.paused) {
+                        otherAudio.pause();
+                        var otherPlayer = otherAudio.closest(".custom-audio-player");
+                        if (otherPlayer) {
+                            otherPlayer.querySelector(".play-icon").style.display = "block";
+                            otherPlayer.querySelector(".pause-icon").style.display = "none";
+                        }
+                    }
+                });
+
+                audio.play();
+                playIcon.style.display = "none";
+                pauseIcon.style.display = "block";
+            } else {
+                audio.pause();
+                playIcon.style.display = "block";
+                pauseIcon.style.display = "none";
+            }
+        });
+
+        audio.addEventListener("timeupdate", function() {
+            if (!audio.duration) return;
+            var pct = (audio.currentTime / audio.duration) * 100;
+            progressFill.style.width = pct + "%";
+            timeDisplay.textContent = formatTime(audio.currentTime);
+        });
+
+        audio.addEventListener("loadedmetadata", function() {
+            timeDisplay.textContent = formatTime(audio.duration);
+        });
+
+        // Dynamic duration check if metadata was cached or preloaded differently
+        if (audio.readyState >= 1) {
+            timeDisplay.textContent = formatTime(audio.duration);
+        }
+
+        audio.addEventListener("ended", function() {
+            playIcon.style.display = "block";
+            pauseIcon.style.display = "none";
+            progressFill.style.width = "0%";
+            audio.currentTime = 0;
+            timeDisplay.textContent = formatTime(audio.duration || 0);
+        });
+
+        progressContainer.addEventListener("click", function(e) {
+            var rect = progressContainer.getBoundingClientRect();
+            // RTL calculation: click position from the right side of progress bar
+            var clickFromRight = rect.right - e.clientX;
+            var width = rect.width;
+            var pct = clickFromRight / width;
+            if (pct < 0) pct = 0;
+            if (pct > 1) pct = 1;
+
+            if (audio.duration) {
+                audio.currentTime = pct * audio.duration;
+            }
+        });
     });
 });
 </script>
