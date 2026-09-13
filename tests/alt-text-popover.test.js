@@ -78,9 +78,29 @@ class FakeElement {
   }
 
   appendChild(child) {
+    if (child.parentElement) {
+      child.parentElement.children = child.parentElement.children.filter((existingChild) => existingChild !== child);
+    }
     child.parentElement = this;
     this.children.push(child);
     return child;
+  }
+
+  insertBefore(newChild, referenceChild) {
+    if (newChild.parentElement) {
+      newChild.parentElement.children = newChild.parentElement.children.filter((existingChild) => existingChild !== newChild);
+    }
+
+    const referenceIndex = this.children.indexOf(referenceChild);
+    newChild.parentElement = this;
+
+    if (referenceIndex === -1) {
+      this.children.push(newChild);
+    } else {
+      this.children.splice(referenceIndex, 0, newChild);
+    }
+
+    return newChild;
   }
 
   remove() {
@@ -127,6 +147,13 @@ class FakeElement {
       .map((part) => part.trim())
       .some((part) => {
         if (part === 'img') return this.tagName === 'IMG';
+        if (/^[a-z]+\./i.test(part)) {
+          const [tagName, ...classNames] = part.split('.');
+          return (
+            this.tagName.toLowerCase() === tagName.toLowerCase() &&
+            classNames.every((classNameToFind) => this.classList.contains(classNameToFind))
+          );
+        }
         if (part.startsWith('.')) {
           return part
             .slice(1)
@@ -167,10 +194,11 @@ class FakeElement {
   }
 }
 
-function createHarness() {
+function createHarness(beforeDomReady) {
   const body = new FakeElement('body');
   const domReadyCallbacks = [];
   const observers = [];
+  const windowListeners = {};
 
   const document = {
     body,
@@ -202,13 +230,19 @@ function createHarness() {
       observe() {}
     },
     document,
+    window: {
+      addEventListener(eventName, callback) {
+        windowListeners[eventName] = callback;
+      },
+    },
   };
 
   vm.runInNewContext(getFirstInlineScript(), context);
   assert.equal(domReadyCallbacks.length, 1);
+  if (beforeDomReady) beforeDomReady(body);
   domReadyCallbacks[0]();
 
-  return { body, document, observers };
+  return { body, document, observers, windowListeners };
 }
 
 function createImageAndPopover(body) {
@@ -227,6 +261,32 @@ function createImageAndPopover(body) {
   closeButton.textContent = 'OK';
 
   return { media, popover };
+}
+
+function createNpfImageAndPopover(body) {
+  const post = body.appendChild(new FakeElement('article', 'posts'));
+  const header = post.appendChild(new FakeElement('div', 'header-posts'));
+  const row = header.appendChild(new FakeElement('div', 'npf_row'));
+  const col = row.appendChild(new FakeElement('div', 'npf_col'));
+  const figure = col.appendChild(new FakeElement('figure', 'tmblr-full'));
+  figure.rect = { top: 10, left: 0, width: 1000, height: 980 };
+
+  const anchor = figure.appendChild(new FakeElement('a', 'post_media_photo_anchor'));
+  const image = anchor.appendChild(new FakeElement('img', 'post_media_photo image'));
+  image.rect = { top: 10, left: 230, width: 540, height: 960 };
+
+  const altHelper = figure.appendChild(new FakeElement('span', 'tmblr-alt-text-helper'));
+
+  const popover = body.appendChild(new FakeElement('div', 'popover tutorial alt-text-helper_step'));
+  const title = popover.appendChild(new FakeElement('div', 'title'));
+  const content = popover.appendChild(new FakeElement('div', 'content'));
+  const closeButton = popover.appendChild(new FakeElement('button', 'ok_button'));
+
+  title.textContent = 'Alt text';
+  content.textContent = 'في رحاب المسجد النبوي ليلة 27 من رمضان';
+  closeButton.textContent = 'OK';
+
+  return { figure, anchor, image, altHelper, popover };
 }
 
 function createShareHarness() {
@@ -292,6 +352,43 @@ test('alt text helper renders as a dark overlay on the image with a clear x clos
 
   overlay.querySelector('.alt-text-image-overlay__close').dispatch('click');
   assert.equal(media.querySelector('.alt-text-image-overlay'), null);
+});
+
+test('npf image alt helper is framed with its photo anchor on dom ready', () => {
+  let fixture;
+  createHarness((body) => {
+    fixture = createNpfImageAndPopover(body);
+  });
+
+  const frame = fixture.figure.querySelector('.alt-text-media-frame');
+
+  assert.ok(frame, 'expected an image-sized frame to be created inside the NPF figure');
+  assert.equal(frame.parentElement, fixture.figure);
+  assert.equal(fixture.anchor.parentElement, frame);
+  assert.equal(fixture.altHelper.parentElement, frame);
+  assert.equal(frame.children[0], fixture.anchor);
+  assert.equal(frame.children[1], fixture.altHelper);
+  assert.equal(frame.style.width, '540px');
+});
+
+test('npf alt text overlay is constrained to the image-sized frame', () => {
+  let fixture;
+  const { observers } = createHarness((body) => {
+    fixture = createNpfImageAndPopover(body);
+  });
+
+  observers.at(-1).callback([{ addedNodes: [fixture.popover] }]);
+
+  const frame = fixture.figure.querySelector('.alt-text-media-frame');
+  const overlay = frame.querySelector('.alt-text-image-overlay');
+
+  assert.ok(overlay, 'expected overlay to be added to the image-sized frame');
+  assert.equal(overlay.parentElement, frame);
+  assert.equal(fixture.figure.children.includes(overlay), false);
+  assert.equal(overlay.querySelector('.alt-text-image-overlay__text').textContent, 'في رحاب المسجد النبوي ليلة 27 من رمضان');
+
+  overlay.querySelector('.alt-text-image-overlay__close').dispatch('click');
+  assert.equal(frame.querySelector('.alt-text-image-overlay'), null);
 });
 
 test('opening one share menu closes any previously open share menu', () => {
