@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Local tooling / agent workspace (memory, previews, backups)
+.workbuddy-ai/
+
+# Editors
+.vscode/
+.idea/
+*.swp
