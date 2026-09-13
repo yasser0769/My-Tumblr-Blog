@@ -1470,10 +1470,21 @@ document.addEventListener("DOMContentLoaded", function () {
             .header-posts {
                 font-size: var(--fs-post);
                 letter-spacing: 0px;
-                min-height: 110px;
                 line-height: var(--lh-post);
-                padding-bottom: 50px;
+                /* ملاحظة: كان هنا min-height: 110px + padding-bottom: 50px،
+                   وهما يخصّان التدوينات النصّية فقط. لكن .header-posts موجود
+                   في كل تدوينة (حتى الصور والفيديو والصوت)، فكان يحجز 160px
+                   فراغاً داخل البطاقة. المسافة الآن تُطبَّق عند وجود نصّ فقط. */
+            }
 
+            /* مسافة أسفل النص قبل شريط التفاعلات — للنصّ فقط */
+            .header-posts:has(*) {
+                margin-bottom: 24px;
+            }
+
+            /* حاوية بلا نصّ (تدوينة صورة/فيديو/صوت/سؤال) لا تأخذ مساحة */
+            .header-posts:not(:has(*)) {
+                display: none;
             }
 
             .header-posts p {
@@ -1581,17 +1592,28 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             .tumblr_video_container {
                 max-width: 100%;
-                max-height: 700px;
-                
+                margin-inline: auto;
+                /* ملاحظة: كان هنا max-height: 700px، وهو يقصّ ارتفاع الحاوية
+                   دون تصغير العرض — فينكسر تناسب الفيديو وتبقى مساحة فارغة
+                   كبيرة بين الفيديو والتعليق. النسبة الآن تُحسب في السكربت
+                   أدناه من الأبعاد التي يحقنها تمبلر في style. */
             }
             .media iframe {
                 width: 100%;
-                /* تحجز نسبة 16:9 الشائعة للفيديوهات */
+                /* تحجز نسبة 16:9 الشائعة للفيديوهات المضمّنة (يوتيوب/فيميو) */
                 aspect-ratio: 16 / 9;
                 max-height: min(70vh, 700px);
                 max-width: 100%;
                 margin-inline: auto;
                 display: block;
+            }
+            /* مشغّل فيديو تمبلر: نسبته تأتي من أبعاد الفيديو نفسه، لا من 16:9،
+               وإلا اقتُطع الفيديو الطولي ولم يظهر منه إلا شريط علوي. */
+            .tumblr_video_container.is-ratio-set iframe {
+                aspect-ratio: auto;
+                width: 100%;
+                height: 100%;
+                max-height: none;
             }
             iframe {
                 max-width: 100%;
@@ -2019,6 +2041,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 width: auto;
                 padding: 0px;
                 margin-bottom: 20px;
+             }
+
+             /* المتصفح يطبّق على <figure> هامشاً افتراضياً 1em 40px، وهذا كان:
+                1) يضيّق الصور داخل التدوينات النصّية إلى 224px بدل 304px على
+                   الجوال (خسارة 80px من العرض)،
+                2) يضيف 17px فراغاً أعلى وأسفل الصورة فوق هامش الصورة نفسه. */
+             .posts figure {
+                margin: 0 0 20px;
+             }
+
+             /* مسافة الصورة عن تعليقها (figcaption) — كانت 20px */
+             .posts figure img {
+                margin-bottom: 12px;
              }
 
              .alt-text-media-frame {
@@ -3677,6 +3712,33 @@ function scrollFunction() {
                 }
             });
         });
+    </script>
+
+    <script>
+        /* مشغّل فيديو تمبلر: يحقن أبعاد الفيديو الحقيقية بالبكسل في style
+           الحاوية (مثلاً 700×1244 لفيديو طولي). الحاوية كانت محدودة بـ
+           max-height: 700px، فيُقصّ الارتفاع ويبقى فراغ كبير. هنا نحوّل
+           الأبعاد إلى نسبة أبعاد حقيقية، ثم نحصر الارتفاع بتقليص العرض لا
+           بارتفاع ثابت، فيظهر الفيديو الطولي كاملاً بلا اقتصاص.
+           (لا يمكن فعل هذا بـ CSS وحدها: النسبة موجودة في style كأبعاد
+           مطلقة، و CSS لا تستطيع تحويلها إلى نسبة.) */
+        (function () {
+            document.querySelectorAll('.tumblr_video_container').forEach(function (box) {
+                var w = parseFloat(box.style.width);
+                var h = parseFloat(box.style.height);
+                if (!w || !h) return;
+
+                var ratio = w / h;
+
+                box.style.aspectRatio = w + ' / ' + h;
+                box.style.width = '100%';
+                box.style.height = 'auto';
+                // سقف للارتفاع مع الحفاظ على النسبة: min(العرض المتاح، 78svh×النسبة)
+                box.style.maxWidth = 'min(100%, calc(78svh * ' + ratio.toFixed(4) + '))';
+                box.style.marginInline = 'auto';
+                box.classList.add('is-ratio-set');
+            });
+        })();
     </script>
     
 <button id="myBtn" aria-label="العودة لأعلى الصفحة"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:block;"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg></button>
