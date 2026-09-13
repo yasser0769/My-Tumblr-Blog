@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
@@ -133,13 +134,99 @@ document.addEventListener("DOMContentLoaded", function () {
     popover.setAttribute('aria-hidden', 'true');
   }
 
+  function getAltTextMediaRoot(image) {
+    return image.closest('.media, figure, .tmblr-full, .npf_row') || image.parentElement;
+  }
+
+  function findAltTextHelperForImage(image) {
+    const mediaRoot = getAltTextMediaRoot(image);
+    if (!mediaRoot || !mediaRoot.querySelector) return null;
+    return mediaRoot.querySelector('.tmblr-alt-text-helper');
+  }
+
+  function syncAltTextMediaFrame(frame, image) {
+    if (!frame || !image || !image.getBoundingClientRect) return;
+
+    const rect = image.getBoundingClientRect();
+    if (rect && rect.width > 0) {
+      frame.style.width = rect.width + 'px';
+    }
+  }
+
+  function prepareAltTextMediaFrameSizing(frame, image) {
+    syncAltTextMediaFrame(frame, image);
+
+    if (frame.dataset.altTextFrameReady === 'true') return;
+    frame.dataset.altTextFrameReady = 'true';
+
+    if (image.addEventListener) {
+      image.addEventListener('load', function() {
+        syncAltTextMediaFrame(frame, image);
+      });
+    }
+
+    if (typeof window !== 'undefined' && window.addEventListener) {
+      window.addEventListener('resize', function() {
+        syncAltTextMediaFrame(frame, image);
+      });
+    }
+  }
+
+  function getOrCreateAltTextMediaFrame(image) {
+    if (!image) return null;
+
+    const existingFrame = image.closest('.alt-text-media-frame');
+    if (existingFrame) {
+      prepareAltTextMediaFrameSizing(existingFrame, image);
+      return existingFrame;
+    }
+
+    const photoAnchor = image.closest('a.post_media_photo_anchor');
+    const frameTarget = photoAnchor && photoAnchor.contains(image) ? photoAnchor : image;
+    const parent = frameTarget.parentElement;
+    if (!parent) return null;
+
+    const frame = document.createElement('div');
+    frame.className = 'alt-text-media-frame';
+    parent.insertBefore(frame, frameTarget);
+    frame.appendChild(frameTarget);
+
+    const helper = findAltTextHelperForImage(image);
+    if (helper && !frame.contains(helper)) {
+      frame.appendChild(helper);
+    }
+
+    prepareAltTextMediaFrameSizing(frame, image);
+    return frame;
+  }
+
+  function initializeAltTextMediaFrames(root) {
+    const scope = root && root.querySelectorAll ? root : document;
+    const images = [];
+
+    if (root && root.matches && root.matches('img')) {
+      images.push(root);
+    }
+
+    if (scope.querySelectorAll) {
+      images.push.apply(images, Array.prototype.slice.call(scope.querySelectorAll('img')));
+    }
+
+    images.forEach((image) => {
+      if (!image.closest || !image.closest('.posts')) return;
+      if (findAltTextHelperForImage(image)) {
+        getOrCreateAltTextMediaFrame(image);
+      }
+    });
+  }
+
   function renderAltTextOverlay(popover) {
     const altText = getAltTextFromPopover(popover);
     const image = findBestImageForPopover(popover);
 
     if (!altText || !image) return false;
 
-    const container = image.closest('.media, figure, .tmblr-full, .npf_row') || image.parentElement;
+    const container = getOrCreateAltTextMediaFrame(image);
     if (!container) return false;
 
     const currentOverlay = container.querySelector('.alt-text-image-overlay');
@@ -267,10 +354,13 @@ document.addEventListener("DOMContentLoaded", function () {
             .querySelectorAll('.popover.tutorial.alt-text-helper_step')
             .forEach(prepareAltTextPopover);
         }
+
+        initializeAltTextMediaFrames(node);
       });
     }
   }
 
+  initializeAltTextMediaFrames(document);
   localizeAltTextHelper();
 
   const altTextObserver = new MutationObserver(localizeAddedAltTextHelpers);
@@ -400,8 +490,8 @@ document.addEventListener("DOMContentLoaded", function () {
             <meta name="text:Spotify URL" content="">
             <meta name="text:SnapChat URL" content="">
             <meta name="text:Title down" content="">
-            <meta name="text:Next" content="أحدث">
-            <meta name="text:Old" content="أقدم">
+            <meta name="text:Next" content="التالي">
+            <meta name="text:Old" content="السابق">
             <meta name="text:NOTES" content="مرات التفاعل">
             <meta name="text:posted this" content=""/>
 
@@ -471,14 +561,13 @@ document.addEventListener("DOMContentLoaded", function () {
             .post-date-ar {
                 direction: rtl;
                 unicode-bidi: plaintext;
-                /* إصلاح: لون رمادي مثل أيقونات التفاعل */
-                color: #7e715b;
+                color: inherit;
                 font-weight: 500;
                 transition: color 0.2s ease;
             }
 
             /* لون مميز عند التحويم */
-            .date a:hover .post-date-ar,
+            .post-timeline-date a:hover .post-date-ar,
             a:hover .post-date-ar {
                 color: #891C04;
             }
@@ -886,10 +975,37 @@ document.addEventListener("DOMContentLoaded", function () {
                 color: #891C04;
                 text-decoration: none;
                 white-space: nowrap;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
             }
 
             .brand-title:hover {
                 color: #553000;
+            }
+
+            .brand-kicker {
+                font-family: var(--font-ui), sans-serif;
+                font-size: 11px;
+                font-weight: 500;
+                line-height: 1;
+                color: #891C04;
+                background: rgba(137, 28, 4, 0.07);
+                border: 1px solid rgba(137, 28, 4, 0.18);
+                border-radius: 6px;
+                padding: 4px 7px;
+            }
+
+            .brand-name {
+                font-family: var(--font-title), serif;
+                font-size: 18px;
+                font-weight: 700;
+                line-height: 1.2;
+            }
+
+            .brand-title:hover .brand-kicker {
+                background: rgba(85, 48, 0, 0.09);
+                border-color: rgba(85, 48, 0, 0.24);
             }
 
             /* الروابط الرئيسية */
@@ -1171,6 +1287,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     font-size: 16px;
                 }
 
+                .brand-name {
+                    font-size: 16px;
+                }
+
+                .brand-kicker {
+                    font-size: 10px;
+                    padding: 4px 6px;
+                }
+
                 /* ===== تعديلات الجوال فقط ===== */
 
                 /* علامة الاقتباس: نقلها للوسط فوق النص */
@@ -1224,7 +1349,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     padding: 0 10px;
                 }
 
-                /* إصلاح: التاريخ ومرات التفاعل في سطر واحد */
+                /* إصلاح: مرات التفاعل في سطر واحد */
                 .meta {
                     flex-wrap: nowrap;
                     gap: 6px;
@@ -1239,10 +1364,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 .share-control {
                     width: 30px !important;
                     height: 30px !important;
-                }
-
-                .date {
-                    margin-inline-end: 8px;
                 }
 
                 .date-notes {
@@ -1321,6 +1442,23 @@ document.addEventListener("DOMContentLoaded", function () {
                     display: inline;
                     unicode-bidi: plaintext;
                 }
+
+                /* Q&A responsive overrides */
+                .qa-question-box {
+                    padding: 18px;
+                }
+                .qa-question-box::before {
+                    font-size: 110px;
+                    left: 10px;
+                    bottom: -25px;
+                }
+                .qa-question-text {
+                    font-size: 17px;
+                    line-height: 1.7;
+                }
+                .qa-answer-box {
+                    line-height: 1.9;
+                }
             }
 
             /* إخفاء العناصر القديمة */
@@ -1331,11 +1469,83 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             /* ===== END SITE HEADER STYLES ===== */
 
+            .autopagerize_page_element {
+                --timeline-gutter: 48px;
+                --timeline-line-right: 6px;
+                --timeline-line: rgba(137, 28, 4, 0.16);
+                --timeline-dot: #0f5f99;
+                --post-card-bg: #fffaf1;
+                --post-card-border: rgba(137, 28, 4, 0.18);
+                position: relative;
+                padding-right: var(--timeline-gutter);
+            }
+
+            .autopagerize_page_element::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                right: var(--timeline-line-right);
+                bottom: 0;
+                width: 1px;
+                background: var(--timeline-line);
+                pointer-events: none;
+            }
+
             .posts {
-                border-bottom: 2px solid {color:Dividers};
-                padding-bottom: 30px;
-                margin-bottom: 70px; /* تعديل: زيادة المسافة بين التدوينات */
+                position: relative;
+                border: 1px solid var(--post-card-border);
+                border-radius: 12px 0 12px 12px;
+                padding: 28px 26px 24px;
+                margin: 38px 0 70px;
+                background: var(--post-card-bg);
+                box-sizing: border-box;
                 font-size: 19px;
+            }
+
+            .posts::after {
+                content: "";
+                position: absolute;
+                top: -18px;
+                right: calc((var(--timeline-gutter) * -1) + 2px);
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--timeline-dot);
+                box-shadow: 0 0 0 3px #fff8ec;
+            }
+
+            .post-timeline-date {
+                position: absolute;
+                top: -38px;
+                right: -1px;
+                z-index: 2;
+                margin: 0;
+                line-height: 1;
+            }
+
+            .post-timeline-date a {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 126px;
+                min-height: 38px;
+                padding: 7px 16px;
+                box-sizing: border-box;
+                color: #746754;
+                background: var(--post-card-bg);
+                border: 1px solid var(--post-card-border);
+                border-bottom: 0;
+                border-radius: 12px 12px 0 0;
+                font-size: 12px;
+                line-height: 1.85;
+                text-decoration: none;
+                white-space: nowrap;
+            }
+
+            .post-timeline-date a:hover,
+            .post-timeline-date a:focus-visible {
+                color: #891C04;
+                background: #fffdf8;
             }
 
             .header-posts {
@@ -1376,10 +1586,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 color: #553000;
             }
                         
-            .date {
-                margin-inline-end: 20px;
-            }
-            
             .quote {
                 font-size: 28px; /* تعديل: تكبير حجم خط الاقتباسات */
                 letter-spacing: 0px;
@@ -1460,9 +1666,12 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             .media iframe {
                 width: 100%;
-              /* تحجز نسبة 16:9 الشائعة للفيديوهات */
-               aspect-ratio: 16 / 9;
-              /* لو تبغى احتياط: display:block; */
+                /* تحجز نسبة 16:9 الشائعة للفيديوهات */
+                aspect-ratio: 16 / 9;
+                max-height: min(70vh, 700px);
+                max-width: 100%;
+                margin-inline: auto;
+                display: block;
             }
             iframe {
                 max-width: 100%;
@@ -1470,6 +1679,107 @@ document.addEventListener("DOMContentLoaded", function () {
             .chat {
                 list-style: none;
                 padding: 0;
+            }
+
+            /* Q&A / Ask Styles (Arabic Elegant Theme) */
+            .qa-container {
+                margin-bottom: 25px;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .qa-question-box {
+                background: #fdfaf5; /* خلفية بيج دافئة وناعمة */
+                border: 1px solid rgba(137, 28, 4, 0.12); /* إطار ناعم بلون الثيم البني/الأحمر */
+                border-right: 4px solid #891C04; /* حد سميك أيمن يحدد بداية السؤال */
+                border-radius: 12px;
+                padding: 24px;
+                position: relative;
+                overflow: hidden; /* لحصر علامة الاستفهام الكبيرة */
+                box-shadow: 0 4px 15px rgba(137, 28, 4, 0.03);
+            }
+
+            /* علامة الاستفهام الكبيرة كعلامة مائية خفيفة التباين */
+            .qa-question-box::before {
+                content: '؟';
+                position: absolute;
+                left: 15px;
+                bottom: -35px;
+                font-size: 160px;
+                line-height: 1;
+                font-weight: bold;
+                font-family: 'ThmanyahSerifDisplay-Bold', Georgia, 'Times New Roman', serif;
+                color: rgba(200, 180, 150, 0.25); /* لون متناسق خفيف التباين مثل الاقتباس */
+                pointer-events: none;
+                user-select: none;
+            }
+
+            .qa-asker-meta {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 16px;
+                position: relative;
+                z-index: 2; /* فوق الخلفية والعلامة المائية */
+            }
+
+            .qa-asker-avatar {
+                width: 44px;
+                height: 44px;
+                border-radius: 50%;
+                border: 2px solid rgba(137, 28, 4, 0.15);
+                box-shadow: 0 2px 6px rgba(137, 28, 4, 0.08);
+                object-fit: cover;
+            }
+
+            .qa-asker-details {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                line-height: 1.3;
+            }
+
+            .qa-asker-label {
+                font-size: 12px;
+                color: #8c7f6b;
+                font-weight: 500;
+                font-family: 'ThmanyahSans-Medium', sans-serif;
+            }
+
+            .qa-asker-name {
+                font-size: 15px;
+                font-weight: 700;
+                font-family: 'ThmanyahSans-Medium', sans-serif;
+            }
+
+            .qa-asker-name a {
+                color: #891C04;
+                text-decoration: none;
+                transition: color 0.2s ease;
+            }
+
+            .qa-asker-name a:hover {
+                color: #553000;
+            }
+
+            .qa-question-text {
+                font-size: 20px;
+                line-height: 1.8;
+                color: #3d2f2b;
+                font-family: 'ThmanyahSerifDisplay-Bold', {select:Google Font title}, serif;
+                font-weight: bold;
+                position: relative;
+                z-index: 2;
+                margin: 0;
+            }
+
+            .qa-answer-box {
+                padding-inline-start: 12px;
+                border-inline-start: 2px solid rgba(137, 28, 4, 0.08);
+                color: #505050;
+                font-family: 'ThmanyahSerifText-Regular', {select:Google Font}, serif;
+                line-height: 2.1;
             }
             
             .meta {
@@ -1548,25 +1858,66 @@ document.addEventListener("DOMContentLoaded", function () {
                 max-width:{select:Page Width}!important;
                 margin:0 auto;
                 position: relative;
-                padding: 10px 0;
+                padding: 34px 20px 42px;
                 z-index: 3;
-                color: {color:Footer Text Color};
+                color: #8c7f6b;
                 text-align: center;
                 -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
                 -moz-box-sizing: border-box; /* Firefox, other Gecko */
                 box-sizing: border-box; /* Opera/IE 8+ */
             }
+
+            .footer-signature {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 9px;
+                color: #891C04;
+                text-decoration: none;
+            }
+
+            .footer-signature:hover {
+                color: #553000;
+                text-decoration: none;
+            }
+
+            .footer-signature__kicker {
+                font-size: 12px;
+                line-height: 1;
+                color: #891C04;
+                background: rgba(137, 28, 4, 0.07);
+                border: 1px solid rgba(137, 28, 4, 0.18);
+                border-radius: 6px;
+                padding: 5px 8px;
+            }
+
+            .footer-signature__name {
+                font-family: var(--font-title), serif;
+                font-size: 22px;
+                font-weight: 700;
+                line-height: 1.2;
+            }
             
             .footer .copyright {
-                margin: 20px 0 0;
+                margin: 0;
+            }
+
+            .footer-years {
+                margin: 10px 0 0;
+                color: #a99c8a;
+                font-size: 13px;
+                line-height: 1.6;
             }
             
             .footer .info {
-                margin: 5px 0 55px;
+                margin: 6px 0 0;
+                color: #a99c8a;
+                font-size: 13px;
+                line-height: 1.7;
             }
             
             .footer .info a {
-                color: {color:Footer Text Color};
+                color: #891C04;
             }
 
             /* === إعادة تنسيق قسم التفاعلات/الملاحظات === */
@@ -1745,7 +2096,51 @@ document.addEventListener("DOMContentLoaded", function () {
                 padding: 0px;
                 margin-bottom: 20px;
              }
-                        
+
+             .alt-text-media-frame {
+                position: relative;
+                display: block;
+                max-width: 100%;
+                margin-inline: auto;
+                line-height: 0;
+                margin-bottom: 20px;
+             }
+
+             .alt-text-media-frame img {
+                margin-bottom: 0;
+             }
+
+             .alt-text-media-frame .tmblr-alt-text-helper {
+                position: absolute !important;
+                left: 12px !important;
+                bottom: 12px !important;
+                z-index: 18;
+             }
+
+             .posts > .media img,
+             .posts .header-posts figure.tmblr-full img,
+             .posts .header-posts .npf_row img {
+                max-width: 100%;
+                max-height: min(82vh, 900px);
+                width: auto;
+                height: auto;
+                object-fit: contain;
+                margin-inline: auto;
+                display: block;
+             }
+
+             .posts > .media video,
+             .posts .header-posts figure.tmblr-full video,
+             .posts .header-posts .npf_row video {
+                max-height: min(78vh, 720px);
+                width: auto;
+                max-width: 100%;
+                height: auto;
+                object-fit: contain;
+                margin-inline: auto;
+                display: block;
+             }
+
              .date-notes {
                  float: none;
                  margin-inline-end: auto;
@@ -1935,17 +2330,18 @@ document.addEventListener("DOMContentLoaded", function () {
              .pagination {
                 text-align: center;
                 font-weight:700;
-                border-bottom: 3px solid {color:Dividers}; 
+                border-bottom: 1px solid rgba(137, 28, 4, 0.12);
+                padding: 28px 0 18px;
              }
 
              .pagination ul {
                 list-style: none;
-                padding: 10px 15px;
-                margin: 10px 0;
+                padding: 0 15px;
+                margin: 0;
                 display: inline-flex;
                 flex-wrap: wrap;
                 justify-content: center;
-                gap: 6px;
+                gap: 10px;
              }
 
              .pagination li {
@@ -1953,38 +2349,103 @@ document.addEventListener("DOMContentLoaded", function () {
                 display: inline-flex;
              }
 
-             #pagination a:link, #pageNav a:visited {
-                padding: 4px 8px;
+             #pagination a:link,
+             #pagination a:visited,
+             #pageNav a:link,
+             #pageNav a:visited {
+                padding: 8px 13px;
                 margin: 0;
                 text-decoration: none;
                 border-radius: 8px;
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
+                gap: 8px;
+                min-width: 92px;
+                color: #891C04;
+                background: rgba(255, 248, 236, 0.74);
+                border: 1px solid rgba(137, 28, 4, 0.16);
+                box-shadow: 0 5px 16px rgba(85, 48, 0, 0.05);
+                transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
              }
 
-             #pagination a:hover, #pageNav a:active, #pageNav a.active:link, #pageNav a.active:visited {
+             #pagination a:hover,
+             #pageNav a:active,
+             #pageNav a.active:link,
+             #pageNav a.active:visited {
                 text-decoration: none;
-                background: rgba(0, 0, 0, 0.06);
-             }
-
-             #older:after {
-                content: " ←";
-             }
-
-             #newer:before {
-                content: "→ ";
-             }
-
-             .pagination a.active,
-             .pagination a.active:visited {
                 color: #553000;
-                background: #f1e6d3;
+                background: rgba(137, 28, 4, 0.08);
+                border-color: rgba(137, 28, 4, 0.26);
+                transform: translateY(-1px);
              }
 
-             .pagination li a:not(#older):not(#newer) {
-                direction: ltr;
-                unicode-bidi: isolate;
+             .pagination__icon {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 22px;
+                height: 22px;
+                color: #891C04;
+                background: rgba(137, 28, 4, 0.08);
+                border-radius: 6px;
+                font-size: 14px;
+                line-height: 1;
+             }
+
+             .pagination__text {
+                line-height: 1;
+             }
+
+             .pagination__link:hover .pagination__icon {
+                color: #553000;
+                background: rgba(85, 48, 0, 0.1);
+             }
+
+            @media screen and (max-width: 520px) {
+                .autopagerize_page_element {
+                    --timeline-gutter: 32px;
+                    --timeline-line-right: 5px;
+                    padding-right: var(--timeline-gutter);
+                }
+
+                .posts {
+                    padding: 20px 16px 22px;
+                    margin-bottom: 54px;
+                }
+
+                .posts::after {
+                    right: calc((var(--timeline-gutter) * -1) + 1px);
+                }
+
+                .post-timeline-date a {
+                    min-width: 116px;
+                    padding-inline: 13px;
+                }
+
+                .pagination ul {
+                    display: grid;
+                    grid-template-columns: 1fr;
+                    width: 100%;
+                    max-width: 260px;
+                    box-sizing: border-box;
+                }
+
+                #pagination a:link,
+                #pagination a:visited,
+                #pageNav a:link,
+                #pageNav a:visited {
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+
+                .footer-signature {
+                    gap: 8px;
+                }
+
+                .footer-signature__name {
+                    font-size: 20px;
+                }
              }
 
             @media screen and (max-width: 750px){
@@ -2192,7 +2653,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .mobile-menu-links li a,
             .mobile-social-title,
             .meta,
-            .date,
+            .post-timeline-date,
             .date-notes,
             .post-date-ar,
             a.source,
@@ -2681,24 +3142,63 @@ document.addEventListener("DOMContentLoaded", function () {
 
             /* ===== Custom Audio Player Styles ===== */
             .custom-audio-player {
-                background: rgba(255, 248, 236, 0.6);
+                background: linear-gradient(to bottom, #fffcf6 0%, #fef4e5 100%);
                 border: 1px solid rgba(137, 28, 4, 0.15);
-                border-radius: 12px;
-                padding: 14px 18px;
+                border-radius: 16px;
+                padding: 20px 24px;
                 display: flex;
-                align-items: center;
+                flex-direction: column;
                 gap: 16px;
                 direction: rtl;
                 box-sizing: border-box;
-                margin-bottom: 20px;
-                box-shadow: 0 4px 15px rgba(137, 28, 4, 0.03);
+                margin-bottom: 22px;
+                position: relative;
+                overflow: hidden;
+                box-shadow: 0 10px 30px rgba(137, 28, 4, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+                transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+            }
+
+            .custom-audio-player:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 36px rgba(137, 28, 4, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+                border-color: rgba(137, 28, 4, 0.25);
+            }
+
+            /* Decorative Background Arabesque Star (Rub el Hizb) */
+            .custom-audio-player::before {
+                content: "";
+                position: absolute;
+                bottom: -25px;
+                left: -25px;
+                width: 90px;
+                height: 90px;
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzg5MUMwNCI+PHBhdGggZD0iTTEyIDJsMi4zNiAyLjM2TDE3IDNsLjY0IDMuMjlMMjEgN2wtMS4zNiAzLjEyTDIyIDEybC0yLjM2IDIuMzZMMjEgMTdsLTMuMjkuNjRMMTcgMjFsLTMuMTItMS4zNkwxMiAyMmwtMi4zNi0yLjM2TDcgMjFsLS42NC0zLjI5TDMgMTdsMS4zNi0zLjEyTDIgMTJsMi4zNi0yLjM2TDMgN2wzLjI5LS42NEw3IDNsMy4xMiAxLjM2TDEyIDJ6bTAgOGEyIDIgMCAxIDAgMCA0IDIgMiAwIDAgMCAwLTR6Ii8+PC9zdmc+');
+                background-size: contain;
+                background-repeat: no-repeat;
+                opacity: 0.04;
+                pointer-events: none;
+                transform: rotate(15deg);
+                transition: transform 0.8s ease, opacity 0.3s ease;
+            }
+
+            .custom-audio-player:hover::before {
+                transform: rotate(45deg) scale(1.1);
+                opacity: 0.06;
+            }
+
+            .custom-audio-player .player-main {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                width: 100%;
+                z-index: 2;
             }
 
             .custom-audio-player .play-pause-btn {
-                width: 42px;
-                height: 42px;
+                width: 50px;
+                height: 50px;
                 border-radius: 50%;
-                background-color: #891C04;
+                background: linear-gradient(135deg, #891C04 0%, #aa2506 100%);
                 color: #fff;
                 border: none;
                 cursor: pointer;
@@ -2706,51 +3206,291 @@ document.addEventListener("DOMContentLoaded", function () {
                 align-items: center;
                 justify-content: center;
                 flex-shrink: 0;
-                transition: background-color 0.2s, transform 0.2s;
-                box-shadow: 0 4px 12px rgba(137, 28, 4, 0.2);
+                position: relative;
+                z-index: 2;
+                box-shadow: 0 6px 16px rgba(137, 28, 4, 0.28);
+                transition: background 0.3s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
             }
 
             .custom-audio-player .play-pause-btn:hover {
-                background-color: #553000;
-                transform: scale(1.05);
+                background: linear-gradient(135deg, #553000 0%, #704000 100%);
+                transform: scale(1.08);
+                box-shadow: 0 8px 20px rgba(85, 48, 0, 0.35);
+            }
+
+            .custom-audio-player .play-pause-btn:active {
+                transform: scale(0.96);
+            }
+
+            /* Pulsing outer glow for playing state */
+            .custom-audio-player .play-pause-btn .ripple-glow {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                border-radius: 50%;
+                background: inherit;
+                opacity: 0.35;
+                z-index: -1;
+                pointer-events: none;
+            }
+
+            .custom-audio-player.playing .play-pause-btn .ripple-glow {
+                animation: pulse-ring 2.2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+            }
+
+            @keyframes pulse-ring {
+                0% { transform: scale(0.95); opacity: 0.5; }
+                50% { transform: scale(1.3); opacity: 0; }
+                100% { transform: scale(0.95); opacity: 0; }
             }
 
             .custom-audio-player .play-pause-btn svg {
                 display: block;
+                transition: transform 0.2s ease;
             }
 
-            .audio-progress-container {
+            @keyframes spin {
+                100% { transform: rotate(-360deg); }
+            }
+
+            .custom-audio-player .player-album-art {
+                width: 48px;
+                height: 48px;
+                border-radius: 8px;
+                overflow: hidden;
+                flex-shrink: 0;
+                box-shadow: 0 4px 12px rgba(137, 28, 4, 0.12);
+                border: 1px solid rgba(137, 28, 4, 0.15);
+                background-color: #f7ede2;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 2;
+            }
+
+            .custom-audio-player .player-album-art img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                margin: 0 !important;
+                padding: 0 !important;
+                transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            }
+
+            .custom-audio-player:hover .player-album-art img {
+                transform: scale(1.06);
+            }
+
+            .custom-audio-player .player-info {
                 flex-grow: 1;
-                cursor: pointer;
-                padding: 8px 0;
-            }
-
-            .audio-progress-bar {
-                height: 6px;
-                background: #e8dcc8;
-                border-radius: 3px;
-                position: relative;
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
                 overflow: hidden;
             }
 
-            .audio-progress-fill {
+            .custom-audio-player .track-title-wrapper {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                column-gap: 8px;
+                row-gap: 2px;
+            }
+
+            .custom-audio-player .track-title {
+                font-family: 'ThmanyahSerifDisplay-Bold', 'Droid Arabic Naskh', serif;
+                font-size: 16px;
+                font-weight: 700;
+                color: #891C04;
+                line-height: 1.4;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .custom-audio-player .track-artist-divider {
+                color: rgba(137, 28, 4, 0.4);
+                font-size: 11px;
+                user-select: none;
+            }
+
+            .custom-audio-player .track-artist {
+                font-family: 'ThmanyahSans-Medium', sans-serif;
+                font-size: 14px;
+                color: #7e715b;
+                font-weight: 500;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .custom-audio-player .track-album {
+                font-family: 'ThmanyahSans-Medium', sans-serif;
+                font-size: 11px;
+                color: #a89f90;
+                line-height: 1;
+            }
+
+            /* Volume Control Container */
+            .custom-audio-player .player-volume {
+                position: relative;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                margin-inline-start: 12px;
+            }
+
+            .custom-audio-player .volume-btn {
+                background: none;
+                border: none;
+                color: #7e715b;
+                cursor: pointer;
+                padding: 8px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: color 0.2s ease, background-color 0.2s ease;
+            }
+
+            .custom-audio-player .volume-btn:hover {
+                color: #891C04;
+                background-color: rgba(137, 28, 4, 0.06);
+            }
+
+            .custom-audio-player .volume-slider-popover {
+                display: flex;
+                align-items: center;
+                width: 0px;
+                overflow: hidden;
+                transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), margin 0.3s ease;
+                height: 24px;
+            }
+
+            .custom-audio-player .player-volume:hover .volume-slider-popover,
+            .custom-audio-player .player-volume:focus-within .volume-slider-popover {
+                width: 70px;
+                margin-inline-start: 6px;
+            }
+
+            .custom-audio-player .volume-slider-track {
+                width: 60px;
+                height: 4px;
+                background: #e8dcc8;
+                border-radius: 2px;
+                position: relative;
+                cursor: pointer;
+            }
+
+            .custom-audio-player .volume-slider-fill {
+                height: 100%;
+                background: #891C04;
+                border-radius: 2px;
+                width: 80%;
+                position: absolute;
+                right: 0;
+                left: auto;
+            }
+
+            .custom-audio-player .volume-slider-thumb {
+                width: 10px;
+                height: 10px;
+                background: #891C04;
+                border: 1.5px solid #fffcf6;
+                border-radius: 50%;
+                position: absolute;
+                top: 50%;
+                right: 80%; /* Aligns with the volume fill width in RTL */
+                transform: translate(50%, -50%) scale(0.9);
+                box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+                transition: transform 0.15s ease;
+            }
+
+            .custom-audio-player .volume-slider-track:hover .volume-slider-thumb {
+                transform: translate(50%, -50%) scale(1.25);
+            }
+
+            /* Timeline / Seekbar Styles */
+            .custom-audio-player .player-timeline {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                width: 100%;
+                z-index: 2;
+            }
+
+            .custom-audio-player .audio-time {
+                font-family: 'ThmanyahSans-Medium', 'Gibson', sans-serif !important;
+                font-size: 12px;
+                color: #7e715b;
+                font-weight: 500;
+                min-width: 38px;
+                user-select: none;
+            }
+
+            .custom-audio-player .current-time {
+                text-align: right;
+            }
+
+            .custom-audio-player .total-time {
+                text-align: left;
+            }
+
+            .custom-audio-player .audio-progress-container {
+                flex-grow: 1;
+                height: 14px;
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+                position: relative;
+            }
+
+            .custom-audio-player .audio-progress-bar {
+                width: 100%;
+                height: 5px;
+                background: #e8dcc8;
+                border-radius: 3px;
+                position: relative;
+                transition: height 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            }
+
+            .custom-audio-player .audio-progress-container:hover .audio-progress-bar {
+                height: 7px;
+            }
+
+            .custom-audio-player .audio-progress-fill {
                 height: 100%;
                 width: 0%;
-                background: #891C04;
+                background: linear-gradient(to left, #891C04 0%, #b82d0c 100%);
                 border-radius: 3px;
-                transition: width 0.1s linear;
+                position: absolute;
+                right: 0;
+                left: auto;
             }
 
-            .audio-time {
-                font-family: var(--font-ui), sans-serif !important;
-                font-size: 13px;
-                color: #7e715b;
-                font-weight: 600;
-                min-width: 45px;
-                text-align: center;
+            .custom-audio-player .audio-progress-thumb {
+                width: 12px;
+                height: 12px;
+                background: #891C04;
+                border: 2px solid #fffcf6;
+                border-radius: 50%;
+                position: absolute;
+                top: 50%;
+                right: 0%; /* Aligned with percentage progress from the right */
+                transform: translate(50%, -50%) scale(0);
+                box-shadow: 0 2px 5px rgba(137, 28, 4, 0.25);
+                transition: transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1.25), right 0.1s linear;
             }
 
-            /* تنسيق مشغل تمبلر الافتراضي */
+            .custom-audio-player .audio-progress-container:hover .audio-progress-thumb,
+            .custom-audio-player .audio-progress-container.dragging .audio-progress-thumb {
+                transform: translate(50%, -50%) scale(1.1);
+            }
+
+            /* Custom scrollbars inside the iframe overlays */
             .tumblr-native-audio {
                 background: rgba(255, 248, 236, 0.6);
                 border: 1px solid rgba(137, 28, 4, 0.15);
@@ -2765,7 +3505,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 border-radius: 8px;
             }
 
-            /* تنسيق التضمينات الخارجية */
             .audio-embed-container {
                 background: rgba(255, 248, 236, 0.6);
                 border: 1px solid rgba(137, 28, 4, 0.15);
@@ -2782,10 +3521,17 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .audio-caption {
-                margin-top: 10px;
-                font-size: 15px;
-                color: #555;
-                line-height: 1.6;
+                margin-top: 12px;
+                font-family: var(--font-text), 'Droid Arabic Naskh', serif !important;
+                font-size: 18px;
+                color: #5c5240;
+                line-height: 2.2em;
+            }
+
+            /* Hide duplicate NPF audio metadata now displayed inside custom player */
+            figcaption.audio-caption .audio-details,
+            figcaption.audio-caption .album-cover {
+                display: none !important;
             }
 
             /* ===== End Custom CSS ===== */
@@ -2815,7 +3561,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 <img src="{PortraitURL-48}" class="{AvatarShape}" alt="{Title}" decoding="async">
             </a>
             {/block:ShowAvatar}
-            <a href="/" class="brand-title">مدونة ياسر الشهري</a>
+            <a href="/" class="brand-title" aria-label="مدونة ياسر الشهري">
+                <span class="brand-kicker">مدونة</span>
+                <span class="brand-name">ياسر الشهري</span>
+            </a>
         </div>
 
         <!-- الروابط الرئيسية (دسكتوب) -->
@@ -2921,6 +3670,14 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="autopagerize_page_element">
         {block:Posts}
             <div class="posts">
+                {block:Date}
+                    <div class="post-timeline-date">
+                        <a href="{Permalink}">
+                            <span class="post-date-ar" data-day="{DayOfMonth}" data-month="{Month}" data-month-number="{MonthNumber}" data-year="{Year}"></span>
+                        </a>
+                    </div>
+                {/block:Date}
+
                 {block:Photo}
                     <div class="media">{LinkOpenTag}<img src="{PhotoURL-HighRes}" alt="{PhotoAlt}" 
      width="{PhotoWidth}" height="{PhotoHeight}" 
@@ -2936,38 +3693,91 @@ document.addEventListener("DOMContentLoaded", function () {
                
                 {block:Audio}
                     <div class="audio-container">
-                        {block:AudioPlayer}
-                            {block:RawAudioURL}
-                                <!-- مشغل مخصص بالكامل للملفات المرفوعة مباشرة -->
-                                <div class="custom-audio-player">
-                                    <audio src="{RawAudioURL}" preload="metadata"></audio>
-                                    <button type="button" class="play-pause-btn" aria-label="تشغيل">
-                                        <svg class="play-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                                        <svg class="pause-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                                    </button>
-                                    <div class="audio-progress-container">
-                                        <div class="audio-progress-bar">
-                                            <div class="audio-progress-fill"></div>
-                                        </div>
-                                    </div>
-                                    <span class="audio-time">00:00</span>
-                                </div>
-                            {/block:RawAudioURL}
-
-                            {block:IfNotRawAudioURL}
-                                <!-- المشغل الافتراضي لتمبلر مغلف بحاوية منسقة -->
-                                <div class="tumblr-native-audio">
-                                    {AudioPlayer}
-                                </div>
-                            {/block:IfNotRawAudioURL}
-                        {/block:AudioPlayer}
-
                         {block:AudioEmbed}
-                            <!-- تضمينات المنصات الخارجية مغلفة بحاوية منسقة -->
+                            <!-- Tumblr exposes embedded audio through the sized AudioEmbed variables. -->
                             <div class="audio-embed-container">
-                                {AudioEmbed}
+                                {AudioEmbed-500}
                             </div>
                         {/block:AudioEmbed}
+
+                        {block:AudioPlayer}
+                            <!-- Native Tumblr player: kept hidden but rendered in DOM so JS can extract URL -->
+                            <div class="tumblr-native-audio" style="display: none !important; opacity: 0; pointer-events: none; width: 0; height: 0; overflow: hidden; padding: 0; margin: 0; border: none;">
+                                {AudioPlayerBlack}
+                            </div>
+
+                            <!-- Redesigned Arabic Theme Music Player -->
+                            <div class="custom-audio-player" data-audio-url="{AudioURL}">
+                                <audio preload="none"></audio>
+                                <div class="player-main">
+                                    <!-- Play/Pause Button -->
+                                    <button type="button" class="play-pause-btn" aria-label="تشغيل">
+                                        <div class="ripple-glow"></div>
+                                        <svg class="play-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                                            <path d="M8 5v14l11-7z"/>
+                                        </svg>
+                                        <svg class="pause-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="display: none;">
+                                            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                                        </svg>
+                                        <!-- Loading Spinner Icon -->
+                                        <svg class="loading-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" style="display: none; animation: spin 1s linear infinite;">
+                                            <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.2)"></circle>
+                                            <path d="M12 2a10 10 0 0 1 10 10" stroke="#fff"></path>
+                                        </svg>
+                                    </button>
+                                    
+                                    {block:AlbumArt}
+                                    <div class="player-album-art">
+                                        <img src="{AlbumArtURL}" alt="غلاف الألبوم">
+                                    </div>
+                                    {/block:AlbumArt}
+
+                                    <!-- Song / Track Details -->
+                                    <div class="player-info">
+                                        <div class="track-title-wrapper">
+                                            <span class="track-title">{block:TrackName}{TrackName}{/block:TrackName}</span>
+                                            {block:Artist}
+                                                <span class="track-artist-divider">۞</span>
+                                                <span class="track-artist">{Artist}</span>
+                                            {/block:Artist}
+                                        </div>
+                                        {block:Album}
+                                            <div class="track-album">{Album}</div>
+                                        {/block:Album}
+                                    </div>
+
+                                    <!-- Volume Slider slide-out -->
+                                    <div class="player-volume">
+                                        <button type="button" class="volume-btn" aria-label="كتم الصوت">
+                                            <svg class="volume-high-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                                            </svg>
+                                            <svg class="volume-mute-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="display: none;">
+                                                <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+                                            </svg>
+                                        </button>
+                                        <div class="volume-slider-popover">
+                                            <div class="volume-slider-track">
+                                                <div class="volume-slider-fill"></div>
+                                                <div class="volume-slider-thumb"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Timeline -->
+                                <div class="player-timeline">
+                                    <span class="audio-time current-time">00:00</span>
+                                    <div class="audio-progress-container" role="slider" aria-label="شريط التقدم" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                        <div class="audio-progress-bar">
+                                            <div class="audio-progress-fill"></div>
+                                            <div class="audio-progress-thumb"></div>
+                                        </div>
+                                    </div>
+                                    <span class="audio-time total-time">00:00</span>
+                                </div>
+                            </div>
+                        {/block:AudioPlayer}
 
                         {block:Caption}
                             <div class="audio-caption">{Caption}</div>
@@ -2981,10 +3791,30 @@ document.addEventListener("DOMContentLoaded", function () {
                 {/block:Video}
               
                 {block:Answer}
-                    <h3 style="color:red;background-color:rgb(90,90,90);color:white">
-                   سؤال:
-                    {Question}</h3>
-                    {Answer}
+                    <div class="qa-container">
+                        <div class="qa-question-box">
+                            <div class="qa-asker-meta">
+                                <img class="qa-asker-avatar" src="{AskerPortraitURL-64}" alt="{Asker}">
+                                <div class="qa-asker-details">
+                                    <span class="qa-asker-label">سؤال من</span>
+                                    <span class="qa-asker-name">
+                                        {block:Asker}
+                                            <a href="{AskerURL}">{Asker}</a>
+                                        {/block:Asker}
+                                        {block:NotAsker}
+                                            {Asker}
+                                        {/block:NotAsker}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="qa-question-text">
+                                {Question}
+                            </div>
+                        </div>
+                        <div class="qa-answer-box">
+                            {Answer}
+                        </div>
+                    </div>
                 {/block:Answer}
             
            
@@ -3026,10 +3856,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 
                 <div class="meta">
                     <div class="date-notes">
-                    
-                    
-                      
-                            {block:Date}<span class="date"><a href="{Permalink}"><b><span class="post-date-ar" data-day="{DayOfMonth}" data-month="{Month}" data-month-number="{MonthNumber}" data-year="{Year}"></span></b></a></span>{/block:Date}
                         {block:ContentSource}
                             <a class="source" href="{SourceURL}">
                                 {block:SourceLogo}
@@ -3092,25 +3918,27 @@ function scrollFunction() {
     
 
             {block:Pagination}
-                <div class="pagination">
+                <nav class="pagination" id="pagination" aria-label="التنقل بين الصفحات">
                     <ul class="clearfix">
-                        {block:PreviousPage}<li><a href="{PreviousPage}" id="newer">
-                            {text:Next}
+                        {block:PreviousPage}<li><a href="{PreviousPage}" id="newer" class="pagination__link pagination__link--next" rel="prev">
+                            <span class="pagination__icon" aria-hidden="true">→</span>
+                            <span class="pagination__text">{text:Next}</span>
                         </a></li>{/block:PreviousPage} 
-                        {block:JumpPagination length="10"}
-                        {block:CurrentPage}<li><a href="{URL}" class="active">{PageNumber}</a></li>{/block:CurrentPage}
-                        {block:JumpPage}<li><a href="{URL}">{PageNumber}</a></li>{/block:JumpPage}
-                        {/block:JumpPagination}
-                        {block:NextPage}<li><a href="{NextPage}" id="older">
-                            {text:Old}
+                        {block:NextPage}<li><a href="{NextPage}" id="older" class="pagination__link pagination__link--previous" rel="next">
+                            <span class="pagination__text">{text:Old}</span>
+                            <span class="pagination__icon" aria-hidden="true">←</span>
                         </a></li>{/block:NextPage} 
                     </ul>
-                </div>
+                </nav>
             {/block:Pagination}
 </div>
 
     <div class="footer">
-        <div class="copyright">© {CopyrightYears} - {Title}</div>
+        <a href="/" class="footer-signature" aria-label="مدونة ياسر الشهري">
+            <span class="footer-signature__kicker">مدونة</span>
+            <span class="footer-signature__name">ياسر الشهري</span>
+        </a>
+        <div class="footer-years">© {CopyrightYears}</div>
         <div class="info">
 {text:Title down}
         </div>
@@ -3242,84 +4070,617 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll(".custom-audio-player").forEach(function(player) {
+    function formatTime(seconds) {
+        if (isNaN(seconds) || seconds === Infinity) return "00:00";
+        var m = Math.floor(seconds / 60);
+        var s = Math.floor(seconds % 60);
+        return (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+    }
+
+    function extractAudioUrlFromIframe(iframe) {
+        if (!iframe || !iframe.src) return null;
+        try {
+            var src = iframe.src;
+            var urlObj = new URL(src);
+            var params = new URLSearchParams(urlObj.search);
+            var audioFile = params.get('audio_file');
+            if (audioFile) {
+                return decodeURIComponent(audioFile);
+            }
+        } catch (e) {
+            console.error("Error parsing iframe src for audio URL:", e);
+        }
+        return null;
+    }
+
+    function initPlayer(player) {
+        if (player.dataset.initialized === "true") return;
+        player.dataset.initialized = "true";
         var audio = player.querySelector("audio");
         var btn = player.querySelector(".play-pause-btn");
         var playIcon = btn.querySelector(".play-icon");
         var pauseIcon = btn.querySelector(".pause-icon");
+        var loadingIcon = btn.querySelector(".loading-icon");
         var progressContainer = player.querySelector(".audio-progress-container");
         var progressFill = player.querySelector(".audio-progress-fill");
-        var timeDisplay = player.querySelector(".audio-time");
+        var progressThumb = player.querySelector(".audio-progress-thumb");
+        var currentTimeDisplay = player.querySelector(".current-time");
+        var totalTimeDisplay = player.querySelector(".total-time");
+        
+        var volumeBtn = player.querySelector(".volume-btn");
+        var volHighIcon = volumeBtn.querySelector(".volume-high-icon");
+        var volMuteIcon = volumeBtn.querySelector(".volume-mute-icon");
+        var volumeSliderTrack = player.querySelector(".volume-slider-track");
+        var volumeSliderFill = player.querySelector(".volume-slider-fill");
+        var volumeSliderThumb = player.querySelector(".volume-slider-thumb");
 
-        function formatTime(seconds) {
-            if (isNaN(seconds)) return "00:00";
-            var m = Math.floor(seconds / 60);
-            var s = Math.floor(seconds % 60);
-            return (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+        var isDraggingProgress = false;
+        var isDraggingVolume = false;
+        var lastVolume = 0.8;
+        var isMuted = false;
+
+        // Setup default titles if empty or not rendered
+        var trackTitleEl = player.querySelector(".track-title");
+        if (trackTitleEl) {
+            var titleText = trackTitleEl.textContent.trim();
+            if (titleText === "" || titleText === "{TrackName}" || titleText.includes("{block:")) {
+                trackTitleEl.textContent = "مقطع صوتي";
+            }
         }
 
+        // Cleanup unparsed Tumblr tags on local preview for cleaner visualization
+        var trackArtistEl = player.querySelector(".track-artist");
+        var artistDividerEl = player.querySelector(".track-artist-divider");
+        var trackAlbumEl = player.querySelector(".track-album");
+
+        if (trackArtistEl && (trackArtistEl.textContent.includes("{Artist}") || trackArtistEl.textContent.trim() === "")) {
+            trackArtistEl.style.display = "none";
+            if (artistDividerEl) artistDividerEl.style.display = "none";
+        }
+        if (trackAlbumEl && (trackAlbumEl.textContent.includes("{Album}") || trackAlbumEl.textContent.trim() === "")) {
+            trackAlbumEl.style.display = "none";
+        }
+
+        // Remove raw Tumblr tag text nodes in local preview
+        if (location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.protocol === "file:") {
+            var walk = document.createTreeWalker(player, NodeFilter.SHOW_TEXT, null, false);
+            var textNode;
+            var nodesToRemoveText = [];
+            while (textNode = walk.nextNode()) {
+                var txt = textNode.nodeValue;
+                if (txt.includes("{block:") || txt.includes("{/block:") || txt.includes("{Artist}") || txt.includes("{TrackName}") || txt.includes("{Album}")) {
+                    nodesToRemoveText.push(textNode);
+                }
+            }
+            nodesToRemoveText.forEach(function(node) {
+                node.nodeValue = "";
+            });
+        }
+
+        // Extract audio URL
+        var audioUrl = player.dataset.audioUrl;
+        if (!audioUrl || audioUrl === "{AudioURL}" || audioUrl.trim() === "") {
+            // Find iframe inside parent container
+            var container = player.closest(".audio-container");
+            var iframe = container ? container.querySelector(".tumblr-native-audio iframe") : null;
+            if (iframe) {
+                var url = extractAudioUrlFromIframe(iframe);
+                if (url) {
+                    audio.src = url;
+                }
+            } else if (container) {
+                // If iframe is not loaded yet, setup an observer and a polling fallback
+                var nativeContainer = container.querySelector(".tumblr-native-audio");
+                if (nativeContainer) {
+                    var observer = new MutationObserver(function(mutations, obs) {
+                        var iframe = nativeContainer.querySelector("iframe");
+                        if (iframe) {
+                            var url = extractAudioUrlFromIframe(iframe);
+                            if (url) {
+                                audio.src = url;
+                                obs.disconnect();
+                                clearInterval(pollInterval);
+                            }
+                        }
+                    });
+                    observer.observe(nativeContainer, { childList: true, subtree: true });
+
+                    var pollCount = 0;
+                    var pollInterval = setInterval(function() {
+                        pollCount++;
+                        var iframe = nativeContainer.querySelector("iframe");
+                        if (iframe) {
+                            var url = extractAudioUrlFromIframe(iframe);
+                            if (url) {
+                                audio.src = url;
+                                clearInterval(pollInterval);
+                                observer.disconnect();
+                            }
+                        }
+                        if (pollCount > 20) { // Stop after 2 seconds
+                            clearInterval(pollInterval);
+                            observer.disconnect();
+                            // Local preview fallback if iframe never loads
+                            if (!audio.src && (location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.protocol === "file:")) {
+                                console.log("Using local preview demo audio URL.");
+                                audio.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+                            }
+                        }
+                    }, 100);
+                } else {
+                    // Local preview fallback
+                    if (location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.protocol === "file:") {
+                        audio.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+                    }
+                }
+            } else {
+                // Local preview fallback
+                if (location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.protocol === "file:") {
+                    audio.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+                }
+            }
+        } else {
+            audio.src = audioUrl;
+        }
+
+        // Set default volume
+        audio.volume = lastVolume;
+        updateVolumeUI(lastVolume);
+
+        // Play / Pause Action
         btn.addEventListener("click", function() {
+            if (!audio.src) return;
             if (audio.paused) {
-                // Pause all other audio players on the page first
-                document.querySelectorAll(".custom-audio-player audio").forEach(function(otherAudio) {
-                    if (otherAudio !== audio && !otherAudio.paused) {
-                        otherAudio.pause();
-                        var otherPlayer = otherAudio.closest(".custom-audio-player");
-                        if (otherPlayer) {
-                            otherPlayer.querySelector(".play-icon").style.display = "block";
-                            otherPlayer.querySelector(".pause-icon").style.display = "none";
+                // Pause all other audio players on page
+                document.querySelectorAll(".custom-audio-player").forEach(function(otherPlayer) {
+                    if (otherPlayer !== player) {
+                        var otherAudio = otherPlayer.querySelector("audio");
+                        if (otherAudio && !otherAudio.paused) {
+                            otherAudio.pause();
                         }
                     }
                 });
+                audio.play().catch(function(err) {
+                    console.error("Playback error:", err);
+                });
+            } else {
+                audio.pause();
+            }
+        });
 
-                audio.play();
+        // Audio events
+        audio.addEventListener("play", function() {
+            player.classList.add("playing");
+            playIcon.style.display = "none";
+            pauseIcon.style.display = "none";
+            loadingIcon.style.display = "block"; // Show loading until play starts/resumes
+        });
+
+        audio.addEventListener("playing", function() {
+            player.classList.add("playing");
+            playIcon.style.display = "none";
+            pauseIcon.style.display = "block";
+            loadingIcon.style.display = "none";
+        });
+
+        audio.addEventListener("pause", function() {
+            player.classList.remove("playing");
+            playIcon.style.display = "block";
+            pauseIcon.style.display = "none";
+            loadingIcon.style.display = "none";
+        });
+
+        audio.addEventListener("waiting", function() {
+            playIcon.style.display = "none";
+            pauseIcon.style.display = "none";
+            loadingIcon.style.display = "block";
+        });
+
+        audio.addEventListener("seeking", function() {
+            playIcon.style.display = "none";
+            pauseIcon.style.display = "none";
+            loadingIcon.style.display = "block";
+        });
+
+        audio.addEventListener("seeked", function() {
+            if (!audio.paused) {
                 playIcon.style.display = "none";
                 pauseIcon.style.display = "block";
             } else {
-                audio.pause();
                 playIcon.style.display = "block";
                 pauseIcon.style.display = "none";
             }
+            loadingIcon.style.display = "none";
         });
 
         audio.addEventListener("timeupdate", function() {
+            if (isDraggingProgress) return;
             if (!audio.duration) return;
             var pct = (audio.currentTime / audio.duration) * 100;
-            progressFill.style.width = pct + "%";
-            timeDisplay.textContent = formatTime(audio.currentTime);
+            updateProgressUI(pct);
+            currentTimeDisplay.textContent = formatTime(audio.currentTime);
+        });
+
+        audio.addEventListener("durationchange", function() {
+            totalTimeDisplay.textContent = formatTime(audio.duration);
         });
 
         audio.addEventListener("loadedmetadata", function() {
-            timeDisplay.textContent = formatTime(audio.duration);
+            totalTimeDisplay.textContent = formatTime(audio.duration);
         });
 
-        // Dynamic duration check if metadata was cached or preloaded differently
         if (audio.readyState >= 1) {
-            timeDisplay.textContent = formatTime(audio.duration);
+            totalTimeDisplay.textContent = formatTime(audio.duration);
         }
 
         audio.addEventListener("ended", function() {
+            player.classList.remove("playing");
             playIcon.style.display = "block";
             pauseIcon.style.display = "none";
-            progressFill.style.width = "0%";
-            audio.currentTime = 0;
-            timeDisplay.textContent = formatTime(audio.duration || 0);
+            loadingIcon.style.display = "none";
+            updateProgressUI(0);
+            currentTimeDisplay.textContent = "00:00";
         });
 
-        progressContainer.addEventListener("click", function(e) {
+        // Timeline Seek Controls
+        function getProgressPctFromEvent(e) {
             var rect = progressContainer.getBoundingClientRect();
-            // RTL calculation: click position from the right side of progress bar
-            var clickFromRight = rect.right - e.clientX;
-            var width = rect.width;
-            var pct = clickFromRight / width;
+            var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            // RTL calculation: click position from the right side of the progress bar
+            var pct = (rect.right - clientX) / rect.width;
             if (pct < 0) pct = 0;
             if (pct > 1) pct = 1;
+            return pct;
+        }
 
-            if (audio.duration) {
-                audio.currentTime = pct * audio.duration;
+        function seekToEvent(e) {
+            if (!audio.duration) return;
+            var pct = getProgressPctFromEvent(e);
+            audio.currentTime = pct * audio.duration;
+            currentTimeDisplay.textContent = formatTime(audio.currentTime);
+            updateProgressUI(pct * 100);
+        }
+
+        progressContainer.addEventListener("mousedown", function(e) {
+            if (!audio.src) return;
+            isDraggingProgress = true;
+            player.classList.add("dragging");
+            seekToEvent(e);
+            e.preventDefault();
+        });
+
+        progressContainer.addEventListener("touchstart", function(e) {
+            if (!audio.src) return;
+            isDraggingProgress = true;
+            player.classList.add("dragging");
+            seekToEvent(e);
+        }, { passive: true });
+
+        // Volume Controls
+        function getVolumeFromEvent(e) {
+            var rect = volumeSliderTrack.getBoundingClientRect();
+            var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            // RTL volume track
+            var pct = (rect.right - clientX) / rect.width;
+            if (pct < 0) pct = 0;
+            if (pct > 1) pct = 1;
+            return pct;
+        }
+
+        function setVolumeFromEvent(e) {
+            var vol = getVolumeFromEvent(e);
+            audio.volume = vol;
+            lastVolume = vol;
+            isMuted = (vol === 0);
+            updateVolumeUI(vol);
+        }
+
+        volumeSliderTrack.addEventListener("mousedown", function(e) {
+            isDraggingVolume = true;
+            setVolumeFromEvent(e);
+            e.preventDefault();
+        });
+
+        volumeSliderTrack.addEventListener("touchstart", function(e) {
+            isDraggingVolume = true;
+            setVolumeFromEvent(e);
+        }, { passive: true });
+
+        volumeBtn.addEventListener("click", function() {
+            if (isMuted) {
+                audio.volume = lastVolume > 0 ? lastVolume : 0.8;
+                isMuted = false;
+            } else {
+                lastVolume = audio.volume;
+                audio.volume = 0;
+                isMuted = true;
+            }
+            updateVolumeUI(audio.volume);
+        });
+
+        function updateProgressUI(pct) {
+            progressFill.style.width = pct + "%";
+            progressThumb.style.right = pct + "%";
+        }
+
+        function updateVolumeUI(vol) {
+            var pct = vol * 100;
+            volumeSliderFill.style.width = pct + "%";
+            volumeSliderThumb.style.right = pct + "%";
+
+            if (vol === 0) {
+                volHighIcon.style.display = "none";
+                volMuteIcon.style.display = "block";
+            } else {
+                volHighIcon.style.display = "block";
+                volMuteIcon.style.display = "none";
+            }
+        }
+
+        // Global Drag Listeners
+        window.addEventListener("mousemove", function(e) {
+            if (isDraggingProgress) {
+                seekToEvent(e);
+            } else if (isDraggingVolume) {
+                setVolumeFromEvent(e);
             }
         });
+
+        window.addEventListener("touchmove", function(e) {
+            if (isDraggingProgress) {
+                seekToEvent(e);
+            } else if (isDraggingVolume) {
+                setVolumeFromEvent(e);
+            }
+        }, { passive: true });
+
+        window.addEventListener("mouseup", function() {
+            if (isDraggingProgress) {
+                isDraggingProgress = false;
+                player.classList.remove("dragging");
+            }
+            if (isDraggingVolume) {
+                isDraggingVolume = false;
+            }
+        });
+
+        window.addEventListener("touchend", function() {
+            if (isDraggingProgress) {
+                isDraggingProgress = false;
+                player.classList.remove("dragging");
+            }
+            if (isDraggingVolume) {
+                isDraggingVolume = false;
+            }
+        });
+    }
+
+    function convertNpfAudioPlayers() {
+        document.querySelectorAll("audio:not(.custom-audio-player audio)").forEach(function(audio) {
+            // Prevent double processing
+            if (audio.closest(".custom-audio-player")) return;
+
+            var figure = audio.closest("figure") || audio.parentElement;
+            var artist = "";
+            var title = "مقطع صوتي";
+            var albumArtSrc = "";
+
+            var artistEl = null;
+            var titleEl = null;
+            var imgEl = null;
+
+            if (figure) {
+                artistEl = figure.querySelector(".artist, .tmblr-audio-meta.artist") || 
+                           figure.querySelector("[class*='artist']");
+                titleEl = figure.querySelector(".title, .tmblr-audio-meta.title") || 
+                          figure.querySelector("[class*='title']");
+                imgEl = figure.querySelector(".album-cover, figcaption img, img") || 
+                        figure.querySelector("[class*='cover']");
+            }
+
+            // Fallback to broader search if inside a post container but outside figure
+            if (!artistEl || !titleEl || !imgEl) {
+                var postContext = audio.closest(".posts, .header-posts, .audio-container, article");
+                if (postContext) {
+                    if (!artistEl) artistEl = postContext.querySelector(".artist, .tmblr-audio-meta.artist") || postContext.querySelector("[class*='artist']");
+                    if (!titleEl) titleEl = postContext.querySelector(".title, .tmblr-audio-meta.title") || postContext.querySelector("[class*='title']");
+                    if (!imgEl) imgEl = postContext.querySelector(".album-cover, .audio-caption img, img") || postContext.querySelector("[class*='cover']");
+                }
+            }
+
+            if (artistEl) artist = artistEl.textContent.trim();
+            if (titleEl) title = titleEl.textContent.trim() || "مقطع صوتي";
+            if (imgEl) albumArtSrc = imgEl.src || "";
+
+            // Create player elements
+            var player = document.createElement("div");
+            player.className = "custom-audio-player";
+            
+            var audioUrl = audio.src;
+            if (!audioUrl) {
+                var srcEl = audio.querySelector("source");
+                if (srcEl) audioUrl = srcEl.src;
+            }
+            if (audioUrl) {
+                player.dataset.audioUrl = audioUrl;
+            }
+
+            // Hide native controls
+            audio.removeAttribute("controls");
+            if (audio.style && typeof audio.style.setProperty === "function") {
+                audio.style.setProperty("display", "none", "important");
+            } else {
+                audio.style.display = "none";
+            }
+
+            // Cache the metadata globally under the audio URL to survive DOM re-creations/hydration
+            if (audioUrl) {
+                window._audioMetadataCache = window._audioMetadataCache || {};
+                var cached = window._audioMetadataCache[audioUrl] = window._audioMetadataCache[audioUrl] || {};
+                if (artist && artist !== "{Artist}") cached.artist = artist;
+                if (title && title !== "{TrackName}" && title !== "مقطع صوتي") cached.title = title;
+                if (albumArtSrc && !albumArtSrc.includes("assets.tumblr.com")) cached.albumArtSrc = albumArtSrc;
+
+                // Fallback to cached metadata if current elements are empty
+                if (!artist && cached.artist) artist = cached.artist;
+                if ((!title || title === "مقطع صوتي") && cached.title) title = cached.title;
+                if (!albumArtSrc && cached.albumArtSrc) albumArtSrc = cached.albumArtSrc;
+            }
+
+            // Insert player in parent before native audio element
+            var parent = audio.parentNode;
+            parent.insertBefore(player, audio);
+
+            // Generate inner HTML structure
+            var albumArtStyle = albumArtSrc ? "" : "display: none;";
+            var albumArtHTML = '<div class="player-album-art" style="' + albumArtStyle + '"><img src="' + albumArtSrc + '" alt="غلاف الألبوم"></div>';
+
+            var artistStyle = artist ? "" : "display: none;";
+            var artistHTML = '<span class="track-artist-divider" style="' + artistStyle + '">۞</span>' +
+                             '<span class="track-artist" style="' + artistStyle + '">' + artist + '</span>';
+
+            player.innerHTML = 
+                '<audio preload="none"></audio>' +
+                '<div class="player-main">' +
+                    '<button type="button" class="play-pause-btn" aria-label="تشغيل">' +
+                        '<div class="ripple-glow"></div>' +
+                        '<svg class="play-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">' +
+                            '<path d="M8 5v14l11-7z"/>' +
+                        '</svg>' +
+                        '<svg class="pause-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="display: none;">' +
+                            '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>' +
+                        '</svg>' +
+                        '<svg class="loading-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" style="display: none; animation: spin 1s linear infinite;">' +
+                            '<circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.2)"></circle>' +
+                            '<path d="M12 2a10 10 0 0 1 10 10" stroke="#fff"></path>' +
+                        '</svg>' +
+                    '</button>' +
+                    albumArtHTML +
+                    '<div class="player-info">' +
+                        '<div class="track-title-wrapper">' +
+                            '<span class="track-title">' + title + '</span>' +
+                            artistHTML +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="player-volume">' +
+                        '<button type="button" class="volume-btn" aria-label="كتم الصوت">' +
+                            '<svg class="volume-high-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">' +
+                                '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>' +
+                            '</svg>' +
+                            '<svg class="volume-mute-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="display: none;">' +
+                                '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>' +
+                            '</svg>' +
+                        '</button>' +
+                        '<div class="volume-slider-popover">' +
+                            '<div class="volume-slider-track">' +
+                                '<div class="volume-slider-fill"></div>' +
+                                '<div class="volume-slider-thumb"></div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="player-timeline">' +
+                    '<span class="audio-time current-time">00:00</span>' +
+                    '<div class="audio-progress-container">' +
+                        '<div class="audio-progress-bar">' +
+                            '<div class="audio-progress-fill"></div>' +
+                            '<div class="audio-progress-thumb"></div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<span class="audio-time total-time">00:00</span>' +
+                '</div>';
+
+            // Observe late-binding metadata changes reactively
+            if (artistEl && !artist) {
+                var artistObserver = new MutationObserver(function() {
+                    var newArtist = artistEl.textContent.trim();
+                    if (newArtist) {
+                        if (audioUrl) {
+                            window._audioMetadataCache = window._audioMetadataCache || {};
+                            window._audioMetadataCache[audioUrl] = window._audioMetadataCache[audioUrl] || {};
+                            window._audioMetadataCache[audioUrl].artist = newArtist;
+                        }
+                        var trackArtist = player.querySelector(".track-artist");
+                        var divider = player.querySelector(".track-artist-divider");
+                        if (trackArtist) {
+                            trackArtist.textContent = newArtist;
+                            trackArtist.style.display = "";
+                            if (divider) divider.style.display = "";
+                        }
+                        artistObserver.disconnect();
+                    }
+                });
+                artistObserver.observe(artistEl, { characterData: true, childList: true, subtree: true });
+            }
+
+            if (titleEl && (!title || title === "مقطع صوتي")) {
+                var titleObserver = new MutationObserver(function() {
+                    var newTitle = titleEl.textContent.trim();
+                    if (newTitle && newTitle !== "مقطع صوتي") {
+                        if (audioUrl) {
+                            window._audioMetadataCache = window._audioMetadataCache || {};
+                            window._audioMetadataCache[audioUrl] = window._audioMetadataCache[audioUrl] || {};
+                            window._audioMetadataCache[audioUrl].title = newTitle;
+                        }
+                        var trackTitle = player.querySelector(".track-title");
+                        if (trackTitle) {
+                            trackTitle.textContent = newTitle;
+                        }
+                        titleObserver.disconnect();
+                    }
+                });
+                titleObserver.observe(titleEl, { characterData: true, childList: true, subtree: true });
+            }
+
+            if (imgEl && !albumArtSrc) {
+                var imgObserver = new MutationObserver(function() {
+                    if (imgEl.src) {
+                        if (audioUrl) {
+                            window._audioMetadataCache = window._audioMetadataCache || {};
+                            window._audioMetadataCache[audioUrl] = window._audioMetadataCache[audioUrl] || {};
+                            window._audioMetadataCache[audioUrl].albumArtSrc = imgEl.src;
+                        }
+                        var playerArt = player.querySelector(".player-album-art");
+                        var playerImg = playerArt ? playerArt.querySelector("img") : null;
+                        if (playerImg) {
+                            playerImg.src = imgEl.src;
+                            playerArt.style.display = "";
+                        }
+                        imgObserver.disconnect();
+                    }
+                });
+                imgObserver.observe(imgEl, { attributes: true, attributeFilter: ['src'] });
+            }
+
+            initPlayer(player);
+        });
+    }
+
+    // Convert initial NPF players and initialize legacy players
+    convertNpfAudioPlayers();
+    document.querySelectorAll(".custom-audio-player").forEach(initPlayer);
+
+    // Observe document for dynamically added NPF audio elements (e.g. via infinite scroll)
+    var npfObserver = new MutationObserver(function(mutations) {
+        var hasNewAudio = false;
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                for (var i = 0; i < mutation.addedNodes.length; i++) {
+                    var node = mutation.addedNodes[i];
+                    if (node.nodeType === 1) { // Element Node
+                        if (node.tagName === "AUDIO" || node.querySelector("audio")) {
+                            hasNewAudio = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+        if (hasNewAudio) {
+            convertNpfAudioPlayers();
+        }
     });
+    npfObserver.observe(document.body, { childList: true, subtree: true });
 });
 </script>
 
