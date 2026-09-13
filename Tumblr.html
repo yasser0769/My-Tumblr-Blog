@@ -1363,22 +1363,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     padding-right: 15px;
                 }
 
-                /* === إصلاح قائمة المشاركة على الجوال === */
-                .pop-menu {
-                    /* إبقاء القائمة داخل الشاشة */
-                    left: auto !important;
-                    right: 0 !important;
-                    transform: none !important;
-                    min-width: 140px;
-                    width: auto;
-                }
-
-                .pop-menu::after {
-                    /* نقل السهم ليشير للزر */
-                    left: auto;
-                    right: 15px;
-                    transform: rotate(45deg);
-                }
+                /* ملاحظة: قواعد .pop-menu للجوال كانت مكرّرة هنا،
+                   وحُذفت لأن الكتلة المتأخرة في نهاية الملف تلغيها بالكامل
+                   (كل تصريحاتها هنا إمّا أضعف أو مكرّرة هناك). */
 
                 /* Q&A responsive overrides */
                 .qa-question-box {
@@ -2194,9 +2181,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 right: auto !important;
                 transform: none !important;
 
-                /* إلغاء أي قيم RTL متعارضة */
-                inset-inline-start: unset !important;
-                inset-inline-end: unset !important;
+                /* ⚠️ لا تضف inset-inline-start/end هنا:
+                   في RTL تُترجَم إلى right/left، وتتصدّر الـ physical
+                   في ترتيب الـ cascade حتى مع !important — فتُلغي
+                   left/right أعلاه وتُعيد الصندوق إلى static position،
+                   وبما أن .share-control هو flex مع justify-content:center
+                   يظهر الصندوق بمقدار -(160-44)/2 = -58px خارج الشاشة. */
 
                 /* الشكل */
                 background: #fff;
@@ -2243,7 +2233,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 content: '';
                 position: absolute;
                 bottom: -7px;
-                left: 50%;
+                /* مركز الزر = نصف عرض .share-control، لأن حدّ القائمة الأيسر
+                   صار محاذياً لحدّ الزر الأيسر (left: 0) */
+                left: calc(var(--hit, 44px) / 2);
                 transform: translateX(-50%) rotate(45deg);
                 width: 14px;
                 height: 14px;
@@ -2710,9 +2702,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     right: auto !important;
                     transform: none !important;
 
-                    /* ألغِ أي توسيط قديم */
-                    inset-inline-start: unset !important;
-                    inset-inline-end: unset !important;
+                    /* ⚠️ لا تضف inset-inline-start/end هنا (انظر التعليق في
+                       قاعدة .pop-menu الأساسية) — تُلغي left/right أعلاه
+                       وتُعيد الصندوق إلى static position فتخرج عن الشاشة. */
 
                     z-index: 99999 !important;
                     width: 160px !important;
@@ -2761,7 +2753,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     display: block !important;
                     position: absolute !important;
                     bottom: -8px !important;
-                    left: 50% !important;
+                    left: calc(var(--hit, 44px) / 2) !important;
                     right: auto !important;
                     transform: translateX(-50%) rotate(45deg) !important;
                     width: 14px !important;
