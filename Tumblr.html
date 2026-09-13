@@ -450,7 +450,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         <link rel="alternate" type="application/rss+xml" href="{RSS}">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <meta name="theme-color" content="#fff8ec">
+        <meta name="color-scheme" content="light">
         
         <link rel="apple-touch-icon" href="{PortraitURL-128}">
         <link rel="shortcut icon" href="{Favicon}">
@@ -474,7 +476,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <meta name="color:Links Hover" content="#333333">
             <meta name="color:Post Titles" content="#505050">
             <meta name="color:Source Quote" content="#6B1300">
-            <meta name="color:Post Bottom" content="#B3B3B3">
+            <meta name="color:Post Bottom" content="#6f6552">
             <meta name="color:Dividers" content="#E7E7E7">
             <meta name="color:Footer Text Color" content="#d8d8da">
             
@@ -538,13 +540,58 @@ document.addEventListener("DOMContentLoaded", function () {
         {/block:Hidden}
 
         <style type="text/css">
+            /* ============================================================
+               سلّم المقاسات المتجاوب (Yasser)
+               كل المقاسات تتكيّف مع عرض الشاشة بدل قيم بكسل ثابتة،
+               مع أرضيات لا تنزل تحتها لأجل قراءة العربي.
+               ============================================================ */
+            :root {
+                /* --- المقاسات --- */
+                --fs-body:        clamp(16px, 0.9rem + 0.3vw, 18px);
+                --fs-post:        clamp(17px, 0.95rem + 0.4vw, 19px);
+                --fs-title:       clamp(24px, 1rem + 1.5vw, 34px);
+                --fs-quote:       clamp(21px, 1rem + 1.1vw, 28px);
+                --fs-h1:          clamp(24px, 1.1rem + 0.9vw, 30px);
+                --fs-h2:          clamp(22px, 1.05rem + 0.8vw, 28px);
+                --fs-h3:          clamp(19px, 1rem + 0.5vw, 23px);
+                --fs-h4:          clamp(18px, 0.95rem + 0.35vw, 20px);
+                --fs-meta:        clamp(13px, 0.78rem + 0.1vw, 14px);
+                --fs-ui:          clamp(13px, 0.76rem + 0.12vw, 14px);
+                --fs-ui-sm:       clamp(12px, 0.72rem + 0.1vw, 13px);
+
+                /* --- ارتفاعات الأسطر (بلا وحدة حتى لا تُورَّث كطول مطلق) --- */
+                --lh-body:        1.9;
+                --lh-post:        1.85;
+                --lh-title:       1.28;
+                --lh-quote:       1.85;
+                --lh-meta:        1.5;
+
+                /* --- أهداف اللمس: 44px حد أدنى موصى به --- */
+                --tap:            44px;
+                --icon:           20px;
+
+                /* --- أبعاد التخطيط --- */
+                --hero-h:         {text:Header Height};
+                --wrapper-pad-y:  70px;
+                --timeline-gutter: 48px;
+
+                /* --- لون النص الثانوي: ≥ 5.4:1 على كل خلفيات الثيم --- */
+                --color-muted:    #6f6552;
+                --color-muted-2:  #746754;
+
+                /* --- خطوط الثيم --- */
+                --font-title: 'ThmanyahSerifDisplay-Bold';
+                --font-text: 'ThmanyahSerifText-Regular';
+                --font-ui: 'ThmanyahSans-Medium';
+            }
+
             html { -webkit-font-smoothing: antialiased; }
             body {
                 color: #666666; /* تعديل: لون أفتح يريح العين */
                 margin: 0;
                 font-family: {select:Google Font};
-                font-size: 17px;
-                line-height: 2.2em; /* تعديل: زيادة المسافة بين الأسطر */
+                font-size: var(--fs-body);
+                line-height: var(--lh-body); /* إصلاح: بلا وحدة حتى لا تُورَّث كطول مطلق */
                 direction: rtl;
                 text-align: right;
                 /* تعديل: خلفية بتدرج خفيف لإعطاء عمق */
@@ -591,8 +638,8 @@ document.addEventListener("DOMContentLoaded", function () {
             
             #myBtn {
                 position: fixed;
-                bottom: 24px;
-                inset-inline-start: 24px; /* RTL-safe positioning */
+                bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+                inset-inline-start: calc(24px + env(safe-area-inset-left, 0px)); /* RTL-safe positioning */
                 z-index: 99;
                 border: none;
                 outline: none;
@@ -629,17 +676,18 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             h1 {
-                font-size: 27px;
-                line-height: 47px;
+                font-size: var(--fs-h1);
+                line-height: var(--lh-title);
                 font-weight: bold;
                 color: #891C04;
                 font-family: {select:Google Font title};
             }
 
             h2 {
-                font-size: 28px;
-                line-height: 36px;
-                letter-spacing: -1px;
+                font-size: var(--fs-h2);
+                line-height: var(--lh-title);
+                /* إصلاح: أُلغي letter-spacing السالب — يسبّب تلاصق الحروف في العربي */
+                letter-spacing: normal;
                 font-weight: bold;
                 font-family: {select:Google Font title};
                 color: #891C04;
@@ -655,18 +703,18 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             h3 {
-                font-size: 23px;
-                line-height: 29px;
+                font-size: var(--fs-h3);
+                line-height: var(--lh-title);
             }
             h4 {
-                font-size: 20px;
-                line-height: 29px;
+                font-size: var(--fs-h4);
+                line-height: 1.4;
                 font-weight: {select:Bold or Normal Font Quote};
                 color: {color:Source Quote};
                 font-family: {select:Google Font Quote};
             }
             h5 {
-                font-size: 20px;
+                font-size: var(--fs-h4);
             }
             p {
                
@@ -742,27 +790,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 background:{BackgroundColor}!important;
             }
 
-            .head-shell {
-                max-width:{select:Page Width}!important;
-                margin:0 auto;
-                position: relative;
-                padding: 10px 0;
-                padding-bottom: 26px;
-                z-index: 3;
-                -webkit-box-sizing: border-box;
-                -moz-box-sizing: border-box;
-                box-sizing: border-box;
-            }
-
-            .nav-wrap {
-                max-width:{select:Page Width}!important;
-                margin-inline: auto;
-                padding-inline: 60px;
-                -webkit-box-sizing: border-box;
-                -moz-box-sizing: border-box;
-                box-sizing: border-box;
-            }
-            
             .avatar {
                 float: right;
             }
@@ -785,7 +812,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 background-size: cover;
                 max-width:{select:Page Width}!important;
                 margin:0 auto;
-                height: {text:Header Height};
+                height: var(--hero-h);
                 position: relative;
                 z-index: 3;
                 -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
@@ -797,18 +824,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             }
             
-               .myelement {
-            visibility: hidden;
-}
-
-                .myelement:before {
-            content: 'liked this';
-            visibility:visible;
-}
-                .myelement:after {
-              content: '. liked this all';
-}
-            
             .header.no-image {
                 background: none;
                 min-height: 100px;
@@ -817,15 +832,12 @@ document.addEventListener("DOMContentLoaded", function () {
             .header.no-image .transparent {
                 display: none;
             }
-            .header.no-image .title {
-                padding: 20px 0 0 0;
-            }
             
 
             .wrapper {
                 max-width:{select:Page Width}!important;
                 margin: 0 auto;
-                padding: 70px 70px 0; /* تعديل: زيادة المساحة البيضاء حول المحتوى */
+                padding: var(--wrapper-pad-y) 70px 0; /* تعديل: زيادة المساحة البيضاء حول المحتوى */
                 background: #fff8ec;
                 position: relative;
                 z-index: 3;
@@ -842,11 +854,21 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             .title {
-            text-align: center;
-            position: absolute;
+                text-align: center;
+                position: absolute;
                 width: 100%;
                 z-index: 5;
-                padding-top: 10%;
+                /* إصلاح: توسيط رأسي حقيقي بدل padding-top بنسبة من العرض */
+                top: 50%;
+                transform: translateY(-50%);
+                padding: 0 16px;
+                box-sizing: border-box;
+            }
+
+            .header.no-image .title {
+                position: static;
+                top: auto;
+                transform: none;
             }
             
             .title a {
@@ -877,59 +899,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 background: {AccentColor};
              }
             
-            .navigation {
-                font-size: 12px;
-                text-transform: uppercase;
-                z-index: 3;
-                float: right;
-                position: relative;
-                margin: 0 auto;
-            }
-
-            @supports (float: inline-end) {
-                .navigation {
-                    float: inline-end;
-                }
-            }
-
-            .navigation ul {
-                list-style: none;
-                margin: 0;
-                padding: 0;
-                display: flex;
-                align-items: center;
-                flex-wrap: wrap;
-                column-gap: 20px;
-                row-gap: 8px;
-            }
-                
-            .navigation li {
-                margin: 0;
-                display: inline-block;
-                padding: 17px 15px 0;
-                white-space: nowrap;
-            }
-            
-            /* تعديل لون الروابط في القائمة الرئيسية */
-            .navigation li a {
-                color: #891C04; /* لون أحمر غامق متناسق مع الثيم */
-                font-size: 14px;
-                white-space: nowrap;
-            }
-            .navigation li a:hover {
-                color: #553000; /* لون بني غامق عند التحويم */
-                font-size: 14px;
-            }
-            .navigation li a.home-link {
-                vertical-align: middle;
-            }
-            .navigation li a.home-link:hover {
-                opacity: 0.5;
-            }
-            .navigation li:last-child {
-                padding-inline-end: 0;
-            }
-
             /* ===== SITE HEADER STYLES ===== */
             .site-header {
                 background: rgba(255, 248, 236, 0.85);
@@ -978,6 +947,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 display: inline-flex;
                 align-items: center;
                 gap: 8px;
+            }
+
+            /* إصلاح: القاعدة العامة a:link أعلى تخصيصاً من .brand-title فتغلبه،
+               وكان اسم المدونة يظهر بلون الروابط. هنا نرفع التخصيص ليفوز. */
+            .brand-title:link,
+            .brand-title:visited {
+                color: #891C04;
             }
 
             .brand-title:hover {
@@ -1130,7 +1106,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .dropdown-social-title {
                 display: block;
                 font-size: 12px;
-                color: #888;
+                color: var(--color-muted);
                 margin-bottom: 10px;
                 font-weight: 500;
             }
@@ -1194,7 +1170,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .mobile-menu.open {
-                max-height: 500px;
+                /* إصلاح: بدل 500px الثابتة حتى لا تُقتطع القائمة لو زادت الصفحات */
+                max-height: min(80svh, 640px);
+                overflow-y: auto;
                 padding: 16px;
             }
 
@@ -1230,7 +1208,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .mobile-social-title {
                 display: block;
                 font-size: 13px;
-                color: #888;
+                color: var(--color-muted);
                 margin-bottom: 12px;
                 font-weight: 500;
             }
@@ -1292,17 +1270,32 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 .brand-kicker {
-                    font-size: 10px;
+                    font-size: var(--fs-ui-sm);
                     padding: 4px 6px;
                 }
 
                 /* ===== تعديلات الجوال فقط ===== */
 
-                /* علامة الاقتباس: نقلها للوسط فوق النص */
+                /* إصلاح: تقليل ارتفاع البانر على الجوال حتى لا يستهلك الشاشة الأولى */
+                :root {
+                    --hero-h: min(38svh, 240px);
+                    --wrapper-pad-y: 26px;
+                }
+
+                .title {
+                    padding: 0 12px;
+                }
+
+                .title a {
+                    font-size: clamp(21px, 5.6vw, 30px);
+                }
+
+                /* علامة الاقتباس: نقلها للوسط فوق النص
+                   (المقاس وارتفاع السطر يأتيان من القاعدة الأساسية عبر var) */
                 .quote {
                     padding-right: 15px !important;
                     padding-left: 15px !important;
-                    padding-top: 80px;
+                    padding-top: 64px;
                     margin-left: 0;
                     margin-right: 0;
                     width: 100%;
@@ -1316,13 +1309,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     left: 50%;
                     transform: translateX(-50%);
                     top: 0;
-                    font-size: 100px;
+                    font-size: 78px;
                 }
 
                 .posts .header-posts .npf_quote {
                     padding-right: 15px !important;
                     padding-left: 15px !important;
-                    padding-top: 80px;
+                    padding-top: 64px;
                     margin-left: 0;
                     margin-right: 0;
                     width: 100%;
@@ -1336,39 +1329,32 @@ document.addEventListener("DOMContentLoaded", function () {
                     left: 50%;
                     transform: translateX(-50%);
                     top: 0;
-                    font-size: 100px;
+                    font-size: 78px;
                 }
 
-                /* عبارة الوصف: سطر واحد */
+                /* عبارة الوصف: سطران كحد أقصى بدل الاقتطاع بسطر واحد */
                 .header-description {
-                    font-size: 14px;
-                    white-space: nowrap;
+                    font-size: var(--fs-ui);
+                    line-height: 1.7;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
                     overflow: hidden;
-                    text-overflow: ellipsis;
                     max-width: 100%;
                     padding: 0 10px;
+                    text-wrap: balance;
                 }
 
-                /* إصلاح: مرات التفاعل في سطر واحد */
+                /* إصلاح: مرات التفاعل في سطر واحد (المقاس وأهداف اللمس من الأساس) */
                 .meta {
                     flex-wrap: nowrap;
                     gap: 6px;
-                    font-size: 10px;
-                    --icon: 16px;
-                    --hit: 30px;
-                    padding-top: 15px;
-                }
-
-                .like,
-                .reblog,
-                .share-control {
-                    width: 30px !important;
-                    height: 30px !important;
+                    padding-top: 14px;
                 }
 
                 .date-notes {
                     white-space: nowrap;
-                    font-size: 10px;
+                    font-size: var(--fs-meta);
                 }
 
                 /* تقليل padding الـ wrapper على الجوال */
@@ -1394,55 +1380,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     transform: rotate(45deg);
                 }
 
-                /* === إصلاح قسم التفاعلات (Notes) على الجوال === */
-                .notes {
-                    padding: 15px 0 30px 0;
-                    direction: rtl;
-                    text-align: right;
-                }
-
-                .notes li {
-                    display: block !important;
-                    padding: 12px 0;
-                    margin: 0;
-                    border-bottom: 1px solid #f0e8dc;
-                    line-height: 1.8;
-                    font-size: 14px;
-                    text-align: right;
-                    word-wrap: break-word;
-                    overflow-wrap: break-word;
-                }
-
-                .notes li:last-child {
-                    border-bottom: none;
-                }
-
-                .notes .avatar {
-                    display: inline-block;
-                    vertical-align: middle;
-                    margin-inline-end: 8px;
-                }
-
-                .notes .avatar img {
-                    width: 28px;
-                    height: 28px;
-                    border-radius: 50%;
-                }
-
-                .notes a {
-                    color: #891C04;
-                    font-weight: 600;
-                    unicode-bidi: isolate;
-                    direction: ltr;
-                    display: inline;
-                }
-
-                .notes li .action,
-                .notes li span:not(.avatar) {
-                    display: inline;
-                    unicode-bidi: plaintext;
-                }
-
                 /* Q&A responsive overrides */
                 .qa-question-box {
                     padding: 18px;
@@ -1461,12 +1398,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            /* إخفاء العناصر القديمة */
-            .above-head,
-            .nav-wrap,
-            .navigation {
-                display: none !important;
-            }
             /* ===== END SITE HEADER STYLES ===== */
 
             .autopagerize_page_element {
@@ -1499,7 +1430,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 margin: 38px 0 70px;
                 background: var(--post-card-bg);
                 box-sizing: border-box;
-                font-size: 19px;
+                font-size: var(--fs-post);
+                line-height: var(--lh-post);
             }
 
             .posts::after {
@@ -1549,10 +1481,10 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .header-posts {
-                font-size: 19px;
+                font-size: var(--fs-post);
                 letter-spacing: 0px;
                 min-height: 110px;
-                line-height: 1.8;
+                line-height: var(--lh-post);
                 padding-bottom: 50px;
 
             }
@@ -1561,7 +1493,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 font-size: inherit;
                 line-height: inherit;
                 margin: 0 0 1.2em;
-                text-align: justify;
+                /* إصلاح: أُلغي justify — التسوية بلا كشيدة تُنتج فراغات قبيحة في عمود ضيّق */
+                text-align: right;
             }
 
             .posts .header-posts {
@@ -1571,8 +1504,8 @@ document.addEventListener("DOMContentLoaded", function () {
             h4.post-title {
                 color: #891C04;
                 font-family: {select:Google Font title};
-                font-size: 34px;
-                line-height: 38px;
+                font-size: var(--fs-title);
+                line-height: var(--lh-title);
                 font-weight: bold;
             }
 
@@ -1587,11 +1520,11 @@ document.addEventListener("DOMContentLoaded", function () {
             }
                         
             .quote {
-                font-size: 28px; /* تعديل: تكبير حجم خط الاقتباسات */
+                font-size: var(--fs-quote);
                 letter-spacing: 0px;
                 min-height: 80px;
-                line-height: 200%; /* تعديل: زيادة المسافة بين الأسطر */
-                padding-bottom: 25px; /* تعديل: تقليل المسافة تحت الاقتباس */
+                line-height: var(--lh-quote);
+                padding-bottom: 25px;
                 /* إصلاح: استخدام pseudo-element بدلاً من background للتحكم بحجم علامة الاقتباس */
                 position: relative;
                 padding-right: 80px; /* مساحة لعلامة الاقتباس */
@@ -1611,11 +1544,11 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .posts .header-posts .npf_quote {
-                font-size: 28px; /* تعديل: تكبير حجم خط الاقتباسات */
+                font-size: var(--fs-quote);
                 letter-spacing: 0px;
                 min-height: 80px;
-                line-height: 200%; /* تعديل: زيادة المسافة بين الأسطر */
-                padding-bottom: 25px; /* تعديل: تقليل المسافة تحت الاقتباس */
+                line-height: var(--lh-quote);
+                padding-bottom: 25px;
                 /* إصلاح: استخدام pseudo-element للتحكم بحجم علامة الاقتباس */
                 position: relative;
                 padding-right: 80px;
@@ -1742,7 +1675,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             .qa-asker-label {
                 font-size: 12px;
-                color: #8c7f6b;
+                color: var(--color-muted);
                 font-weight: 500;
                 font-family: 'ThmanyahSans-Medium', sans-serif;
             }
@@ -1783,17 +1716,15 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             .meta {
-                display: block;
                 height: auto;
-                line-height: 1.4;
+                line-height: var(--lh-meta);
                 font-family: '{select:Google Font}', sans-serif;
                 margin-top: 10px;
-                font-size:11px;
+                font-size: var(--fs-meta);
                 color: {color:Post Bottom};
-                text-transform: uppercase;
                 padding-top: 20px; /* تعديل: تقليل المسافة فوق التاريخ */
-                --icon: 18px; /* إصلاح: تصغير الأيقونات لتتناسق مع أيقونة المشاركة */
-                --hit: 36px; /* إصلاح: تصغير منطقة النقر */
+                --icon: 20px; /* إصلاح: أيقونات أوضح */
+                --hit: var(--tap); /* إصلاح: هدف لمس 44px */
                 --gap: 10px;
                 display: flex;
                 align-items: center;
@@ -1801,7 +1732,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .meta a {
-                color: #7e715b;
+                color: var(--color-muted-2);
             }
 
             .tags {
@@ -1809,7 +1740,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             .tags a {
-                color: #7e715b;
+                color: var(--color-muted);
             }
             
             .tags ul {
@@ -1858,9 +1789,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 max-width:{select:Page Width}!important;
                 margin:0 auto;
                 position: relative;
-                padding: 34px 20px 42px;
+                padding: 34px 20px calc(42px + env(safe-area-inset-bottom, 0px));
                 z-index: 3;
-                color: #8c7f6b;
+                color: var(--color-muted);
                 text-align: center;
                 -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
                 -moz-box-sizing: border-box; /* Firefox, other Gecko */
@@ -1874,6 +1805,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 gap: 9px;
                 color: #891C04;
                 text-decoration: none;
+            }
+
+            /* نفس إصلاح .brand-title: رفع التخصيص حتى لا تغلبه a:link */
+            .footer-signature:link,
+            .footer-signature:visited {
+                color: #891C04;
             }
 
             .footer-signature:hover {
@@ -1904,14 +1841,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
             .footer-years {
                 margin: 10px 0 0;
-                color: #a99c8a;
+                color: var(--color-muted);
                 font-size: 13px;
                 line-height: 1.6;
             }
             
             .footer .info {
                 margin: 6px 0 0;
-                color: #a99c8a;
+                color: var(--color-muted);
                 font-size: 13px;
                 line-height: 1.7;
             }
@@ -2404,14 +2341,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             @media screen and (max-width: 520px) {
                 .autopagerize_page_element {
-                    --timeline-gutter: 32px;
+                    /* الممر يأتي من :root (22px على الجوال) */
                     --timeline-line-right: 5px;
                     padding-right: var(--timeline-gutter);
-                }
-
-                .posts {
-                    padding: 20px 16px 22px;
-                    margin-bottom: 54px;
                 }
 
                 .posts::after {
@@ -2448,30 +2380,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
              }
 
-            @media screen and (max-width: 750px){
-                .above-head {
-                    padding: 15px;
-                    text-align: center;
-                }
-            }
-            @media screen and (max-width: 400px){
-                .social ul li {
-                    display: inline-block;
-                    margin-bottom: 20px;
-                    width: 93%;
-                    margin: 5px 20px;
-                }
-                .wrapper {
-                    padding: 60px 15px 0;
-                }
-                .social {
-                    margin: 0 -15px;
-                }
-                .nav-wrap {
-                    padding-inline: 15px;
-                }
-            }
-            
             .social-icons {
                 list-style: none;
                 display: flex;
@@ -2524,67 +2432,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 position: static !important;
             }
 
-            @media screen and (max-width: 768px) {
-                .navigation {
-                    text-align: center; /* محاذاة النصوص في المنتصف */
-                }
-                .navigation li {
-                    display: block; /* جعل العناصر عمودية بدلاً من أفقية */
-                    padding: 10px 0; /* إضافة مسافات عمودية بين العناصر */
-                }
-            }
-
-            .navigation ul {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                align-items: center;
-                column-gap: 28px;
-                row-gap: 6px;
-            }
-
             @media screen and (max-width: 600px) {
-                .above-head {
-                    max-width: 100% !important;
-                    width: 100%;
-                    margin: 0;
-                    padding-inline: 12px;
-                    padding-bottom: 14px;
-                }
-
-                .nav-wrap {
-                    max-width: 100% !important;
-                    width: 100%;
-                    margin: 0;
-                    padding-inline: 0;
-                }
-
-                .navigation ul {
-                    display: grid;
-                    grid-template-columns: repeat(3, minmax(0, 1fr));
-                    gap: 6px 12px;
-                    justify-items: center;
-                    align-items: center;
-                }
-
-                .navigation li {
-                    padding: 0;
-                }
-
-                .navigation li a {
-                    font-size: 13px;
-                    white-space: nowrap;
-                }
-
-                .navigation .nav-social {
-                    grid-column: 1 / -1;
-                    justify-self: center;
-                }
-
-                .navigation .nav-social .social-icons {
-                    justify-content: center;
-                }
-
                 /* إصلاح: تباعد الكلمات على الجوال */
                 .quote,
                 .header-posts,
@@ -2596,11 +2444,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             /* ===== Custom CSS - Yasser ===== */
-            :root {
-              --font-title: 'ThmanyahSerifDisplay-Bold';
-              --font-text: 'ThmanyahSerifText-Regular';
-              --font-ui: 'ThmanyahSans-Medium';
-            }
+            /* (متغيّرات الخطوط انتقلت إلى :root في أعلى الملف) */
 
             html,
             body,
@@ -2693,7 +2537,7 @@ document.addEventListener("DOMContentLoaded", function () {
               text-align: right !important;
               max-height: 380px;
               overflow-y: auto !important;
-              font-size: 15px !important;
+              font-size: var(--fs-ui) !important;
               line-height: 1.75 !important;
               scrollbar-width: thin;
               scrollbar-color: rgba(137, 28, 4, 0.3) transparent;
@@ -2793,8 +2637,11 @@ document.addEventListener("DOMContentLoaded", function () {
               .notes {
                 margin-top: 24px !important;
                 padding: 0 0 12px !important;
-                font-size: 13px !important;
+                font-size: var(--fs-ui) !important;
                 line-height: 1.8 !important;
+                /* إصلاح: أُلغي التمرير المتداخل داخل صفحة تتمرّر أصلاً */
+                max-height: none !important;
+                overflow-y: visible !important;
               }
 
               ol.notes li,
@@ -2837,110 +2684,10 @@ document.addEventListener("DOMContentLoaded", function () {
               }
             }
 
-            /* ===== Mobile Nav Centering ===== */
-            @media (max-width: 600px) {
-
-              .above-head .nav-wrap {
-                width: 100%;
-                padding: 14px 12px;
-                text-align: center;
-              }
-
-              .above-head .navigation > ul {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                align-items: center;
-                gap: 10px 18px;
-                margin: 0;
-                padding: 0;
-                list-style: none;
-              }
-
-              .above-head .navigation > ul > li {
-                display: flex;
-                justify-content: center;
-              }
-
-              .above-head .navigation > ul > li > a {
-                display: inline-block;
-                white-space: nowrap;
-                text-align: center;
-                font-size: 16px;
-              }
-
-              .above-head .navigation > ul > li.nav-social {
-                width: 100%;
-                margin-top: 6px;
-              }
-
-              .above-head .navigation .social-icons {
-                display: flex;
-                justify-content: center;
-                gap: 18px;
-                padding: 0;
-                margin: 0;
-                list-style: none;
-              }
-            }
-
             html, body {
               width: 100%;
               max-width: 100%;
               overflow-x: hidden;
-            }
-
-            .above-head,
-            .nav-wrap,
-            .navigation {
-              width: 100%;
-              max-width: 100%;
-              overflow-x: hidden;
-              box-sizing: border-box;
-            }
-
-            @media (max-width: 600px) {
-
-              .above-head {
-                padding: 0;
-              }
-
-              .nav-wrap {
-                width: 100%;
-                padding: 14px 12px;
-                box-sizing: border-box;
-              }
-
-              .navigation > ul {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                align-items: center;
-                margin: 0;
-                padding: 0;
-                list-style: none;
-                box-sizing: border-box;
-              }
-
-              .navigation > ul > li {
-                margin: 6px 12px;
-                white-space: nowrap;
-              }
-
-              .navigation > ul > li.nav-social {
-                width: 100%;
-                display: flex;
-                justify-content: center;
-                margin-top: 8px;
-              }
-
-              .navigation .social-icons {
-                display: flex;
-                gap: 18px;
-                padding: 0;
-                margin: 0;
-                list-style: none;
-              }
             }
 
             /* ========================================
@@ -3026,116 +2773,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 /* إخفاء السهم القديم */
                 .pop-menu.south li:last-child::after {
-                    display: none !important;
-                }
-            }
-
-            /* ========================================
-               إصلاح قسم التفاعلات (Notes) للجوال
-               ======================================== */
-            @media screen and (max-width: 768px) {
-                 ol.notes,
-                 .notes {
-                     direction: rtl !important;
-                     text-align: right !important;
-                     padding: 0 8px 12px !important;
-                     margin: 20px 0 0 0 !important;
-                     list-style: none !important;
-                     width: 100% !important;
-                     max-height: 320px;
-                     overflow-y: auto !important;
-                     border: 0 !important;
-                     font-size: 13px !important;
-                     line-height: 1.8 !important;
-                     scrollbar-width: thin;
-                     scrollbar-color: rgba(137, 28, 4, 0.3) transparent;
-                 }
-
-                 /* Custom scrollbar for webkit browsers */
-                 ol.notes::-webkit-scrollbar,
-                 .notes::-webkit-scrollbar {
-                     width: 6px;
-                 }
-                 ol.notes::-webkit-scrollbar-thumb,
-                 .notes::-webkit-scrollbar-thumb {
-                     background-color: rgba(137, 28, 4, 0.3);
-                     border-radius: 3px;
-                 }
-
-                ol.notes li,
-                .notes li,
-                .notes li.note {
-                    display: grid !important;
-                    grid-template-columns: 20px minmax(0, 1fr) !important;
-                    column-gap: 8px !important;
-                    align-items: center !important;
-                    justify-content: flex-start !important;
-                    gap: 5px 8px !important;
-                    float: none !important;
-                    clear: both !important;
-                    width: 100% !important;
-                    padding: 1px 0 !important;
-                    margin: 0 0 7px !important;
-                    border-bottom: 0 !important;
-                    font-size: inherit !important;
-                    line-height: inherit !important;
-                    text-align: right !important;
-                    box-sizing: border-box !important;
-                    overflow: visible !important;
-                }
-
-                .notes li:last-child {
-                    border-bottom: none !important;
-                }
-
-                /* الصورة الرمزية */
-                .notes .avatar_frame,
-                .notes a.avatar_frame {
-                    display: inline-flex !important;
-                    align-items: center !important;
-                    justify-content: center !important;
-                    grid-column: 1 !important;
-                    grid-row: 1 !important;
-                    vertical-align: middle !important;
-                    margin: 0 !important;
-                    float: none !important;
-                }
-
-                .notes .avatar_frame img,
-                .notes img.avatar {
-                    width: 20px !important;
-                    height: 20px !important;
-                    border-radius: 50% !important;
-                    vertical-align: middle !important;
-                    display: inline-block !important;
-                }
-
-                /* النص والاسم */
-                .notes span.action {
-                    display: block !important;
-                    grid-column: 2 !important;
-                    grid-row: 1 !important;
-                    vertical-align: middle !important;
-                    flex: none !important;
-                    width: auto !important;
-                    min-width: 0 !important;
-                    font-size: inherit !important;
-                    line-height: inherit !important;
-                    text-align: right !important;
-                    overflow-wrap: anywhere !important;
-                }
-
-                .notes span.action a,
-                .notes li a:not(.avatar_frame) {
-                    color: #891C04 !important;
-                    font-weight: 600 !important;
-                    text-decoration: none !important;
-                    display: inline !important;
-                }
-
-                /* إخفاء div.clear */
-                .notes .clear,
-                .notes div.clear {
                     display: none !important;
                 }
             }
@@ -3320,7 +2957,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .custom-audio-player .track-artist {
                 font-family: 'ThmanyahSans-Medium', sans-serif;
                 font-size: 14px;
-                color: #7e715b;
+                color: var(--color-muted);
                 font-weight: 500;
                 white-space: nowrap;
                 overflow: hidden;
@@ -3330,7 +2967,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .custom-audio-player .track-album {
                 font-family: 'ThmanyahSans-Medium', sans-serif;
                 font-size: 11px;
-                color: #a89f90;
+                color: var(--color-muted);
                 line-height: 1;
             }
 
@@ -3346,7 +2983,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .custom-audio-player .volume-btn {
                 background: none;
                 border: none;
-                color: #7e715b;
+                color: var(--color-muted);
                 cursor: pointer;
                 padding: 8px;
                 border-radius: 50%;
@@ -3425,7 +3062,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .custom-audio-player .audio-time {
                 font-family: 'ThmanyahSans-Medium', 'Gibson', sans-serif !important;
                 font-size: 12px;
-                color: #7e715b;
+                color: var(--color-muted);
                 font-weight: 500;
                 min-width: 38px;
                 user-select: none;
@@ -3535,6 +3172,91 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             /* ===== End Custom CSS ===== */
+
+            /* ============================================================
+               إصلاحات الإتاحة والأبعاد (Yasser)
+               ============================================================ */
+
+            /* .big-title كان في الـ markup بلا أي تنسيق */
+            .big-title {
+                width: 100%;
+                text-align: center;
+            }
+
+            /* --- Safe area لأجهزة الـ notch ومؤشّر الصفحة --- */
+            .site-header {
+                padding-top: env(safe-area-inset-top, 0px);
+                padding-left: env(safe-area-inset-left, 0px);
+                padding-right: env(safe-area-inset-right, 0px);
+            }
+
+            .mobile-menu.open {
+                padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+            }
+
+            /* --- أرقام الوقت: عزلها حتى لا ينقلب ترتيبها في سياق RTL --- */
+            .custom-audio-player .audio-time {
+                direction: ltr;
+                unicode-bidi: isolate;
+                font-variant-numeric: tabular-nums;
+            }
+
+            .post-date-ar,
+            .date-notes .note-count {
+                unicode-bidi: isolate;
+            }
+
+            /* --- تقليل حركة ارتفاع الصور على الجوال --- */
+            @media screen and (max-width: 768px) {
+                /* الممر الزخرفي: يُعرَّف على العنصر نفسه لأنه يعرّفه محلياً في القاعدة الأساسية،
+                   ولذلك يجب أن يأتي بعدها في الشلال */
+                .autopagerize_page_element {
+                    --timeline-gutter: 22px;
+                    padding-right: var(--timeline-gutter);
+                }
+
+                a.link-block .link-name {
+                    font-size: var(--fs-h4);
+                }
+
+                .posts > .media img,
+                .posts .header-posts figure.tmblr-full img,
+                .posts .header-posts .npf_row img {
+                    max-height: min(62svh, 520px);
+                }
+
+                .posts > .media video,
+                .posts .header-posts figure.tmblr-full video,
+                .posts .header-posts .npf_row video {
+                    max-height: min(56svh, 460px);
+                }
+
+                .media iframe {
+                    max-height: min(50svh, 420px);
+                }
+
+                .posts {
+                    padding: 22px 16px 20px;
+                    /* 38px لأعلى لأن شارة التاريخ مثبّتة على top: -38px */
+                    margin: 38px 0 48px;
+                }
+
+                .post-timeline-date a {
+                    font-size: var(--fs-ui-sm);
+                }
+            }
+
+            /* --- احترام تفضيل تقليل الحركة --- */
+            @media (prefers-reduced-motion: reduce) {
+                *,
+                *::before,
+                *::after {
+                    animation-duration: 0.001ms !important;
+                    animation-iteration-count: 1 !important;
+                    transition-duration: 0.001ms !important;
+                    scroll-behavior: auto !important;
+                }
+            }
 
             {CustomCSS}
         </style>
