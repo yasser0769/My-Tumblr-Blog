@@ -31,6 +31,47 @@ function getCssRule(selector) {
   return rule;
 }
 
+// Concatenates the contents of every `@media screen and (max-width: Npx)`
+// block, so a rule that lives inside a media query can be inspected even
+// though `getCssRule` is first-match-wins and would return the base rule.
+function getMediaBlock(css, maxWidth) {
+  const marker = `@media screen and (max-width: ${maxWidth}px)`;
+  let block = '';
+  let index = css.indexOf(marker);
+
+  while (index !== -1) {
+    const open = css.indexOf('{', index);
+    let depth = 0;
+    let i = open;
+
+    for (; i < css.length; i += 1) {
+      if (css[i] === '{') depth += 1;
+      else if (css[i] === '}') {
+        depth -= 1;
+        if (depth === 0) break;
+      }
+    }
+
+    block += `\n${css.slice(open + 1, i)}`;
+    index = css.indexOf(marker, i);
+  }
+
+  return block;
+}
+
+function getCssRuleIn(css, selector) {
+  const rules = css.match(/[^{}]+{[^{}]*}/g) || [];
+
+  return rules.find((candidate) => {
+    const selectorList = candidate
+      .slice(0, candidate.indexOf('{'))
+      .split(',')
+      .map((part) => part.trim());
+
+    return selectorList.includes(selector);
+  });
+}
+
 function assertDeclaration(rule, property, expectedValue) {
   const normalizedRule = rule.replace(/\s+/g, ' ');
   const normalizedExpected = expectedValue.replace(/\s+/g, ' ');
@@ -158,4 +199,25 @@ test('figure margins are reset so images fill the post column', () => {
 
   const imageRule = getCssRule('.posts figure img');
   assertDeclaration(imageRule, 'margin-bottom', '12px');
+});
+
+test('the header description keeps a gap under the hero image on mobile', () => {
+  // The base rule pulls the description up with `margin: -30px 0 30px 0`. That
+  // is tuned for the desktop `--wrapper-pad-y: 70px`, leaving 40px of air under
+  // the hero. At <=768px the wrapper padding drops to 26px, so the same -30px
+  // put the description 4px ABOVE the hero's bottom edge and the title looked
+  // glued to the image (measured gap: -4px before, +34px after the override).
+  const base = getCssRule('.header-description');
+  assertDeclaration(base, 'margin', '-30px 0 30px 0');
+
+  const mobile = getCssRuleIn(getMediaBlock(getThemeCss(), 768), '.header-description');
+  assert.ok(mobile, 'Expected a .header-description override in the 768px media query');
+
+  const marginTop = /margin-top\s*:\s*(-?[\d.]+)px/.exec(mobile.replace(/\s+/g, ' '));
+  assert.ok(marginTop, 'Expected an explicit margin-top in the mobile .header-description rule');
+  assert.ok(
+    Number(marginTop[1]) >= 0,
+    `Mobile .header-description margin-top must not be negative (got ${marginTop[1]}px): ` +
+      'it cancels the reduced wrapper padding and glues the title to the hero image'
+  );
 });
