@@ -1601,8 +1601,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 margin-inline: auto;
                 /* ملاحظة: كان هنا max-height: 700px، وهو يقصّ ارتفاع الحاوية
                    دون تصغير العرض — فينكسر تناسب الفيديو وتبقى مساحة فارغة
-                   كبيرة بين الفيديو والتعليق. النسبة الآن تُحسب في السكربت
-                   أدناه من الأبعاد التي يحقنها تمبلر في style. */
+                   كبيرة بين الفيديو والتعليق.
+                   ملاحظة ثانية: الـ max-width هنا حالة افتراضية إن لم يعمل
+                   السكربت فقط. حين يعمل، يثبّت السكربت الحاوية على مقاسها
+                   الأصلي ثم يصغّرها بـ zoom (انظر تعليق السكربت أسفل الملف):
+                   داخل الإطار <video> ارتفاعه مثبّت بالسمة height، فتصغير
+                   الإطار يجعله أطول من الـ viewport فتختفي أدوات التحكم. */
             }
             .media iframe {
                 width: 100%;
@@ -1614,7 +1618,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 display: block;
             }
             /* مشغّل فيديو تمبلر: نسبته تأتي من أبعاد الفيديو نفسه، لا من 16:9،
-               وإلا اقتُطع الفيديو الطولي ولم يظهر منه إلا شريط علوي. */
+               وإلا اقتُطع الفيديو الطولي ولم يظهر منه إلا شريط علوي. ويجب أن
+               يملأ الإطار حاويته المثبّتة على المقاس الأصلي (وليس عرض العمود)،
+               فـ max-height: min(70vh, 700px) من القاعدة أعلاه كان يجعله أقصر
+               من صندوق الفيديو داخل الإطار. */
             .tumblr_video_container.is-ratio-set iframe {
                 aspect-ratio: auto;
                 width: 100%;
@@ -3721,28 +3728,111 @@ function scrollFunction() {
     </script>
 
     <script>
-        /* مشغّل فيديو تمبلر: يحقن أبعاد الفيديو الحقيقية بالبكسل في style
-           الحاوية (مثلاً 700×1244 لفيديو طولي). الحاوية كانت محدودة بـ
-           max-height: 700px، فيُقصّ الارتفاع ويبقى فراغ كبير. هنا نحوّل
-           الأبعاد إلى نسبة أبعاد حقيقية، ثم نحصر الارتفاع بتقليص العرض لا
-           بارتفاع ثابت، فيظهر الفيديو الطولي كاملاً بلا اقتصاص.
-           (لا يمكن فعل هذا بـ CSS وحدها: النسبة موجودة في style كأبعاد
-           مطلقة، و CSS لا تستطيع تحويلها إلى نسبة.) */
+        /* مشغّل فيديو تمبلر: الحاوية تأتي من تمبلر بمقاسها الأصلي المحقون في
+           style (مثلاً 700×1237 لفيديو طولي)، وداخلها إطارٌ فيه
+           <video width='700' height='1237'>. ارتفاع سمة height يُترجَم إلى
+           height: 1237px ويغلب ارتفاع النسبة التلقائي، أي أن صندوق الفيديو
+           يبقى 1237px مهما صغّرنا الإطار. فحين كان الثيم يصغّر الإطار إلى عرض
+           العمود (359px مثلاً) صار عندنا صندوق 359×1237 داخل viewport ارتفاعه
+           634px: نصف الفيديو أعلى أسود (letterbox من object-fit: contain)،
+           وشريط التحكم — وهو في أسفل صندوق الفيديو — ينزل إلى y≈1197 أي خارج
+           الإطار المرئي، فيبدو الفيديو معطّلاً ولا يمكن تشغيله.
+
+           الحل: لا نغيّر مقاس التخطيط إطلاقاً؛ نُبقي الحاوية والإطار بمقاس
+           تمبلر الأصلي ثم نصغّر المشغّل بصرياً بـ zoom. وميزة zoom على
+           transform: scale أنه يقلّص المقاس الظاهر ويُبقي viewport الإطار
+           الداخلي بمقاسه الأصلي (700×1237)، فيهتدي المشغّل إلى تخطيطه الصحيح
+           ويكون شريط التحكم داخل الإطار. أما transform فلا يقلّص المساحة التي
+           تشغلها الحاوية في التخطيط فيحتاج عنصراً غلافياً وطرح الباقي من
+           الهامش (وهو مسار الاحتياط أدناه لمتصفح لا يدعم zoom). */
         (function () {
-            document.querySelectorAll('.tumblr_video_container').forEach(function (box) {
-                var w = parseFloat(box.style.width);
-                var h = parseFloat(box.style.height);
-                if (!w || !h) return;
+            var supportsZoom = typeof CSS !== 'undefined' && CSS.supports && CSS.supports('zoom', '1');
 
-                var ratio = w / h;
+            function readNativeSize(box) {
+                var w = parseFloat(box.dataset.videoWidth);
+                var h = parseFloat(box.dataset.videoHeight);
+                if (w && h) return { w: w, h: h };
 
-                box.style.aspectRatio = w + ' / ' + h;
-                box.style.width = '100%';
-                box.style.height = 'auto';
-                // سقف للارتفاع مع الحفاظ على النسبة: min(العرض المتاح، 78svh×النسبة)
-                box.style.maxWidth = 'min(100%, calc(78svh * ' + ratio.toFixed(4) + '))';
-                box.style.marginInline = 'auto';
+                // data-width/data-height على الإطار هي الأصل عند تمبلر، وهي أبقى
+                // من style الحاوية (قد يعيد تمبلر كتابتها لاحقاً).
+                var frame = box.querySelector ? box.querySelector('iframe') : null;
+                if (frame) {
+                    w = parseFloat(frame.dataset && frame.dataset.width ? frame.dataset.width : frame.getAttribute('width'));
+                    h = parseFloat(frame.dataset && frame.dataset.height ? frame.dataset.height : frame.getAttribute('height'));
+                    if (w && h) return { w: w, h: h };
+                }
+
+                w = parseFloat(box.style.width);
+                h = parseFloat(box.style.height);
+                if (w && h) return { w: w, h: h };
+
+                return null;
+            }
+
+            function fit(box) {
+                var parent = box.parentElement;
+                if (!parent) return;
+
+                var size = readNativeSize(box);
+                if (!size) return;
+
+                var available = parent.clientWidth;
+                if (!available) return;
+
+                var scale = Math.min(1, available / size.w);
+                if (box.dataset.videoFitWidth === String(available) &&
+                    box.dataset.videoScale === String(scale)) {
+                    return;
+                }
+                box.dataset.videoFitWidth = String(available);
+                box.dataset.videoScale = String(scale);
+
+                // لا تُصغّر الحاوية: أعِدها إلى مقاس تمبلر الأصلي، ولا تسمح
+                // لـ max-width: 100% في CSS بأن تقصّها إلى عرض العمود.
+                box.style.width = size.w + 'px';
+                box.style.height = size.h + 'px';
+                box.style.maxWidth = 'none';
+                box.style.marginBottom = '';
+
+                if (supportsZoom) {
+                    box.style.zoom = String(scale);
+                    box.style.transform = '';
+                    box.style.transformOrigin = '';
+                    box.style.marginInline = 'auto';
+                } else {
+                    // مسار الاحتياط: transform لا يقلّص حجز الحاوية في التخطيط،
+                    // فنطرح فرق الارتفاع من هامش الأسفل. ونثبّت الأصل على الحدّ
+                    // الأيمن (RTL) فيلتصق الظاهر بيمين العمود بعد التصغير.
+                    box.style.zoom = '';
+                    box.style.transform = 'scale(' + scale + ')';
+                    box.style.transformOrigin = 'top right';
+                    box.style.marginInline = '0';
+                    box.style.marginBottom = (-(size.h * (1 - scale))).toFixed(2) + 'px';
+                }
+
                 box.classList.add('is-ratio-set');
+            }
+
+            var containers = document.querySelectorAll('.tumblr_video_container');
+
+            Array.prototype.forEach.call(containers, function (box) {
+                var size = readNativeSize(box);
+                if (!size) return;
+
+                // خزّن الأبعاد الأصلية قبل أي تعديل، حتى يعيد fit استخدامها بعد
+                // كل تغيّر في العرض بدل قراءة عرض العمود المصغَّر.
+                box.dataset.videoWidth = String(size.w);
+                box.dataset.videoHeight = String(size.h);
+                fit(box);
+
+                var parent = box.parentElement;
+                if (!parent) return;
+
+                if (typeof ResizeObserver !== 'undefined') {
+                    new ResizeObserver(function () { fit(box); }).observe(parent);
+                } else {
+                    window.addEventListener('resize', function () { fit(box); });
+                }
             });
         })();
     </script>

@@ -1,6 +1,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const test = require('node:test');
+const vm = require('node:vm');
 
 function getThemeHtml() {
   return fs.readFileSync('Tumblr.html', 'utf8');
@@ -173,7 +174,10 @@ test('.header-posts does not reserve empty space in posts without text', () => {
 
 test('the video player keeps the video aspect ratio instead of a fixed 16:9 window', () => {
   // Tumblr injects the real pixel dimensions into the container's style, so a
-  // max-height clamp used to break the ratio and leave a large blank gap.
+  // max-height clamp used to break the ratio and leave a large blank gap. The
+  // dimensions must stay intact: the player's inner <video> is pinned to the
+  // injected height by its own `height` attribute, so shrinking the frame to
+  // the column width pushes the control bar out of the visible viewport.
   const containerRule = getCssRule('.tumblr_video_container');
 
   assert.doesNotMatch(
@@ -183,8 +187,9 @@ test('the video player keeps the video aspect ratio instead of a fixed 16:9 wind
   );
   assertDeclaration(containerRule, 'max-width', '100%');
 
-  // The ratio is applied by the inline script once it has read the dimensions,
-  // so the iframe must stop forcing 16:9 on that element.
+  // The ratio is handled by the inline script (it pins the native size and
+  // scales optically), so the iframe must fill that container instead of
+  // forcing 16:9 and a 70vh cap on it.
   const playerFrameRule = getCssRule('.tumblr_video_container.is-ratio-set iframe');
   assertDeclaration(playerFrameRule, 'aspect-ratio', 'auto');
   assertDeclaration(playerFrameRule, 'max-height', 'none');
@@ -220,4 +225,161 @@ test('the header description keeps a gap under the hero image on mobile', () => 
     `Mobile .header-description margin-top must not be negative (got ${marginTop[1]}px): ` +
       'it cancels the reduced wrapper padding and glues the title to the hero image'
   );
+});
+
+// ---------------------------------------------------------------- video fit
+
+function getVideoFitScript() {
+  const html = getThemeHtml();
+  const match = html.match(/<script>\s*\/\* مشغّل فيديو تمبلر[\s\S]*?<\/script>/);
+
+  assert.ok(match, 'Could not find the video fit script in Tumblr.html');
+  return match[0].replace(/^<script>/, '').replace(/<\/script>$/, '');
+}
+
+// A container as Tumblr renders it: pixel dimensions in `style`, and the player
+// iframe carrying the same numbers in `data-width` / `data-height`.
+function makeVideoContainer(nativeWidth, nativeHeight, columnWidth) {
+  const style = {
+    width: nativeWidth + 'px',
+    height: nativeHeight + 'px',
+  };
+
+  const frame = {
+    dataset: { width: String(nativeWidth), height: String(nativeHeight) },
+    getAttribute(name) {
+      if (name === 'width') return String(nativeWidth);
+      if (name === 'height') return String(nativeHeight);
+      return null;
+    },
+  };
+
+  const classes = new Set();
+
+  return {
+    style,
+    dataset: {},
+    tagName: 'DIV',
+    parentElement: { clientWidth: columnWidth },
+    classList: {
+      add: (name) => classes.add(name),
+      contains: (name) => classes.has(name),
+      remove: (name) => classes.delete(name),
+    },
+    classes,
+    querySelector: (selector) => (selector === 'iframe' ? frame : null),
+  };
+}
+
+function runVideoFitScript({ containers, supportsZoom = true, withResizeObserver = true }) {
+  const resizeObservers = [];
+  const windowListeners = {};
+
+  const context = {
+    document: {
+      querySelectorAll: (selector) => (selector === '.tumblr_video_container' ? containers : []),
+    },
+    window: {
+      addEventListener(event, callback) {
+        windowListeners[event] = callback;
+      },
+    },
+    CSS: { supports: () => supportsZoom },
+    console,
+  };
+
+  if (withResizeObserver) {
+    context.ResizeObserver = class {
+      constructor(callback) {
+        this.callback = callback;
+        resizeObservers.push(this);
+      }
+      observe(element) {
+        this.element = element;
+      }
+      disconnect() {}
+    };
+  }
+
+  vm.runInNewContext(getVideoFitScript(), context);
+
+  return { resizeObservers, windowListeners };
+}
+
+test('the video player keeps its native size and is scaled optically, not shrunk', () => {
+  // Shrinking the frame is what broke playback: inside the iframe the <video>
+  // keeps `height: 1237px` from its own height attribute, so at a 359px frame
+  // the video box (359x1237) was twice as tall as the 634px viewport, its
+  // controls landed at y≈1197 (off-screen) and nothing could be played.
+  const box = makeVideoContainer(700, 1237, 578);
+  runVideoFitScript({ containers: [box] });
+
+  const scale = 578 / 700;
+
+  assert.equal(
+    box.style.width,
+    '700px',
+    'The container must keep Tumblr\'s native width so the player keeps its layout'
+  );
+  assert.equal(box.style.height, '1237px', 'The container must keep Tumblr\'s native height');
+  assert.equal(
+    box.style.maxWidth,
+    'none',
+    'max-width: 100% would clamp the container to the column width and break the player'
+  );
+  assert.equal(box.style.zoom, String(scale), 'The player must be scaled down with zoom');
+  assert.equal(box.classes.has('is-ratio-set'), true, 'The scaled state must be flagged in CSS');
+
+  // Regression guard: the old script rewrote the width to 100% and let the
+  // iframe inherit the column width.
+  assert.doesNotMatch(
+    getVideoFitScript(),
+    /style\.width\s*=\s*'100%'/,
+    'The container must never be shrunk to 100%: the player cannot reflow its video box'
+  );
+});
+
+test('the video player is re-scaled when its column changes width', () => {
+  const box = makeVideoContainer(700, 1237, 578);
+  const { resizeObservers } = runVideoFitScript({ containers: [box] });
+
+  assert.equal(resizeObservers.length, 1, 'The column should be observed for width changes');
+  assert.equal(resizeObservers[0].element, box.parentElement);
+
+  // A phone-width column (the wrapper drops its padding at <=768px).
+  box.parentElement.clientWidth = 294;
+  resizeObservers[0].callback();
+
+  assert.equal(box.style.zoom, String(294 / 700), 'zoom must follow the new column width');
+  assert.equal(box.style.width, '700px', 'the native layout size must not change');
+});
+
+test('the video player falls back to transform for browsers without zoom', () => {
+  // `zoom` is what keeps the iframe viewport at its native size; without it we
+  // scale optically with transform and take the leftover layout height out of
+  // the bottom margin, so the caption does not sit a whole frame lower.
+  const box = makeVideoContainer(700, 1237, 578);
+  runVideoFitScript({ containers: [box], supportsZoom: false });
+
+  const scale = 578 / 700;
+
+  assert.equal(box.style.zoom, '', 'zoom must not be applied when unsupported');
+  assert.equal(box.style.transform, `scale(${scale})`);
+  assert.equal(box.style.transformOrigin, 'top right');
+  assert.equal(box.style.marginBottom, (-(1237 * (1 - scale))).toFixed(2) + 'px');
+  assert.equal(box.style.width, '700px');
+});
+
+test('a video container without injected dimensions is left untouched', () => {
+  const box = makeVideoContainer(700, 1237, 578);
+  delete box.dataset.videoWidth;
+  box.querySelector = () => null;
+  box.style.width = '';
+  box.style.height = '';
+  box.parentElement.clientWidth = 578;
+
+  runVideoFitScript({ containers: [box] });
+
+  assert.equal(box.style.zoom, undefined, 'Nothing may be scaled without a known native size');
+  assert.equal(box.classes.has('is-ratio-set'), false);
 });
