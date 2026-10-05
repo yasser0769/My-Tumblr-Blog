@@ -10,3 +10,8 @@
 .vscode/
 .idea/
 *.swp
+
+# Generated local previews (rebuild from the template and fixtures)
+preview/*.html
+!preview/about-body.html
+preview/*.png

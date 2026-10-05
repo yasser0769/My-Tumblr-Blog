@@ -1,24 +1,17 @@
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
 const test = require('node:test');
 const vm = require('node:vm');
+const { getInlineScript, getThemeCss } = require('./helpers');
 
 function getFirstInlineScript() {
-  const html = fs.readFileSync('Tumblr.html', 'utf8');
-  const match = html.match(/<script>\s*document\.addEventListener\("DOMContentLoaded"[\s\S]*?<\/script>/);
-
-  assert.ok(match, 'Could not find the DOMContentLoaded localization script');
-
-  return match[0].replace(/^<script>/, '').replace(/<\/script>$/, '');
+  return getInlineScript(
+    /<script>\s*document\.addEventListener\("DOMContentLoaded"[\s\S]*?<\/script>/,
+    'DOMContentLoaded localization'
+  );
 }
 
 function getShareControlScript() {
-  const html = fs.readFileSync('Tumblr.html', 'utf8');
-  const match = html.match(/<script>\s*document\.querySelectorAll\('\.share-control'\)[\s\S]*?<\/script>/);
-
-  assert.ok(match, 'Could not find the share control script');
-
-  return match[0].replace(/^<script>/, '').replace(/<\/script>$/, '');
+  return getInlineScript(/<script>\s*\/\* قائمة المشاركة[\s\S]*?<\/script>/, 'share control');
 }
 
 class FakeStyle {
@@ -77,29 +70,22 @@ class FakeElement {
     this.children = [];
   }
 
-  appendChild(child) {
-    if (child.parentElement) {
-      child.parentElement.children = child.parentElement.children.filter((existingChild) => existingChild !== child);
-    }
+  // Moves `child` out of its current parent (if any) and under this element.
+  #adopt(child) {
+    child.remove();
     child.parentElement = this;
+  }
+
+  appendChild(child) {
+    this.#adopt(child);
     this.children.push(child);
     return child;
   }
 
   insertBefore(newChild, referenceChild) {
-    if (newChild.parentElement) {
-      newChild.parentElement.children = newChild.parentElement.children.filter((existingChild) => existingChild !== newChild);
-    }
-
+    this.#adopt(newChild);
     const referenceIndex = this.children.indexOf(referenceChild);
-    newChild.parentElement = this;
-
-    if (referenceIndex === -1) {
-      this.children.push(newChild);
-    } else {
-      this.children.splice(referenceIndex, 0, newChild);
-    }
-
+    this.children.splice(referenceIndex === -1 ? this.children.length : referenceIndex, 0, newChild);
     return newChild;
   }
 
@@ -245,22 +231,22 @@ function createHarness(beforeDomReady) {
   return { body, document, observers, windowListeners };
 }
 
+// Tumblr's alt-text tutorial popover as it is injected into the page.
+function createAltTextPopover(body) {
+  const popover = body.appendChild(new FakeElement('div', 'popover tutorial alt-text-helper_step'));
+  popover.appendChild(new FakeElement('div', 'title')).textContent = 'Alt text';
+  popover.appendChild(new FakeElement('div', 'content')).textContent = 'في رحاب المسجد النبوي ليلة 27 من رمضان';
+  popover.appendChild(new FakeElement('button', 'ok_button')).textContent = 'OK';
+  return popover;
+}
+
 function createImageAndPopover(body) {
   const post = body.appendChild(new FakeElement('article', 'posts'));
   const media = post.appendChild(new FakeElement('div', 'media'));
   const image = media.appendChild(new FakeElement('img'));
   image.rect = { top: 10, left: 10, width: 700, height: 420 };
 
-  const popover = body.appendChild(new FakeElement('div', 'popover tutorial alt-text-helper_step'));
-  const title = popover.appendChild(new FakeElement('div', 'title'));
-  const content = popover.appendChild(new FakeElement('div', 'content'));
-  const closeButton = popover.appendChild(new FakeElement('button', 'ok_button'));
-
-  title.textContent = 'Alt text';
-  content.textContent = 'في رحاب المسجد النبوي ليلة 27 من رمضان';
-  closeButton.textContent = 'OK';
-
-  return { media, popover };
+  return { media, popover: createAltTextPopover(body) };
 }
 
 function createNpfImageAndPopover(body) {
@@ -277,16 +263,7 @@ function createNpfImageAndPopover(body) {
 
   const altHelper = figure.appendChild(new FakeElement('span', 'tmblr-alt-text-helper'));
 
-  const popover = body.appendChild(new FakeElement('div', 'popover tutorial alt-text-helper_step'));
-  const title = popover.appendChild(new FakeElement('div', 'title'));
-  const content = popover.appendChild(new FakeElement('div', 'content'));
-  const closeButton = popover.appendChild(new FakeElement('button', 'ok_button'));
-
-  title.textContent = 'Alt text';
-  content.textContent = 'في رحاب المسجد النبوي ليلة 27 من رمضان';
-  closeButton.textContent = 'OK';
-
-  return { figure, anchor, image, altHelper, popover };
+  return { figure, anchor, image, altHelper, popover: createAltTextPopover(body) };
 }
 
 function createShareHarness() {
@@ -307,18 +284,18 @@ function createShareHarness() {
   const outside = body.appendChild(new FakeElement('div', 'outside'));
 
   const document = {
-    body,
     addEventListener(eventName, callback) {
       documentListeners[eventName] = callback;
-    },
-    querySelectorAll(selector) {
-      return body.querySelectorAll(selector);
     },
   };
 
   vm.runInNewContext(getShareControlScript(), { document });
 
-  return { documentListeners, first, second, outside };
+  // The menu is driven by one delegated listener, so a click anywhere reaches
+  // the document with the element that was hit as its target.
+  const click = (target) => documentListeners.click({ target });
+
+  return { click, first, second, outside };
 }
 
 test('alt text helper localization does not trigger an observer loop', () => {
@@ -392,20 +369,33 @@ test('npf alt text overlay is constrained to the image-sized frame', () => {
 });
 
 test('opening one share menu closes any previously open share menu', () => {
-  const { documentListeners, first, second, outside } = createShareHarness();
+  const { click, first, second, outside } = createShareHarness();
 
-  first.dispatch('click');
+  click(first);
   assert.equal(first.classList.contains('pop'), true);
   assert.equal(second.classList.contains('pop'), false);
 
-  second.dispatch('click');
+  click(second);
   assert.equal(first.classList.contains('pop'), false);
   assert.equal(second.classList.contains('pop'), true);
 
-  second.dispatch('click');
+  click(second);
   assert.equal(second.classList.contains('pop'), false);
 
-  first.dispatch('click');
-  documentListeners.click({ target: outside });
+  click(first);
+  click(outside);
   assert.equal(first.classList.contains('pop'), false);
+});
+
+test('the share menu is positioned with physical left/right, never inset-inline', () => {
+  // In RTL `inset-inline-start/end` map to right/left and win the cascade over
+  // the physical `left: 0 !important` that pins the menu to the button, which
+  // dropped the box back to its static position: -(160-44)/2 = -58px, off-screen.
+  const rules = getThemeCss().match(/[^{}]+{[^{}]*}/g) || [];
+  const popMenuRules = rules.filter((rule) => rule.slice(0, rule.indexOf('{')).includes('.pop-menu'));
+
+  assert.ok(popMenuRules.length > 0, 'Expected .pop-menu rules in the theme CSS');
+  popMenuRules.forEach((rule) => {
+    assert.doesNotMatch(rule, /inset-inline/, `.pop-menu rule must not use inset-inline:\n${rule}`);
+  });
 });

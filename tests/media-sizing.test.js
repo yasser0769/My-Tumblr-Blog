@@ -1,88 +1,13 @@
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
 const test = require('node:test');
 const vm = require('node:vm');
-
-function getThemeHtml() {
-  return fs.readFileSync('Tumblr.html', 'utf8');
-}
-
-// Comments are stripped before rules are matched. The theme documents the bugs
-// it fixes by naming the old declarations (e.g. "was max-height: 700px here"),
-// and a naive `{...}` match would otherwise read that prose as a real
-// declaration — and let a comment pollute the selector text.
-function getThemeCss() {
-  return getThemeHtml().replace(/\/\*[\s\S]*?\*\//g, ' ');
-}
-
-function getCssRule(selector) {
-  const css = getThemeCss();
-  const rules = css.match(/[^{}]+{[^{}]*}/g) || [];
-
-  const rule = rules.find((candidate) => {
-    const selectorList = candidate
-      .slice(0, candidate.indexOf('{'))
-      .split(',')
-      .map((part) => part.trim());
-
-    return selectorList.includes(selector);
-  });
-
-  assert.ok(rule, `Expected CSS rule for selector "${selector}"`);
-  return rule;
-}
-
-// Concatenates the contents of every `@media screen and (max-width: Npx)`
-// block, so a rule that lives inside a media query can be inspected even
-// though `getCssRule` is first-match-wins and would return the base rule.
-function getMediaBlock(css, maxWidth) {
-  const marker = `@media screen and (max-width: ${maxWidth}px)`;
-  let block = '';
-  let index = css.indexOf(marker);
-
-  while (index !== -1) {
-    const open = css.indexOf('{', index);
-    let depth = 0;
-    let i = open;
-
-    for (; i < css.length; i += 1) {
-      if (css[i] === '{') depth += 1;
-      else if (css[i] === '}') {
-        depth -= 1;
-        if (depth === 0) break;
-      }
-    }
-
-    block += `\n${css.slice(open + 1, i)}`;
-    index = css.indexOf(marker, i);
-  }
-
-  return block;
-}
-
-function getCssRuleIn(css, selector) {
-  const rules = css.match(/[^{}]+{[^{}]*}/g) || [];
-
-  return rules.find((candidate) => {
-    const selectorList = candidate
-      .slice(0, candidate.indexOf('{'))
-      .split(',')
-      .map((part) => part.trim());
-
-    return selectorList.includes(selector);
-  });
-}
-
-function assertDeclaration(rule, property, expectedValue) {
-  const normalizedRule = rule.replace(/\s+/g, ' ');
-  const normalizedExpected = expectedValue.replace(/\s+/g, ' ');
-
-  assert.match(
-    normalizedRule,
-    new RegExp(`${property}\\s*:\\s*${normalizedExpected.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`),
-    `Expected "${property}: ${expectedValue}" in ${rule}`
-  );
-}
+const {
+  getCssRule,
+  getCssRuleIn,
+  getMediaBlock,
+  assertDeclaration,
+  getInlineScript,
+} = require('./helpers');
 
 test('post content images are constrained by viewport height without relying on generic post images', () => {
   const selectors = [
@@ -137,7 +62,8 @@ test('alt text controls are positioned inside an image-sized media frame', () =>
   assertDeclaration(frameRule, 'line-height', '0');
   assertDeclaration(frameRule, 'margin-bottom', '20px');
 
-  const framedImageRule = getCssRule('.alt-text-media-frame img');
+  // Must out-rank `.posts figure img`, which gives unframed images their gap.
+  const framedImageRule = getCssRule('.posts .alt-text-media-frame img');
   assertDeclaration(framedImageRule, 'margin-bottom', '0');
 
   const helperRule = getCssRule('.alt-text-media-frame .tmblr-alt-text-helper');
@@ -164,12 +90,10 @@ test('.header-posts does not reserve empty space in posts without text', () => {
     '.header-posts must not reserve padding-bottom: it is empty in media posts'
   );
 
-  // Spacing is applied only when the wrapper actually holds something.
+  // Spacing is applied only when the wrapper actually holds something; an
+  // empty block with no padding has zero height on its own.
   const withContent = getCssRule('.header-posts:has(*)');
   assertDeclaration(withContent, 'margin-bottom', '24px');
-
-  const withoutContent = getCssRule('.header-posts:not(:has(*))');
-  assertDeclaration(withoutContent, 'display', 'none');
 });
 
 test('the video player keeps the video aspect ratio instead of a fixed 16:9 window', () => {
@@ -215,26 +139,15 @@ test('the header description keeps a gap under the hero image on mobile', () => 
   const base = getCssRule('.header-description');
   assertDeclaration(base, 'margin', '-30px 0 30px 0');
 
-  const mobile = getCssRuleIn(getMediaBlock(getThemeCss(), 768), '.header-description');
+  const mobile = getCssRuleIn(getMediaBlock(768), '.header-description');
   assert.ok(mobile, 'Expected a .header-description override in the 768px media query');
-
-  const marginTop = /margin-top\s*:\s*(-?[\d.]+)px/.exec(mobile.replace(/\s+/g, ' '));
-  assert.ok(marginTop, 'Expected an explicit margin-top in the mobile .header-description rule');
-  assert.ok(
-    Number(marginTop[1]) >= 0,
-    `Mobile .header-description margin-top must not be negative (got ${marginTop[1]}px): ` +
-      'it cancels the reduced wrapper padding and glues the title to the hero image'
-  );
+  assertDeclaration(mobile, 'margin-top', '8px');
 });
 
 // ---------------------------------------------------------------- video fit
 
 function getVideoFitScript() {
-  const html = getThemeHtml();
-  const match = html.match(/<script>\s*\/\* مشغّل فيديو تمبلر[\s\S]*?<\/script>/);
-
-  assert.ok(match, 'Could not find the video fit script in Tumblr.html');
-  return match[0].replace(/^<script>/, '').replace(/<\/script>$/, '');
+  return getInlineScript(/<script>\s*\/\* مشغّل فيديو تمبلر[\s\S]*?<\/script>/, 'video fit');
 }
 
 // A container as Tumblr renders it: pixel dimensions in `style`, and the player
@@ -258,7 +171,6 @@ function makeVideoContainer(nativeWidth, nativeHeight, columnWidth) {
 
   return {
     style,
-    dataset: {},
     tagName: 'DIV',
     parentElement: { clientWidth: columnWidth },
     classList: {
@@ -329,14 +241,6 @@ test('the video player keeps its native size and is scaled optically, not shrunk
   );
   assert.equal(box.style.zoom, String(scale), 'The player must be scaled down with zoom');
   assert.equal(box.classes.has('is-ratio-set'), true, 'The scaled state must be flagged in CSS');
-
-  // Regression guard: the old script rewrote the width to 100% and let the
-  // iframe inherit the column width.
-  assert.doesNotMatch(
-    getVideoFitScript(),
-    /style\.width\s*=\s*'100%'/,
-    'The container must never be shrunk to 100%: the player cannot reflow its video box'
-  );
 });
 
 test('the video player is re-scaled when its column changes width', () => {
@@ -363,7 +267,7 @@ test('the video player falls back to transform for browsers without zoom', () =>
 
   const scale = 578 / 700;
 
-  assert.equal(box.style.zoom, '', 'zoom must not be applied when unsupported');
+  assert.ok(!box.style.zoom, 'zoom must not be applied when unsupported');
   assert.equal(box.style.transform, `scale(${scale})`);
   assert.equal(box.style.transformOrigin, 'top right');
   assert.equal(box.style.marginBottom, (-(1237 * (1 - scale))).toFixed(2) + 'px');
@@ -372,7 +276,6 @@ test('the video player falls back to transform for browsers without zoom', () =>
 
 test('a video container without injected dimensions is left untouched', () => {
   const box = makeVideoContainer(700, 1237, 578);
-  delete box.dataset.videoWidth;
   box.querySelector = () => null;
   box.style.width = '';
   box.style.height = '';

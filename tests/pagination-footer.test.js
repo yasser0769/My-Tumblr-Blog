@@ -1,10 +1,6 @@
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
 const test = require('node:test');
-
-function getThemeHtml() {
-  return fs.readFileSync('Tumblr.html', 'utf8');
-}
+const { getThemeHtml } = require('./helpers');
 
 function assertIncludes(html, expected) {
   assert.ok(html.includes(expected), `Expected Tumblr.html to include: ${expected}`);

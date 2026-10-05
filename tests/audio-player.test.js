@@ -1,16 +1,14 @@
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
 const test = require('node:test');
 const vm = require('node:vm');
+const { getInlineScript } = require('./helpers');
 
 function getAudioPlayerScript() {
-  const html = fs.readFileSync('Tumblr.html', 'utf8');
-  // Match the DOMContentLoaded listener containing formatTime
-  const match = html.match(/<script>\s*document\.addEventListener\("DOMContentLoaded", function\(\) \{\s*function formatTime[\s\S]*?<\/script>/);
-
-  assert.ok(match, 'Could not find the custom audio player script in Tumblr.html');
-
-  return match[0].replace(/^<script>/, '').replace(/<\/script>$/, '');
+  // The DOMContentLoaded listener containing formatTime
+  return getInlineScript(
+    /<script>\s*document\.addEventListener\("DOMContentLoaded", function\(\) \{\s*function formatTime[\s\S]*?<\/script>/,
+    'custom audio player'
+  );
 }
 
 class FakeAudio {
@@ -40,14 +38,6 @@ class FakeAudio {
   }
 }
 
-class FakeStyle {
-  constructor() {
-    this.display = '';
-    this.width = '';
-    this.right = '';
-  }
-}
-
 class FakeClassList {
   constructor() {
     this.classes = new Set();
@@ -62,7 +52,7 @@ class FakeElement {
     this.tagName = tagName.toUpperCase();
     this.className = className;
     this.classList = new FakeClassList();
-    this.style = new FakeStyle();
+    this.style = {};
     this.dataset = {};
     this.eventListeners = {};
     this.children = [];
@@ -120,14 +110,9 @@ class FakeElement {
     let curr = this;
     while (curr) {
       if (selector.includes('.')) {
-        const parts = selector.split('.');
-        const tag = parts[0];
-        const cls = parts[1];
+        const [tag, cls] = selector.split('.');
         const tagMatch = !tag || curr.tagName.toLowerCase() === tag.toLowerCase();
-        const clsMatch = curr.className.includes(cls);
-        if (tagMatch && clsMatch) return curr;
-      } else if (selector.startsWith('.')) {
-        if (curr.className.includes(selector.slice(1))) return curr;
+        if (tagMatch && curr.className.includes(cls)) return curr;
       } else {
         if (curr.tagName.toLowerCase() === selector.toLowerCase()) return curr;
       }
@@ -204,11 +189,7 @@ class FakeElement {
   set innerHTML(htmlStr) {
     this._innerHTML = htmlStr;
     if (this.className.includes('custom-audio-player')) {
-      const playBtn = new FakeElement('button', 'play-pause-btn');
-      playBtn.appendChild(new FakeElement('svg', 'play-icon'));
-      playBtn.appendChild(new FakeElement('svg', 'pause-icon'));
-      playBtn.appendChild(new FakeElement('svg', 'loading-icon'));
-      this.appendChild(playBtn);
+      buildPlayButton(this);
 
       if (htmlStr.includes('<audio')) {
         const aud = new FakeElement('audio');
@@ -249,24 +230,7 @@ class FakeElement {
       info.appendChild(titleWrapper);
       this.appendChild(info);
 
-      const volBtn = new FakeElement('button', 'volume-btn');
-      volBtn.appendChild(new FakeElement('svg', 'volume-high-icon'));
-      volBtn.appendChild(new FakeElement('svg', 'volume-mute-icon'));
-      this.appendChild(volBtn);
-
-      const volSliderTrack = new FakeElement('div', 'volume-slider-track');
-      volSliderTrack.appendChild(new FakeElement('div', 'volume-slider-fill'));
-      volSliderTrack.appendChild(new FakeElement('div', 'volume-slider-thumb'));
-      this.appendChild(volSliderTrack);
-
-      const progressContainer = new FakeElement('div', 'audio-progress-container');
-      progressContainer.appendChild(new FakeElement('div', 'audio-progress-bar'));
-      progressContainer.appendChild(new FakeElement('div', 'audio-progress-fill'));
-      progressContainer.appendChild(new FakeElement('div', 'audio-progress-thumb'));
-      this.appendChild(progressContainer);
-
-      this.appendChild(new FakeElement('span', 'current-time'));
-      this.appendChild(new FakeElement('span', 'total-time'));
+      buildPlayerControls(this);
     }
   }
 
@@ -298,9 +262,74 @@ class FakeElement {
   }
 }
 
+// Appends `children` (tag + class list) under a new element of `className`.
+function buildGroup(parent, tagName, className, children) {
+  const group = parent.appendChild(new FakeElement(tagName, className));
+  children.forEach(([tag, cls]) => group.appendChild(new FakeElement(tag, cls)));
+  return group;
+}
+
+function buildPlayButton(player) {
+  return buildGroup(player, 'button', 'play-pause-btn', [
+    ['svg', 'play-icon'],
+    ['svg', 'pause-icon'],
+    ['svg', 'loading-icon'],
+  ]);
+}
+
+// The volume, timeline and time-label controls the player script queries for.
+function buildPlayerControls(player) {
+  buildGroup(player, 'button', 'volume-btn', [
+    ['svg', 'volume-high-icon'],
+    ['svg', 'volume-mute-icon'],
+  ]);
+  buildGroup(player, 'div', 'volume-slider-track', [
+    ['div', 'volume-slider-fill'],
+    ['div', 'volume-slider-thumb'],
+  ]);
+  buildGroup(player, 'div', 'audio-progress-container', [
+    ['div', 'audio-progress-bar'],
+    ['div', 'audio-progress-fill'],
+    ['div', 'audio-progress-thumb'],
+  ]);
+  player.appendChild(new FakeElement('span', 'current-time'));
+  player.appendChild(new FakeElement('span', 'total-time'));
+}
+
+// An <audio> element whose media behaviour is backed by a FakeAudio.
+function createAudioElement() {
+  const audio = new FakeElement('audio');
+  const media = new FakeAudio();
+  audio.src = '';
+  audio.play = () => media.play();
+  audio.pause = () => media.pause();
+  audio.addEventListener = (ev, cb) => media.addEventListener(ev, cb);
+  Object.defineProperty(audio, 'paused', { get: () => media.paused });
+  Object.defineProperty(audio, 'volume', {
+    get: () => media.volume,
+    set: (v) => { media.volume = v; }
+  });
+  return { audio, media };
+}
+
+// A ready-to-init custom player with its audio element and controls.
+function createPlayer(audioUrl) {
+  const player = new FakeElement('div', 'custom-audio-player');
+  player.dataset.audioUrl = audioUrl;
+  const { audio, media } = createAudioElement();
+  player.appendChild(audio);
+  const playBtn = buildPlayButton(player);
+  buildPlayerControls(player);
+  return { player, audio, playBtn, media };
+}
+
+function bootAudioPlayer(context, domListeners) {
+  vm.runInNewContext(getAudioPlayerScript(), context);
+  domListeners['DOMContentLoaded']();
+}
+
 function setupHarness() {
   const players = [];
-  const nativeContainers = [];
   const domListeners = {};
 
   const document = {
@@ -356,62 +385,14 @@ function setupHarness() {
     clearInterval() {}
   };
 
-  return { players, nativeContainers, domListeners, windowListeners, context };
+  return { players, domListeners, context };
 }
 
 test('audio player correctly extracts source URL from hidden native iframe', () => {
   const { players, domListeners, context } = setupHarness();
 
-  // Create player element
-  const player = new FakeElement('div', 'custom-audio-player');
-  player.dataset.audioUrl = ''; // empty, triggers iframe fallback
-
-  // Create audio element child
-  const audio = new FakeElement('audio');
-  const fakeAudioInstance = new FakeAudio();
-  // Mock standard DOM properties on FakeElement for audio tag
-  audio.src = '';
-  audio.volume = 1.0;
-  audio.play = () => fakeAudioInstance.play();
-  audio.pause = () => fakeAudioInstance.pause();
-  audio.addEventListener = (ev, cb) => fakeAudioInstance.addEventListener(ev, cb);
-  Object.defineProperty(audio, 'paused', { get: () => fakeAudioInstance.paused });
-  Object.defineProperty(audio, 'volume', {
-    get: () => fakeAudioInstance.volume,
-    set: (v) => { fakeAudioInstance.volume = v; }
-  });
-
-  player.appendChild(audio);
-
-  // Play button
-  const playBtn = new FakeElement('button', 'play-pause-btn');
-  playBtn.appendChild(new FakeElement('svg', 'play-icon'));
-  playBtn.appendChild(new FakeElement('svg', 'pause-icon'));
-  playBtn.appendChild(new FakeElement('svg', 'loading-icon'));
-  player.appendChild(playBtn);
-
-  // Volume buttons and slider
-  const volBtn = new FakeElement('button', 'volume-btn');
-  volBtn.appendChild(new FakeElement('svg', 'volume-high-icon'));
-  volBtn.appendChild(new FakeElement('svg', 'volume-mute-icon'));
-  player.appendChild(volBtn);
-
-  const volSliderTrack = new FakeElement('div', 'volume-slider-track');
-  volSliderTrack.appendChild(new FakeElement('div', 'volume-slider-fill'));
-  volSliderTrack.appendChild(new FakeElement('div', 'volume-slider-thumb'));
-  player.appendChild(volSliderTrack);
-
-  // Timeline
-  const progressContainer = new FakeElement('div', 'audio-progress-container');
-  progressContainer.appendChild(new FakeElement('div', 'audio-progress-bar'));
-  progressContainer.appendChild(new FakeElement('div', 'audio-progress-fill'));
-  progressContainer.appendChild(new FakeElement('div', 'audio-progress-thumb'));
-  player.appendChild(progressContainer);
-
-  const curTime = new FakeElement('span', 'current-time');
-  const totTime = new FakeElement('span', 'total-time');
-  player.appendChild(curTime);
-  player.appendChild(totTime);
+  // An empty data-audio-url triggers the iframe fallback
+  const { player, audio } = createPlayer('');
 
   // Mock parent audio-container layout
   const container = new FakeElement('div', 'audio-container');
@@ -425,12 +406,7 @@ test('audio player correctly extracts source URL from hidden native iframe', () 
 
   players.push(player);
 
-  // Run player initialization script
-  const scriptCode = getAudioPlayerScript();
-  vm.runInNewContext(scriptCode, context);
-
-  // Trigger DOMContentLoaded
-  domListeners['DOMContentLoaded']();
+  bootAudioPlayer(context, domListeners);
 
   // Verify URL was correctly extracted from iframe
   assert.equal(audio.src, 'https://a.tumblr.com/track1.mp3');
@@ -439,79 +415,29 @@ test('audio player correctly extracts source URL from hidden native iframe', () 
 test('playing one custom player pauses any other active custom players', () => {
   const { players, domListeners, context } = setupHarness();
 
-  // Create two players
-  const createPlayer = (id, mp3Url) => {
-    const player = new FakeElement('div', 'custom-audio-player');
-    player.dataset.audioUrl = mp3Url;
+  const p1 = createPlayer('https://example.com/p1.mp3');
+  const p2 = createPlayer('https://example.com/p2.mp3');
+  players.push(p1.player, p2.player);
 
-    const audio = new FakeElement('audio');
-    const fakeAudioInstance = new FakeAudio();
-    audio.play = () => fakeAudioInstance.play();
-    audio.pause = () => fakeAudioInstance.pause();
-    audio.addEventListener = (ev, cb) => fakeAudioInstance.addEventListener(ev, cb);
-    Object.defineProperty(audio, 'paused', { get: () => fakeAudioInstance.paused });
-    Object.defineProperty(audio, 'volume', {
-      get: () => fakeAudioInstance.volume,
-      set: (v) => { fakeAudioInstance.volume = v; }
-    });
-    player.appendChild(audio);
-
-    const playBtn = new FakeElement('button', 'play-pause-btn');
-    playBtn.appendChild(new FakeElement('svg', 'play-icon'));
-    playBtn.appendChild(new FakeElement('svg', 'pause-icon'));
-    playBtn.appendChild(new FakeElement('svg', 'loading-icon'));
-    player.appendChild(playBtn);
-
-    const volBtn = new FakeElement('button', 'volume-btn');
-    volBtn.appendChild(new FakeElement('svg', 'volume-high-icon'));
-    volBtn.appendChild(new FakeElement('svg', 'volume-mute-icon'));
-    player.appendChild(volBtn);
-
-    const volSliderTrack = new FakeElement('div', 'volume-slider-track');
-    volSliderTrack.appendChild(new FakeElement('div', 'volume-slider-fill'));
-    volSliderTrack.appendChild(new FakeElement('div', 'volume-slider-thumb'));
-    player.appendChild(volSliderTrack);
-
-    const progressContainer = new FakeElement('div', 'audio-progress-container');
-    progressContainer.appendChild(new FakeElement('div', 'audio-progress-bar'));
-    progressContainer.appendChild(new FakeElement('div', 'audio-progress-fill'));
-    progressContainer.appendChild(new FakeElement('div', 'audio-progress-thumb'));
-    player.appendChild(progressContainer);
-
-    player.appendChild(new FakeElement('span', 'current-time'));
-    player.appendChild(new FakeElement('span', 'total-time'));
-
-    players.push(player);
-    return { player, audio, playBtn, fakeAudioInstance };
-  };
-
-  const p1 = createPlayer(1, 'https://example.com/p1.mp3');
-  const p2 = createPlayer(2, 'https://example.com/p2.mp3');
-
-  // Run player initialization script
-  const scriptCode = getAudioPlayerScript();
-  vm.runInNewContext(scriptCode, context);
-
-  // Trigger DOMContentLoaded
-  domListeners['DOMContentLoaded']();
+  bootAudioPlayer(context, domListeners);
 
   // Both should start paused
-  assert.equal(p1.fakeAudioInstance.paused, true);
-  assert.equal(p2.fakeAudioInstance.paused, true);
+  assert.equal(p1.media.paused, true);
+  assert.equal(p2.media.paused, true);
 
   // Click play on player 1
   p1.playBtn.click();
-  assert.equal(p1.fakeAudioInstance.paused, false);
-  assert.equal(p2.fakeAudioInstance.paused, true);
+  assert.equal(p1.media.paused, false);
+  assert.equal(p2.media.paused, true);
 
   // Click play on player 2 (should auto-pause player 1)
   p2.playBtn.click();
-  assert.equal(p1.fakeAudioInstance.paused, true);
-  assert.equal(p2.fakeAudioInstance.paused, false);
+  assert.equal(p1.media.paused, true);
+  assert.equal(p2.media.paused, false);
 });
 
 test('NPF audio tags are dynamically converted into custom players on DOMContentLoaded', () => {
-  const { nativeContainers, domListeners, context } = setupHarness();
+  const { domListeners, context } = setupHarness();
 
   // Create native HTML structure for NPF audio post
   const figure = new FakeElement('figure', 'tmblr-full');
@@ -556,12 +482,7 @@ test('NPF audio tags are dynamically converted into custom players on DOMContent
   body.appendChild(figure);
   context.document.body = body;
 
-  // Run script
-  const scriptCode = getAudioPlayerScript();
-  vm.runInNewContext(scriptCode, context);
-
-  // Trigger DOMContentLoaded
-  domListeners['DOMContentLoaded']();
+  bootAudioPlayer(context, domListeners);
 
   // Check if a custom-audio-player was created and wrapped the audio
   const customPlayer = figure.querySelector('.custom-audio-player');
