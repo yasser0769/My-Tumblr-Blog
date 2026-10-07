@@ -85,11 +85,19 @@ def write(name, context):
 
 POSTS = json.loads((ROOT / 'preview' / 'fixtures.json').read_text())
 for index, post in enumerate(POSTS):
+    # Simulate the native iframe hit target and Tumblr's liked class locally.
+    # This fixture changes no Tumblr account state.
+    post_id = str(index + 1)
+    like_frame = ('<button aria-label="إعجاب بالتدوينة" aria-pressed="false" '
+                  'style="width:44px;height:44px;border:0;background:transparent;cursor:pointer" '
+                  'onclick="var liked=parent.document.getElementById(\'like_button_' + post_id +
+                  '\').classList.toggle(\'liked\');this.setAttribute(\'aria-pressed\',String(liked))">♥</button>')
+    like_frame = '<style>html,body{margin:0}</style>' + like_frame
     post.update({'block:Text': True, 'block:Title': bool(post.get('Title')), 'block:Date': True,
-                 'PostID': str(index + 1), 'Permalink': 'permalink.html', 'Month': post.get('Month', 'October'),
+                 'PostID': post_id, 'Permalink': 'permalink.html', 'Month': post.get('Month', 'October'),
                  'MonthNumber': post.get('MonthNumber', '10'), 'Year': '2026',
-                 'LikeButton color="grey" size="20"': '<span aria-label="إعجاب">♡</span>',
-                 'ReblogButton color="grey" size="20"': '<span aria-label="إعادة التدوين">↻</span>'})
+                 'LikeButton color="grey" size="44"': '<div class="like_button" id="like_button_' + post_id + '"><iframe width="44" height="44" frameborder="0" srcdoc="' + html.escape(like_frame, quote=True) + '"></iframe></div>',
+                 'ReblogButton color="grey" size="44"': '<a class="reblog_button" href="permalink.html" style="display:block;width:44px;height:44px"><svg viewBox="0 0 21 21" fill="#ccc"><path d="M5 6h11v3.5l4.7-4.75L16 .08V3H2C1.4 3 1 3.44 1 4.45V11l3-2.69V6.9C4 6.2 4.72 6 5 6z"/></svg></a>'})
 write('index.html', {'block:IndexPage': True, 'block:Posts': POSTS, 'block:Pagination': True, 'block:NextPage': True, 'NextPage': 'page-2.html'})
 write('page-2.html', {'block:IndexPage': True, 'block:Posts': POSTS[3:], 'block:Pagination': True, 'block:PreviousPage': True, 'PreviousPage': 'index.html'})
 write('permalink.html', {'block:PermalinkPage': True, 'block:Posts': [POSTS[0]]})

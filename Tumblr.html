@@ -3378,6 +3378,25 @@ h4.post-title, .posts h2.post-title, .posts .post-title {
 .meta { margin-top: 2em; padding-top: 0; border: 0; color: var(--ink-soft); font-weight: 400; gap: 8px; }
 .meta a { color: var(--ink-soft); font-size: 13px; }
 .like, .reblog, .share-control { border-radius: 4px; }
+.like, .reblog { position: relative; color: #8f8a80; }
+/* Keep Tumblr's native controls clickable beneath the matching outline icons. */
+.like .like_button, .like .like_button iframe,
+.reblog .reblog_button {
+  width: 44px !important; height: 44px !important;
+}
+.like .like_button { position: relative; z-index: 1; }
+.like .like_button iframe { opacity: 0; cursor: pointer; }
+.reblog .reblog_button { position: relative; z-index: 1; }
+.reblog .reblog_button svg { opacity: 0; }
+.action-icon {
+  width: 20px; height: 20px; fill: none; stroke: currentColor;
+  stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  pointer-events: none;
+}
+.like > .action-icon, .reblog > .action-icon {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+}
+.like .like_button.liked + .action-icon { color: #d95e40; fill: currentColor; }
 .like:hover, .reblog:hover, .share-control:hover { background: rgba(163,157,144,.10); }
 .share-control .pop-menu { background: var(--paper); border: 1px solid var(--line); }
 .pop-menu::after { background: var(--paper); }
@@ -3385,7 +3404,7 @@ h4.post-title, .posts h2.post-title, .posts .post-title {
 .share-control .share-button {
   width: 44px; height: 44px; padding: 12px; display: inline-flex;
   justify-content: center; align-items: center; border: 0; background: transparent;
-  color: var(--ink-soft); cursor: pointer; border-radius: 4px;
+  color: #8f8a80; cursor: pointer; border-radius: 4px;
 }
 .qa-question-box, .qa-answer-box {
   background: transparent; border: 1px solid var(--line); border-radius: 4px;
@@ -3772,12 +3791,18 @@ h4.post-title, .posts h2.post-title, .posts .post-title {
                         {/block:IfShowNoteCount}
                         
                     </div>
-                    <div class="like">{LikeButton color="grey" size="20"}</div>
-                    <div class="reblog">{ReblogButton color="grey" size="20"}</div>
+                    <div class="like">
+                        {LikeButton color="grey" size="44"}
+                        <svg class="action-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg>
+                    </div>
+                    <div class="reblog">
+                        {ReblogButton color="grey" size="44"}
+                        <svg class="action-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="m17 2 4 4-4 4M3 11V8a2 2 0 0 1 2-2h16M7 22l-4-4 4-4m14-1v3a2 2 0 0 1-2 2H3"/></svg>
+                    </div>
                     
                     <div class="share-control">
                         <button type="button" class="share-button" aria-label="مشاركة التدوينة" aria-expanded="false">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 16V3m-4 4 4-4 4 4M5 13v7h14v-7"/></svg>
+                            <svg class="action-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 16V3m-4 4 4-4 4 4M5 13v7h14v-7"/></svg>
                         </button>
                         <div class="pop-menu share-menu south">
                             <ul>
@@ -3836,6 +3861,17 @@ h4.post-title, .posts h2.post-title, .posts .post-title {
         {/block:IfShowSocialLinks}
         {block:IfTitleDown}<div class="info">{text:Title down}</div>{/block:IfTitleDown}
     </footer>
+    <script>
+        /* Accessible names for the native Tumblr action controls. */
+        (function () {
+            document.querySelectorAll('.like_button iframe').forEach(function (frame) {
+                frame.setAttribute('title', 'إعجاب بالتدوينة');
+            });
+            document.querySelectorAll('.reblog_button').forEach(function (link) {
+                link.setAttribute('aria-label', 'إعادة تدوين');
+            });
+        })();
+    </script>
     <script>
         /* قائمة المشاركة: مستمع واحد على المستند — النقر على زر يفتح قائمته
            ويغلق المفتوحة، والنقر في أي مكان آخر يغلقها. */
