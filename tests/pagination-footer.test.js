@@ -9,8 +9,8 @@ function assertIncludes(html, expected) {
 test('pagination uses previous and next page controls without numeric jump links', () => {
   const html = getThemeHtml();
 
-  assertIncludes(html, '<meta name="text:Next" content="التالي">');
-  assertIncludes(html, '<meta name="text:Old" content="السابق">');
+  assertIncludes(html, '<meta name="text:Next" content="أحدث">');
+  assertIncludes(html, '<meta name="text:Old" content="أقدم">');
   assert.doesNotMatch(html, /block:JumpPagination/);
   assert.doesNotMatch(html, /{PageNumber}/);
   assertIncludes(html, 'class="pagination__link pagination__link--next"');

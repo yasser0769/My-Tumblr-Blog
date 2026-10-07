@@ -453,8 +453,8 @@ document.addEventListener("DOMContentLoaded", function () {
             <meta name="text:Spotify URL" content="">
             <meta name="text:SnapChat URL" content="">
             <meta name="text:Title down" content="">
-            <meta name="text:Next" content="التالي">
-            <meta name="text:Old" content="السابق">
+            <meta name="text:Next" content="أحدث">
+            <meta name="text:Old" content="أقدم">
             <meta name="text:NOTES" content="مرات التفاعل">
             <meta name="text:posted this" content=""/>
 
@@ -3408,7 +3408,12 @@ h4.post-title, .posts h2.post-title, .posts .post-title {
 .custom-audio-player .audio-progress-fill, .custom-audio-player .volume-slider-fill { background: var(--ink-soft); }
 .custom-audio-player .audio-progress-thumb, .custom-audio-player .volume-slider-thumb { background: var(--ink); }
 .pagination { padding: 10px 0 60px; border: 0; font-weight: 400; }
-.pagination ul { padding: 0; gap: 24px; }
+.pagination ul {
+  display: flex; flex-direction: row; flex-wrap: nowrap;
+  width: 100%; max-width: none; padding: 0; gap: 24px;
+  align-items: center; justify-content: space-between;
+}
+.pagination .pagination__item--older { margin-inline-start: auto; }
 #pagination a:link, #pagination a:visited {
   min-width: 0; min-height: 44px; width: auto; padding: 8px 2px;
   background: transparent; border: 0; border-bottom: 1px solid var(--line);
@@ -3429,7 +3434,7 @@ h4.post-title, .posts h2.post-title, .posts .post-title {
   font-family: var(--font-ui), sans-serif !important; font-size: 13.5px;
   font-weight: 400; color: inherit; background: transparent; border: 0; border-radius: 0; padding: 0;
 }
-.footer-years { margin: 0; color: var(--ink-faint); font-size: 13.5px; }
+.footer-years { margin: 0; color: var(--ink-faint); font-size: 13.5px; direction: ltr; unicode-bidi: isolate; }
 .footer .info { flex-basis: 100%; margin: 0; color: var(--ink-soft); }
 .footer .info:empty { display: none; }
 .footer-link { color: var(--ink-soft); }
@@ -3468,7 +3473,15 @@ h4.post-title, .posts h2.post-title, .posts .post-title {
     font-family: var(--font-text), serif !important; font-size: 17px; font-weight: 400; border-color: var(--line);
   }
   .mobile-menu-links a[aria-current="page"] { color: var(--ink); font-weight: 700; }
-  .footer { flex-direction: column; gap: 6px; }
+  .pagination { padding-bottom: 40px; }
+  .footer {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center; gap: 14px;
+    padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  }
+  .footer-identity { min-width: 0; }
+  .footer-link { justify-self: end; }
+  .footer-social, .footer .info { grid-column: 1 / -1; }
 }
 @media (prefers-reduced-motion: reduce) {
   .paper-aura { animation: none; }
@@ -3792,11 +3805,11 @@ h4.post-title, .posts h2.post-title, .posts .post-title {
             {block:Pagination}
                 <nav class="pagination" id="pagination" aria-label="التنقل بين الصفحات">
                     <ul class="clearfix">
-                        {block:PreviousPage}<li><a href="{PreviousPage}" id="newer" class="pagination__link pagination__link--next" rel="prev">
+                        {block:PreviousPage}<li class="pagination__item--newer"><a href="{PreviousPage}" id="newer" class="pagination__link pagination__link--next" rel="prev">
                             <span class="pagination__icon" aria-hidden="true">→</span>
                             <span class="pagination__text">{text:Next}</span>
                         </a></li>{/block:PreviousPage} 
-                        {block:NextPage}<li><a href="{NextPage}" id="older" class="pagination__link pagination__link--previous" rel="next">
+                        {block:NextPage}<li class="pagination__item--older"><a href="{NextPage}" id="older" class="pagination__link pagination__link--previous" rel="next">
                             <span class="pagination__text">{text:Old}</span>
                             <span class="pagination__icon" aria-hidden="true">←</span>
                         </a></li>{/block:NextPage} 

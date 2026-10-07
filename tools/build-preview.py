@@ -101,4 +101,8 @@ for name, title in [('archive', 'الأرشيف'), ('ask', 'اسألني'), ('su
     if name == 'archive':
         body = '<ul>' + ''.join('<li><a href="permalink.html">' + html.escape(p.get('Title') or 'تدوينة — ' + p['DayOfMonth']) + '</a></li>' for p in POSTS) + '</ul>'
     write(name + '.html', {'block:PermalinkPage': True, 'block:Posts': [{'block:Text': True, 'block:Title': True, 'Title': title, 'Body': body, 'PostID': name}]})
-print('Rendered 7 previews from Tumblr.html; Tumblr blocks are balanced.')
+# A middle archive page exercises both pagination controls and a long copyright range.
+write('pagination.html', {'block:IndexPage': True, 'block:Posts': [POSTS[-1]],
+                         'block:Pagination': True, 'block:PreviousPage': True, 'PreviousPage': 'index.html',
+                         'block:NextPage': True, 'NextPage': 'page-2.html', 'CopyrightYears': '2011–2026'})
+print('Rendered 8 previews from Tumblr.html; Tumblr blocks are balanced.')
