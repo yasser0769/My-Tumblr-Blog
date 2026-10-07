@@ -938,6 +938,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 line-height: 1.2;
             }
 
+            .brand-signature {
+                display: inline-flex;
+                align-items: center;
+                line-height: 0;
+            }
+
+            .brand-signature-svg {
+                display: block;
+                width: 116px;
+                height: auto;
+                max-height: 36px;
+                overflow: visible;
+            }
+
             .brand-title:hover .brand-kicker {
                 background: rgba(85, 48, 0, 0.09);
                 border-color: rgba(85, 48, 0, 0.24);
@@ -1226,6 +1240,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 .brand-name {
                     font-size: 16px;
+                }
+
+                .brand-signature-svg {
+                    width: 106px;
+                    max-height: 33px;
                 }
 
                 .brand-kicker {
@@ -3538,7 +3557,11 @@ h4.post-title, .posts h2.post-title, .posts .post-title {
         <div class="header-brand">
             <a href="/" class="brand-title" aria-label="مدونة ياسر الشهري">
                 <span class="brand-kicker">مدونة</span>
-                <span class="brand-name">ياسر الشهري</span>
+                <span class="brand-name brand-signature" aria-hidden="true">
+                    <svg class="brand-signature-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 838 259" focusable="false" role="img">
+                        <path d="M 818 179 L 813 174 L 807 174 L 797 179 L 769 181 L 765 183 L 759 183 L 747 186 L 739 190 L 736 190 L 709 204 L 706 208 L 706 212 L 710 216 L 722 217 L 730 212 L 735 211 L 750 204 L 775 199 L 794 198 L 813 189 L 818 184 Z M 120 132 L 116 129 L 106 129 L 100 127 L 78 128 L 68 131 L 52 139 L 50 141 L 49 147 L 54 151 L 64 151 L 73 147 L 83 145 L 93 145 L 94 146 L 111 145 L 119 139 Z M 677 104 L 672 100 L 665 99 L 660 101 L 648 112 L 635 115 L 619 121 L 615 121 L 610 124 L 583 130 L 577 133 L 572 133 L 557 138 L 549 139 L 517 149 L 511 157 L 509 174 L 507 179 L 498 190 L 480 204 L 442 223 L 428 228 L 421 229 L 417 233 L 417 238 L 423 240 L 434 239 L 453 232 L 460 231 L 500 211 L 519 194 L 526 182 L 529 166 L 534 161 L 570 149 L 575 149 L 598 143 L 604 143 L 608 141 L 627 137 L 632 138 L 628 146 L 629 154 L 633 157 L 639 156 L 665 127 L 674 124 L 678 120 L 680 113 Z M 726 35 L 722 40 L 725 64 L 725 78 L 731 103 L 736 117 L 740 138 L 744 148 L 748 152 L 752 154 L 760 155 L 771 144 L 781 137 L 804 126 L 808 122 L 814 119 L 819 113 L 818 108 L 816 105 L 812 103 L 803 105 L 791 111 L 763 130 L 759 131 L 753 122 L 739 76 L 744 69 L 744 63 L 741 56 L 740 47 L 737 39 L 733 35 Z M 477 35 L 473 37 L 471 43 L 482 69 L 484 79 L 486 82 L 490 105 L 492 108 L 496 108 L 500 105 L 501 95 L 498 74 L 493 58 L 490 40 L 484 35 Z M 314 35 L 312 44 L 307 53 L 307 60 L 304 70 L 304 80 L 308 84 L 313 84 L 317 80 L 321 71 L 322 65 L 328 54 L 331 54 L 337 57 L 363 77 L 367 77 L 372 74 L 372 71 L 369 66 L 336 34 L 329 30 L 322 29 Z M 135 28 L 131 24 L 126 23 L 88 23 L 63 29 L 59 34 L 59 40 L 61 44 L 72 54 L 78 56 L 81 59 L 85 60 L 96 67 L 99 70 L 99 75 L 96 81 L 79 96 L 68 102 L 51 108 L 39 107 L 33 102 L 28 90 L 25 87 L 23 87 L 20 90 L 18 96 L 18 102 L 22 111 L 28 117 L 32 119 L 44 122 L 54 122 L 70 117 L 89 107 L 97 101 L 111 85 L 114 79 L 115 69 L 113 63 L 102 52 L 87 45 L 83 41 L 83 39 L 93 36 L 127 36 L 132 34 L 135 31 Z M 452 25 L 447 19 L 443 18 L 437 20 L 435 24 L 435 28 L 446 57 L 448 68 L 448 86 L 445 100 L 440 109 L 433 116 L 423 122 L 410 127 L 405 127 L 404 123 L 408 117 L 408 105 L 405 101 L 397 99 L 388 109 L 376 116 L 366 119 L 358 113 L 352 113 L 339 125 L 321 134 L 318 132 L 317 124 L 313 118 L 310 116 L 304 116 L 296 127 L 285 133 L 258 141 L 247 143 L 233 143 L 230 140 L 231 137 L 245 134 L 255 125 L 261 109 L 261 105 L 267 85 L 268 76 L 267 60 L 261 54 L 253 54 L 238 60 L 226 68 L 211 85 L 205 107 L 190 116 L 184 122 L 180 130 L 180 138 L 183 145 L 184 156 L 178 165 L 165 173 L 140 182 L 118 186 L 114 185 L 111 182 L 105 182 L 102 186 L 102 192 L 109 198 L 117 200 L 124 200 L 153 195 L 181 185 L 190 179 L 200 167 L 202 161 L 201 137 L 205 134 L 208 134 L 210 136 L 213 147 L 219 157 L 224 162 L 230 165 L 235 165 L 245 160 L 260 159 L 264 157 L 282 155 L 299 150 L 303 151 L 307 155 L 323 154 L 335 150 L 351 142 L 366 140 L 382 135 L 387 136 L 391 140 L 397 143 L 402 143 L 427 135 L 441 127 L 452 117 L 456 110 L 460 98 L 462 85 L 462 62 Z M 252 74 L 252 83 L 249 86 L 245 87 L 242 90 L 234 94 L 231 94 L 228 96 L 224 95 L 225 92 L 238 79 L 249 73 Z" fill="currentColor" fill-rule="evenodd"/>
+                    </svg>
+                </span>
             </a>
         </div>
         <nav class="header-nav" aria-label="التنقل الرئيسي">
