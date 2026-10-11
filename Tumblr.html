@@ -2,6 +2,10 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
+<script>
+/* ثيم الألوان: تطبيق اختيار الزائر مبكرًا قبل رسم الصفحة لمنع الوميض */
+try{var __t=localStorage.getItem('yblr-theme')||'warm';if(__t!=='warm'&&__t!=='white'&&__t!=='dark'){__t='warm';}document.documentElement.setAttribute('data-theme',__t);}catch(__e){document.documentElement.setAttribute('data-theme','warm');}
+</script>
 <meta charset="utf-8">
 
     <!--
@@ -537,8 +541,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 --timeline-gutter: 48px;
 
                 /* --- لون النص الثانوي: ≥ 5.4:1 على كل خلفيات الثيم --- */
-                --color-muted:    #6f6552;
-                --color-muted-2:  #746754;
+                --color-muted:    var(--ink-soft);
+                --color-muted-2:  var(--ink-soft);
 
                 /* --- خطوط الثيم --- */
                 --font-title: 'Paper Display';
@@ -548,7 +552,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             html { -webkit-font-smoothing: antialiased; }
             body {
-                color: #666666; /* تعديل: لون أفتح يريح العين */
+                color: var(--ink-soft); /* تعديل: لون أفتح يريح العين */
                 margin: 0;
                 font-family: {select:Google Font};
                 font-size: var(--fs-body);
@@ -556,7 +560,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 direction: rtl;
                 text-align: right;
                 /* تعديل: خلفية بتدرج خفيف لإعطاء عمق */
-                background: linear-gradient(135deg, #fff8ec 0%, #fef6e8 50%, #fff9ef 100%);
+                background: linear-gradient(135deg, var(--bg-soft) 0%, var(--bg-soft) 50%, var(--bg-soft) 100%);
                 background-attachment: fixed;
             }
             
@@ -577,7 +581,7 @@ document.addEventListener("DOMContentLoaded", function () {
             /* لون مميز عند التحويم */
             .post-timeline-date a:hover .post-date-ar,
             a:hover .post-date-ar {
-                color: #891C04;
+                color: var(--accent);
             }
 
             input,
@@ -604,7 +608,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 z-index: 99;
                 border: none;
                 outline: none;
-                background-color: #891C04;
+                background-color: var(--accent);
                 color: white;
                 cursor: pointer;
                 width: 48px;
@@ -613,7 +617,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 align-items: center;
                 justify-content: center;
                 border-radius: 50%;
-                box-shadow: 0 4px 12px rgba(137, 28, 4, 0.25);
+                box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.25);
                 opacity: 0;
                 visibility: hidden;
                 transform: translateY(10px);
@@ -627,9 +631,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             #myBtn.show:hover {
-                background-color: #553000;
+                background-color: var(--accent-deep);
                 transform: translateY(-4px);
-                box-shadow: 0 6px 16px rgba(85, 48, 0, 0.35);
+                box-shadow: 0 6px 16px rgba(var(--accent-deep-rgb), 0.35);
             }
 
             h1, h2, h3, h4, h5 {
@@ -640,7 +644,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 font-size: var(--fs-h1);
                 line-height: var(--lh-title);
                 font-weight: bold;
-                color: #891C04;
+                color: var(--accent);
                 font-family: {select:Google Font title};
             }
 
@@ -651,7 +655,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 letter-spacing: normal;
                 font-weight: bold;
                 font-family: {select:Google Font title};
-                color: #891C04;
+                color: var(--accent);
             }
 
             h1 a,
@@ -726,7 +730,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             hr {
                 border: 0;
-                border-top: 1px #aaa solid;
+                border-top: 1px var(--line) solid;
                 clear: both;
                 height: 0;
             }
@@ -801,7 +805,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 max-width:{select:Page Width}!important;
                 margin: 0 auto;
                 padding: var(--wrapper-pad-y) 70px 0; /* تعديل: زيادة المساحة البيضاء حول المحتوى */
-                background: #fff8ec;
+                background: var(--bg-soft);
                 position: relative;
                 z-index: 3;
                 -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
@@ -863,10 +867,10 @@ document.addEventListener("DOMContentLoaded", function () {
             
             /* ===== SITE HEADER STYLES ===== */
             .site-header {
-                background: rgba(255, 248, 236, 0.85);
+                background: rgba(var(--paper-rgb), 0.85);
                 backdrop-filter: blur(12px);
                 -webkit-backdrop-filter: blur(12px);
-                border-bottom: 1px solid rgba(137, 28, 4, 0.12);
+                border-bottom: 1px solid rgba(var(--accent-rgb), 0.12);
                 position: sticky;
                 top: 0;
                 z-index: 1000;
@@ -907,7 +911,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 font-family: {TitleFont};
                 font-size: 18px;
                 font-weight: 700;
-                color: #891C04;
+                color: var(--accent);
                 text-decoration: none;
                 white-space: nowrap;
                 display: inline-flex;
@@ -916,7 +920,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .brand-title:hover {
-                color: #553000;
+                color: var(--accent-deep);
             }
 
             .brand-kicker {
@@ -924,9 +928,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 font-size: 11px;
                 font-weight: 500;
                 line-height: 1;
-                color: #891C04;
-                background: rgba(137, 28, 4, 0.07);
-                border: 1px solid rgba(137, 28, 4, 0.18);
+                color: var(--accent);
+                background: rgba(var(--accent-rgb), 0.07);
+                border: 1px solid rgba(var(--accent-rgb), 0.18);
                 border-radius: 6px;
                 padding: 4px 7px;
             }
@@ -953,8 +957,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .brand-title:hover .brand-kicker {
-                background: rgba(85, 48, 0, 0.09);
-                border-color: rgba(85, 48, 0, 0.24);
+                background: rgba(var(--accent-deep-rgb), 0.09);
+                border-color: rgba(var(--accent-deep-rgb), 0.24);
             }
 
             /* الروابط الرئيسية */
@@ -979,7 +983,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .nav-main li a {
                 display: block;
                 padding: 8px 14px;
-                color: #891C04;
+                color: var(--accent);
                 text-decoration: none;
                 font-size: 14px;
                 font-weight: 500;
@@ -988,8 +992,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .nav-main li a:hover {
-                background: rgba(137, 28, 4, 0.08);
-                color: #553000;
+                background: rgba(var(--accent-rgb), 0.08);
+                color: var(--accent-deep);
             }
 
             /* زر المزيد والقائمة المنسدلة */
@@ -1003,9 +1007,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 gap: 6px;
                 padding: 8px 14px;
                 background: transparent;
-                border: 1px solid #d4c4a8;
+                border: 1px solid var(--border);
                 border-radius: 6px;
-                color: #891C04;
+                color: var(--accent);
                 font-size: 14px;
                 font-weight: 500;
                 cursor: pointer;
@@ -1014,8 +1018,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .dropdown-toggle:hover {
-                background: rgba(137, 28, 4, 0.05);
-                border-color: #891C04;
+                background: rgba(var(--accent-rgb), 0.05);
+                border-color: var(--accent);
             }
 
             .dropdown-icon {
@@ -1035,9 +1039,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 background: rgba(255, 255, 255, 0.9);
                 backdrop-filter: blur(16px);
                 -webkit-backdrop-filter: blur(16px);
-                border: 1px solid rgba(137, 28, 4, 0.15);
+                border: 1px solid rgba(var(--accent-rgb), 0.15);
                 border-radius: 8px;
-                box-shadow: 0 8px 32px rgba(137, 28, 4, 0.08);
+                box-shadow: 0 8px 32px rgba(var(--accent-rgb), 0.08);
                 opacity: 0;
                 visibility: hidden;
                 transform: translateY(-10px);
@@ -1055,21 +1059,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 list-style: none;
                 margin: 0;
                 padding: 8px 0;
-                border-bottom: 1px solid #e8dcc8;
+                border-bottom: 1px solid var(--border);
             }
 
             .dropdown-links li a {
                 display: block;
                 padding: 10px 16px;
-                color: #553000;
+                color: var(--accent-deep);
                 text-decoration: none;
                 font-size: 14px;
                 transition: background 0.2s;
             }
 
             .dropdown-links li a:hover {
-                background: #fff8ec;
-                color: #891C04;
+                background: var(--bg-soft);
+                color: var(--accent);
             }
 
             .dropdown-social {
@@ -1098,15 +1102,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 justify-content: center;
                 width: 32px;
                 height: 32px;
-                background: #f5efe6;
+                background: var(--surface-2);
                 border-radius: 50%;
-                color: #891C04;
+                color: var(--accent);
                 font-size: 14px;
                 transition: background 0.2s, transform 0.2s;
             }
 
             .dropdown-social-icons li a:hover {
-                background: #891C04;
+                background: var(--accent);
                 color: #fff;
                 transform: scale(1.1);
             }
@@ -1116,7 +1120,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 display: none;
                 padding: 8px 12px;
                 background: transparent;
-                border: 1px solid #d4c4a8;
+                border: 1px solid var(--border);
                 border-radius: 6px;
                 cursor: pointer;
                 margin-right: auto;
@@ -1125,7 +1129,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             .hamburger-icon {
                 font-size: 20px;
-                color: #891C04;
+                color: var(--accent);
                 line-height: 1;
             }
 
@@ -1135,7 +1139,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 background: rgba(255, 255, 255, 0.95);
                 backdrop-filter: blur(12px);
                 -webkit-backdrop-filter: blur(12px);
-                border-top: 1px solid rgba(137, 28, 4, 0.12);
+                border-top: 1px solid rgba(var(--accent-rgb), 0.12);
                 padding: 16px;
                 max-height: 0;
                 overflow: hidden;
@@ -1158,11 +1162,11 @@ document.addEventListener("DOMContentLoaded", function () {
             .mobile-menu-links li a {
                 display: block;
                 padding: 12px 0;
-                color: #891C04;
+                color: var(--accent);
                 text-decoration: none;
                 font-size: 15px;
                 font-weight: 500;
-                border-bottom: 1px solid #f0e8dc;
+                border-bottom: 1px solid var(--border);
             }
 
             .mobile-menu-links li:last-child a {
@@ -1170,12 +1174,12 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .mobile-menu-links li a:hover {
-                color: #553000;
+                color: var(--accent-deep);
             }
 
             .mobile-menu-social {
                 padding-top: 12px;
-                border-top: 1px solid #e8dcc8;
+                border-top: 1px solid var(--border);
             }
 
             .mobile-social-title {
@@ -1200,15 +1204,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 justify-content: center;
                 width: 40px;
                 height: 40px;
-                background: #f5efe6;
+                background: var(--surface-2);
                 border-radius: 50%;
-                color: #891C04;
+                color: var(--accent);
                 font-size: 16px;
                 transition: background 0.2s;
             }
 
             .mobile-social-icons li a:hover {
-                background: #891C04;
+                background: var(--accent);
                 color: #fff;
             }
 
@@ -1355,10 +1359,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             .autopagerize_page_element {
                 --timeline-line-right: 6px;
-                --timeline-line: rgba(137, 28, 4, 0.16);
+                --timeline-line: rgba(var(--accent-rgb), 0.16);
                 --timeline-dot: #0f5f99;
                 --post-card-bg: #fffaf1;
-                --post-card-border: rgba(137, 28, 4, 0.18);
+                --post-card-border: rgba(var(--accent-rgb), 0.18);
                 position: relative;
                 padding-right: var(--timeline-gutter);
             }
@@ -1395,7 +1399,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 height: 8px;
                 border-radius: 50%;
                 background: var(--timeline-dot);
-                box-shadow: 0 0 0 3px #fff8ec;
+                box-shadow: 0 0 0 3px var(--bg-soft);
             }
 
             .post-timeline-date {
@@ -1428,8 +1432,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             .post-timeline-date a:hover,
             .post-timeline-date a:focus-visible {
-                color: #891C04;
-                background: #fffdf8;
+                color: var(--accent);
+                background: var(--surface);
             }
 
             .header-posts {
@@ -1461,7 +1465,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             h4.post-title {
-                color: #891C04;
+                color: var(--accent);
                 font-family: {select:Google Font title};
                 font-size: var(--fs-title);
                 line-height: var(--lh-title);
@@ -1470,12 +1474,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             /* ضمان أن عناوين التدوينات وروابطها تظهر بنفس اللون البني */
             .post-title a {
-                color: #891C04;
+                color: var(--accent);
             }
 
             .post-title a:hover,
             .post-title a:focus {
-                color: #553000;
+                color: var(--accent-deep);
             }
                         
             .quote,
@@ -1499,7 +1503,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 top: -10px;
                 font-size: 140px;
                 line-height: 1;
-                color: rgba(200, 180, 150, 0.25); /* لون بيج شفاف */
+                color: rgba(var(--glow-rgb), 0.25); /* لون بيج شفاف */
                 font-family: Georgia, 'Times New Roman', serif;
                 pointer-events: none;
             }
@@ -1577,14 +1581,14 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .qa-question-box {
-                background: #fdfaf5; /* خلفية بيج دافئة وناعمة */
-                border: 1px solid rgba(137, 28, 4, 0.12); /* إطار ناعم بلون الثيم البني/الأحمر */
-                border-right: 4px solid #891C04; /* حد سميك أيمن يحدد بداية السؤال */
+                background: var(--surface); /* خلفية بيج دافئة وناعمة */
+                border: 1px solid rgba(var(--accent-rgb), 0.12); /* إطار ناعم بلون الثيم البني/الأحمر */
+                border-right: 4px solid var(--accent); /* حد سميك أيمن يحدد بداية السؤال */
                 border-radius: 12px;
                 padding: 24px;
                 position: relative;
                 overflow: hidden; /* لحصر علامة الاستفهام الكبيرة */
-                box-shadow: 0 4px 15px rgba(137, 28, 4, 0.03);
+                box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.03);
             }
 
             /* علامة الاستفهام الكبيرة كعلامة مائية خفيفة التباين */
@@ -1597,7 +1601,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 line-height: 1;
                 font-weight: bold;
                 font-family: 'Paper Display', Georgia, 'Times New Roman', serif;
-                color: rgba(200, 180, 150, 0.25); /* لون متناسق خفيف التباين مثل الاقتباس */
+                color: rgba(var(--glow-rgb), 0.25); /* لون متناسق خفيف التباين مثل الاقتباس */
                 pointer-events: none;
                 user-select: none;
             }
@@ -1615,8 +1619,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 width: 44px;
                 height: 44px;
                 border-radius: 50%;
-                border: 2px solid rgba(137, 28, 4, 0.15);
-                box-shadow: 0 2px 6px rgba(137, 28, 4, 0.08);
+                border: 2px solid rgba(var(--accent-rgb), 0.15);
+                box-shadow: 0 2px 6px rgba(var(--accent-rgb), 0.08);
                 object-fit: cover;
             }
 
@@ -1641,19 +1645,19 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .qa-asker-name a {
-                color: #891C04;
+                color: var(--accent);
                 text-decoration: none;
                 transition: color 0.2s ease;
             }
 
             .qa-asker-name a:hover {
-                color: #553000;
+                color: var(--accent-deep);
             }
 
             .qa-question-text {
                 font-size: 20px;
                 line-height: 1.8;
-                color: #3d2f2b;
+                color: var(--ink);
                 font-family: 'Paper Display', {select:Google Font title}, serif;
                 font-weight: bold;
                 position: relative;
@@ -1663,8 +1667,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             .qa-answer-box {
                 padding-inline-start: 12px;
-                border-inline-start: 2px solid rgba(137, 28, 4, 0.08);
-                color: #505050;
+                border-inline-start: 2px solid rgba(var(--accent-rgb), 0.08);
+                color: var(--ink-soft);
                 font-family: 'Paper Text', {select:Google Font}, serif;
                 line-height: 2.1;
             }
@@ -1710,7 +1714,7 @@ document.addEventListener("DOMContentLoaded", function () {
             
             .social {
                 margin: 0 -60px;
-                background: #f7f7f7;
+                background: var(--surface-2);
                 padding: 60px 0 25px 0;
                 margin-bottom: 30px;
                 text-align: center;
@@ -1730,12 +1734,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 margin-inline-end: 20px;
                 font-size: 18px;
                 font-weight: 600;
-                color: #545b63;
+                color: var(--ink-soft);
                 display: block;
             }
             .social ul li a:hover {
                 text-decoration: none;
-                border-color: #545b63;
+                border-color: var(--ink-soft);
             }
             .footer {
                 max-width:{select:Page Width}!important;
@@ -1755,21 +1759,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 align-items: center;
                 justify-content: center;
                 gap: 9px;
-                color: #891C04;
+                color: var(--accent);
                 text-decoration: none;
             }
 
             .footer-signature:hover {
-                color: #553000;
+                color: var(--accent-deep);
                 text-decoration: none;
             }
 
             .footer-signature__kicker {
                 font-size: 12px;
                 line-height: 1;
-                color: #891C04;
-                background: rgba(137, 28, 4, 0.07);
-                border: 1px solid rgba(137, 28, 4, 0.18);
+                color: var(--accent);
+                background: rgba(var(--accent-rgb), 0.07);
+                border: 1px solid rgba(var(--accent-rgb), 0.18);
                 border-radius: 6px;
                 padding: 5px 8px;
             }
@@ -1800,7 +1804,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             .footer .info a {
-                color: #891C04;
+                color: var(--accent);
             }
 
             /* === إعادة تنسيق قسم التفاعلات/الملاحظات === */
@@ -1822,7 +1826,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 gap: 6px;
                 padding: 8px 0;
                 line-height: 1.8;
-                border-bottom: 1px solid #f0e8dc;
+                border-bottom: 1px solid var(--border);
              }
 
              .notes li:last-child {
@@ -1884,7 +1888,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             a.source:hover {
-                color: #B3B3B3;
+                color: var(--ink-faint);
             }
              a.link-block {
                 width: 100%;
@@ -1968,7 +1972,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
              .alt-text-image-overlay__close:hover,
              .alt-text-image-overlay__close:focus-visible {
-                background: #891C04;
+                background: var(--accent);
                 border-color: #fff;
                 outline: none;
              }
@@ -2083,7 +2087,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 outline-offset: 2px;
             }
             .share-control a.share {
-                color: #a7a7a7;  
+                color: var(--ink-faint);  
                 font-size: 22px;
                 display: inline-flex;
                 width: var(--icon);
@@ -2126,7 +2130,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .like:focus-within,
             .reblog:focus-within,
             .share-control:focus-within {
-                outline-color: rgba(137, 28, 4, 0.6);
+                outline-color: rgba(var(--accent-rgb), 0.6);
             }
             .share-control a.share:focus-visible,
             .reblog_button:focus-visible,
@@ -2162,7 +2166,7 @@ document.addEventListener("DOMContentLoaded", function () {
                    يظهر الصندوق بمقدار -(160-44)/2 = -58px خارج الشاشة. */
 
                 /* الشكل */
-                background: #fff;
+                background: var(--surface);
                 border-radius: 8px;
                 box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
                 min-width: 160px;
@@ -2198,7 +2202,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .pop-menu ul li a:hover {
-                background: #f5f5f5;
+                background: var(--hover);
             }
 
             /* السهم المثلث تحت القائمة */
@@ -2212,7 +2216,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 transform: translateX(-50%) rotate(45deg);
                 width: 14px;
                 height: 14px;
-                background: #fff;
+                background: var(--surface);
                 box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.08);
                 z-index: -1;
             }
@@ -2223,7 +2227,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             a.share-item:hover {
-                background: #f5f5f5;
+                background: var(--hover);
             }
 
             .share-control.pop .pop-menu {
@@ -2232,7 +2236,7 @@ document.addEventListener("DOMContentLoaded", function () {
              .pagination {
                 text-align: center;
                 font-weight:700;
-                border-bottom: 1px solid rgba(137, 28, 4, 0.12);
+                border-bottom: 1px solid rgba(var(--accent-rgb), 0.12);
                 padding: 28px 0 18px;
              }
 
@@ -2264,10 +2268,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 justify-content: center;
                 gap: 8px;
                 min-width: 92px;
-                color: #891C04;
-                background: rgba(255, 248, 236, 0.74);
-                border: 1px solid rgba(137, 28, 4, 0.16);
-                box-shadow: 0 5px 16px rgba(85, 48, 0, 0.05);
+                color: var(--accent);
+                background: rgba(var(--paper-rgb), 0.74);
+                border: 1px solid rgba(var(--accent-rgb), 0.16);
+                box-shadow: 0 5px 16px rgba(var(--accent-deep-rgb), 0.05);
                 transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
              }
 
@@ -2276,9 +2280,9 @@ document.addEventListener("DOMContentLoaded", function () {
              #pageNav a.active:link,
              #pageNav a.active:visited {
                 text-decoration: none;
-                color: #553000;
-                background: rgba(137, 28, 4, 0.08);
-                border-color: rgba(137, 28, 4, 0.26);
+                color: var(--accent-deep);
+                background: rgba(var(--accent-rgb), 0.08);
+                border-color: rgba(var(--accent-rgb), 0.26);
                 transform: translateY(-1px);
              }
 
@@ -2288,8 +2292,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 justify-content: center;
                 width: 22px;
                 height: 22px;
-                color: #891C04;
-                background: rgba(137, 28, 4, 0.08);
+                color: var(--accent);
+                background: rgba(var(--accent-rgb), 0.08);
                 border-radius: 6px;
                 font-size: 14px;
                 line-height: 1;
@@ -2300,8 +2304,8 @@ document.addEventListener("DOMContentLoaded", function () {
              }
 
              .pagination__link:hover .pagination__icon {
-                color: #553000;
-                background: rgba(85, 48, 0, 0.1);
+                color: var(--accent-deep);
+                background: rgba(var(--accent-deep-rgb), 0.1);
              }
 
             @media screen and (max-width: 520px) {
@@ -2503,7 +2507,7 @@ document.addEventListener("DOMContentLoaded", function () {
               font-size: var(--fs-ui) !important;
               line-height: 1.75 !important;
               scrollbar-width: thin;
-              scrollbar-color: rgba(137, 28, 4, 0.3) transparent;
+              scrollbar-color: rgba(var(--accent-rgb), 0.3) transparent;
             }
 
             /* Custom scrollbar for webkit browsers */
@@ -2513,7 +2517,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             ol.notes::-webkit-scrollbar-thumb,
             .notes::-webkit-scrollbar-thumb {
-              background-color: rgba(137, 28, 4, 0.3);
+              background-color: rgba(var(--accent-rgb), 0.3);
               border-radius: 3px;
             }
 
@@ -2575,7 +2579,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             .notes a:not(.avatar_frame) {
               display: inline !important;
-              color: #891C04 !important;
+              color: var(--accent) !important;
               font-weight: 500 !important;
               text-decoration: none !important;
               direction: ltr;
@@ -2680,7 +2684,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     z-index: 99999 !important;
                     width: 160px !important;
                     min-width: 160px !important;
-                    background: #fff !important;
+                    background: var(--surface) !important;
                     border-radius: 10px !important;
                     box-shadow: 0 4px 20px rgba(0,0,0,0.2) !important;
                     padding: 8px 0 !important;
@@ -2707,7 +2711,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     color: #333 !important;
                     font-size: 14px !important;
                     text-decoration: none !important;
-                    border-bottom: 1px solid #f0f0f0 !important;
+                    border-bottom: 1px solid var(--hover) !important;
                 }
 
                 .pop-menu ul li:last-child a {
@@ -2715,7 +2719,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 .pop-menu ul li a:hover {
-                    background: #f8f8f8 !important;
+                    background: var(--hover) !important;
                 }
 
                 /* السهم يشير للزر */
@@ -2729,7 +2733,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     transform: translateX(-50%) rotate(45deg) !important;
                     width: 14px !important;
                     height: 14px !important;
-                    background: #fff !important;
+                    background: var(--surface) !important;
                     box-shadow: 2px 2px 4px rgba(0,0,0,0.1) !important;
                     z-index: -1 !important;
                 }
@@ -2742,8 +2746,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             /* ===== Custom Audio Player Styles ===== */
             .custom-audio-player {
-                background: linear-gradient(to bottom, #fffcf6 0%, #fef4e5 100%);
-                border: 1px solid rgba(137, 28, 4, 0.15);
+                background: linear-gradient(to bottom, var(--surface) 0%, var(--surface) 100%);
+                border: 1px solid rgba(var(--accent-rgb), 0.15);
                 border-radius: 16px;
                 padding: 20px 24px;
                 display: flex;
@@ -2754,14 +2758,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 margin-bottom: 22px;
                 position: relative;
                 overflow: hidden;
-                box-shadow: 0 10px 30px rgba(137, 28, 4, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+                box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8);
                 transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease, border-color 0.3s ease;
             }
 
             .custom-audio-player:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 12px 36px rgba(137, 28, 4, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-                border-color: rgba(137, 28, 4, 0.25);
+                box-shadow: 0 12px 36px rgba(var(--accent-rgb), 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+                border-color: rgba(var(--accent-rgb), 0.25);
             }
 
             /* Decorative Background Arabesque Star (Rub el Hizb) */
@@ -2798,7 +2802,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 width: 50px;
                 height: 50px;
                 border-radius: 50%;
-                background: linear-gradient(135deg, #891C04 0%, #aa2506 100%);
+                background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hi) 100%);
                 color: #fff;
                 border: none;
                 cursor: pointer;
@@ -2808,14 +2812,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 flex-shrink: 0;
                 position: relative;
                 z-index: 2;
-                box-shadow: 0 6px 16px rgba(137, 28, 4, 0.28);
+                box-shadow: 0 6px 16px rgba(var(--accent-rgb), 0.28);
                 transition: background 0.3s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
             }
 
             .custom-audio-player .play-pause-btn:hover {
-                background: linear-gradient(135deg, #553000 0%, #704000 100%);
+                background: linear-gradient(135deg, var(--accent-deep) 0%, var(--accent-deep-hi) 100%);
                 transform: scale(1.08);
-                box-shadow: 0 8px 20px rgba(85, 48, 0, 0.35);
+                box-shadow: 0 8px 20px rgba(var(--accent-deep-rgb), 0.35);
             }
 
             .custom-audio-player .play-pause-btn:active {
@@ -2861,9 +2865,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 border-radius: 8px;
                 overflow: hidden;
                 flex-shrink: 0;
-                box-shadow: 0 4px 12px rgba(137, 28, 4, 0.12);
-                border: 1px solid rgba(137, 28, 4, 0.15);
-                background-color: #f7ede2;
+                box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.12);
+                border: 1px solid rgba(var(--accent-rgb), 0.15);
+                background-color: var(--surface-2);
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -2904,7 +2908,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 font-family: 'Paper Display', 'Droid Arabic Naskh', serif;
                 font-size: 16px;
                 font-weight: 700;
-                color: #891C04;
+                color: var(--accent);
                 line-height: 1.4;
                 white-space: nowrap;
                 overflow: hidden;
@@ -2912,7 +2916,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .custom-audio-player .track-artist-divider {
-                color: rgba(137, 28, 4, 0.4);
+                color: rgba(var(--accent-rgb), 0.4);
                 font-size: 11px;
                 user-select: none;
             }
@@ -2957,8 +2961,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .custom-audio-player .volume-btn:hover {
-                color: #891C04;
-                background-color: rgba(137, 28, 4, 0.06);
+                color: var(--accent);
+                background-color: rgba(var(--accent-rgb), 0.06);
             }
 
             .custom-audio-player .volume-slider-popover {
@@ -2979,7 +2983,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .custom-audio-player .volume-slider-track {
                 width: 60px;
                 height: 4px;
-                background: #e8dcc8;
+                background: var(--border);
                 border-radius: 2px;
                 position: relative;
                 cursor: pointer;
@@ -2987,7 +2991,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             .custom-audio-player .volume-slider-fill {
                 height: 100%;
-                background: #891C04;
+                background: var(--accent);
                 border-radius: 2px;
                 width: 80%;
                 position: absolute;
@@ -2998,8 +3002,8 @@ document.addEventListener("DOMContentLoaded", function () {
             .custom-audio-player .volume-slider-thumb {
                 width: 10px;
                 height: 10px;
-                background: #891C04;
-                border: 1.5px solid #fffcf6;
+                background: var(--accent);
+                border: 1.5px solid var(--surface);
                 border-radius: 50%;
                 position: absolute;
                 top: 50%;
@@ -3055,7 +3059,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .custom-audio-player .audio-progress-bar {
                 width: 100%;
                 height: 5px;
-                background: #e8dcc8;
+                background: var(--border);
                 border-radius: 3px;
                 position: relative;
                 transition: height 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -3068,7 +3072,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .custom-audio-player .audio-progress-fill {
                 height: 100%;
                 width: 0%;
-                background: linear-gradient(to left, #891C04 0%, #b82d0c 100%);
+                background: linear-gradient(to left, var(--accent) 0%, var(--accent-hi) 100%);
                 border-radius: 3px;
                 position: absolute;
                 right: 0;
@@ -3078,14 +3082,14 @@ document.addEventListener("DOMContentLoaded", function () {
             .custom-audio-player .audio-progress-thumb {
                 width: 12px;
                 height: 12px;
-                background: #891C04;
-                border: 2px solid #fffcf6;
+                background: var(--accent);
+                border: 2px solid var(--surface);
                 border-radius: 50%;
                 position: absolute;
                 top: 50%;
                 right: 0%; /* Aligned with percentage progress from the right */
                 transform: translate(50%, -50%) scale(0);
-                box-shadow: 0 2px 5px rgba(137, 28, 4, 0.25);
+                box-shadow: 0 2px 5px rgba(var(--accent-rgb), 0.25);
                 transition: transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1.25), right 0.1s linear;
             }
 
@@ -3096,8 +3100,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             /* Custom scrollbars inside the iframe overlays */
             .tumblr-native-audio {
-                background: rgba(255, 248, 236, 0.6);
-                border: 1px solid rgba(137, 28, 4, 0.15);
+                background: rgba(var(--paper-rgb), 0.6);
+                border: 1px solid rgba(var(--accent-rgb), 0.15);
                 border-radius: 12px;
                 padding: 12px;
                 margin-bottom: 20px;
@@ -3110,8 +3114,8 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             .audio-embed-container {
-                background: rgba(255, 248, 236, 0.6);
-                border: 1px solid rgba(137, 28, 4, 0.15);
+                background: rgba(var(--paper-rgb), 0.6);
+                border: 1px solid rgba(var(--accent-rgb), 0.15);
                 border-radius: 12px;
                 padding: 12px;
                 margin-bottom: 20px;
@@ -3128,7 +3132,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 margin-top: 12px;
                 font-family: var(--font-text), 'Droid Arabic Naskh', serif !important;
                 font-size: 18px;
-                color: #5c5240;
+                color: var(--ink-soft);
                 line-height: 2.2em;
             }
 
@@ -3228,7 +3232,7 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 html { -webkit-text-size-adjust: 100%; }
 body {
-  background: var(--paper);
+  background: var(--bg-gradient);
   color: var(--ink);
   font-family: var(--font-text), serif;
   font-size: 19px;
@@ -3237,25 +3241,25 @@ body {
   isolation: isolate;
 }
 *, *::before, *::after { box-sizing: border-box; }
-::selection { background: #ead3b0; color: var(--ink); }
-::-moz-selection { background: #ead3b0; color: var(--ink); }
+::selection { background: var(--selection); color: var(--ink); }
+::-moz-selection { background: var(--selection); color: var(--ink); }
 a { color: var(--ink); transition: color .25s, text-decoration-color .25s; }
-a:hover, a:active { color: #9a6a2c; }
+a:hover, a:active { color: var(--gold); }
 a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
-  outline: 2px solid #9a6a2c;
+  outline: 2px solid var(--gold);
   outline-offset: 5px;
 }
 .paper-aura, .paper-grain { position: fixed; pointer-events: none; z-index: -1; }
 .paper-aura {
   inset: -25%;
   background:
-    radial-gradient(38% 34% at 18% 12%, rgba(232,181,110,.34), transparent 72%),
-    radial-gradient(36% 32% at 84% 88%, rgba(143,181,201,.30), transparent 72%);
+    radial-gradient(38% 34% at 18% 12%, rgba(var(--glow-rgb),.34), transparent 72%),
+    radial-gradient(36% 32% at 84% 88%, rgba(var(--glow-blue-rgb),.30), transparent 72%);
   animation: paper-drift 38s ease-in-out infinite alternate;
 }
 .paper-grain {
   inset: 0;
-  opacity: .05;
+  opacity: var(--grain-opacity);
   mix-blend-mode: multiply;
   background-image: url("https://cdn.jsdelivr.net/gh/yasser0769/My-Tumblr-Blog@38cd6b2a1ac986b870aab02e3536471b63e9f2e1/assets/images/paper-grain.svg");
 }
@@ -3282,7 +3286,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
   color: var(--ink); font-family: var(--font-title), serif !important;
   font-size: 19px; font-weight: 500; line-height: 1.5;
 }
-.brand-title:hover { color: #9a6a2c; }
+.brand-title:hover { color: var(--gold); }
 .brand-kicker {
   position: absolute; width: 1px; height: 1px; padding: 0; border: 0;
   overflow: hidden; clip-path: inset(50%); white-space: nowrap;
@@ -3298,10 +3302,10 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
 .nav-main li a[aria-current="page"] { color: var(--ink); border-bottom: 1px solid var(--ink); }
 .dropdown-menu {
   background: var(--paper); border: 1px solid var(--line);
-  box-shadow: 0 16px 32px rgba(27,26,22,.08); border-radius: 4px;
+  box-shadow: 0 16px 32px rgba(var(--ink-rgb),.08); border-radius: 4px;
 }
 .dropdown-links li a { color: var(--ink-soft); }
-.dropdown-links li a:hover { color: var(--ink); background: #efeade; }
+.dropdown-links li a:hover { color: var(--ink); background: var(--hover); }
 .mobile-menu-toggle { display: none; }
 .wrapper {
   max-width: calc(var(--measure) + var(--pad-x) * 2) !important;
@@ -3322,8 +3326,8 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
   font-weight: 500; font-size: clamp(42px, 9vw, 62px); line-height: 1.25; color: var(--ink);
 }
 .blog-hero .hero-name {
-  color: #2d4552; white-space: nowrap;
-  background-image: linear-gradient(transparent 72%, #e4ca88 72%, #e4ca88 92%, transparent 92%);
+  color: var(--hero-name); white-space: nowrap;
+  background-image: linear-gradient(transparent 72%, var(--mark) 72%, var(--mark) 92%, transparent 92%);
   -webkit-box-decoration-break: clone; box-decoration-break: clone;
 }
 .blog-hero .tagline {
@@ -3354,7 +3358,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
 }
 .post-date-ar { font-weight: 400; }
 .post-timeline-date a:hover, .post-timeline-date a:focus-visible,
-.post-timeline-date a:hover .post-date-ar { color: #9a6a2c; background: transparent; }
+.post-timeline-date a:hover .post-date-ar { color: var(--gold); background: transparent; }
 .header-posts:has(*) { margin-bottom: 0; }
 .posts .header-posts p, .caption p, .photoCaption p { margin: 1.3em 0; }
 .posts .header-posts > p:last-child, .caption > p:last-child, .photoCaption > p:last-child { margin-bottom: 0; }
@@ -3363,7 +3367,7 @@ h4.post-title, .posts h2.post-title, .posts .post-title {
   color: var(--ink); font-size: clamp(26px, 5.6vw, 34px); line-height: 1.5; margin: 12px 0 6px;
 }
 .post-title a { color: var(--ink); }
-.post-title a:hover { color: #9a6a2c; }
+.post-title a:hover { color: var(--gold); }
 .posts .header-posts h1, .posts .header-posts h2:not(.post-title), .posts .header-posts h3 {
   font-family: var(--font-title), serif !important; font-weight: 500; color: var(--ink);
   font-size: clamp(20px, 4.4vw, 23px); line-height: 1.6; margin: 1.8em 0 .4em;
@@ -3402,7 +3406,7 @@ h4.post-title, .posts h2.post-title, .posts .post-title {
 .meta { margin-top: 2em; padding-top: 0; border: 0; color: var(--ink-soft); font-weight: 400; gap: 8px; }
 .meta a { color: var(--ink-soft); font-size: 13px; }
 .like, .reblog, .share-control { border-radius: 4px; }
-.like, .reblog { position: relative; color: #8f8a80; }
+.like, .reblog { position: relative; color: var(--ink-faint); }
 /* Keep Tumblr's native controls clickable beneath the matching outline icons. */
 .like .like_button, .like .like_button iframe,
 .reblog .reblog_button {
@@ -3428,7 +3432,7 @@ h4.post-title, .posts h2.post-title, .posts .post-title {
 .share-control .share-button {
   width: 44px; height: 44px; padding: 12px; display: inline-flex;
   justify-content: center; align-items: center; border: 0; background: transparent;
-  color: #8f8a80; cursor: pointer; border-radius: 4px;
+  color: var(--ink-faint); cursor: pointer; border-radius: 4px;
 }
 .qa-question-box, .qa-answer-box {
   background: transparent; border: 1px solid var(--line); border-radius: 4px;
@@ -3443,7 +3447,7 @@ h4.post-title, .posts h2.post-title, .posts .post-title {
 }
 .custom-audio-player::before { display: none; }
 .custom-audio-player .play-pause-btn { background: var(--ink); color: var(--paper); box-shadow: none; }
-.custom-audio-player .play-pause-btn:hover { background: #9a6a2c; box-shadow: none; }
+.custom-audio-player .play-pause-btn:hover { background: var(--gold); box-shadow: none; }
 .custom-audio-player .track-title { color: var(--ink); font-family: var(--font-title), serif; }
 .custom-audio-player .track-artist, .custom-audio-player .track-album, .custom-audio-player .audio-time {
   color: var(--ink-soft); font-family: var(--font-ui), sans-serif !important;
@@ -3506,7 +3510,7 @@ h4.post-title, .posts h2.post-title, .posts .post-title {
     display: block; position: absolute; top: 100%; right: 0; left: 0;
     padding: 8px var(--pad-x) 14px; max-height: none; overflow-y: auto;
     background: var(--paper); border: 0; border-bottom: 1px solid var(--line);
-    box-shadow: 0 24px 40px rgba(27,26,22,.08); backdrop-filter: none; -webkit-backdrop-filter: none;
+    box-shadow: 0 24px 40px rgba(var(--ink-rgb),.08); backdrop-filter: none; -webkit-backdrop-filter: none;
   }
   .mobile-menu[hidden] { display: none; }
   .mobile-menu.open { max-height: 75svh; padding: 8px var(--pad-x) 14px; }
@@ -3541,7 +3545,101 @@ h4.post-title, .posts h2.post-title, .posts .post-title {
      للتفعيل لاحقاً، استخدم gtag.js مع معرّف GA4 (G-XXXXXXX). -->
 
 
-    </head>
+    <style id="yblr-color-themes">
+/* ============================================================
+   ثيمات الألوان — «الدافئ» (الافتراضي) / «الأبيض» / «الداكن»
+   التبديل عبر html[data-theme] + حفظ الاختيار في localStorage
+   ============================================================ */
+:root{
+  --bg-gradient:#f7f4ec;
+  --bg-soft:#fff8ec;
+  --accent:#891c04; --accent-rgb:137,28,4; --accent-hi:#b82d0c;
+  --accent-deep:#553000; --accent-deep-rgb:85,48,0; --accent-deep-hi:#704000;
+  --gold:#9a6a2c;
+  --surface:#fffdf8; --surface-2:#f5efe6; --hover:#efeade;
+  --border:#e8dcc8;
+  --selection:#ead3b0; --mark:#e4ca88;
+  --hero-name:#2d4552;
+  --paper-rgb:247,244,236; --ink-rgb:27,26,22;
+  --glow-rgb:232,181,110; --glow-blue-rgb:143,181,201;
+  --grain-opacity:.05;
+}
+/* الدافئ = نفس قيم :root الافتراضية (لا حاجة لإعادة تعريف) */
+html[data-theme="warm"]{}
+html[data-theme="white"]{
+  --paper:#ffffff; --paper-rgb:255,255,255;
+  --bg-gradient:linear-gradient(180deg,#ffffff 0%,#f4f5f7 100%);
+  --bg-soft:#f5f6f8;
+  --ink:#1d1d1f; --ink-rgb:29,29,31;
+  --ink-soft:#5f5f63; --ink-faint:#a2a2a8;
+  --line:#e3e3e8;
+  --glow:#f0bd5e; --glow-rgb:240,189,94;
+  --glow-blue:#9fc6da; --glow-blue-rgb:159,198,218;
+  --accent:#8f1d05; --accent-rgb:143,29,5; --accent-hi:#b52b0b;
+  --accent-deep:#5c3300; --accent-deep-rgb:92,51,0; --accent-deep-hi:#7d4c0a;
+  --gold:#a1762c;
+  --surface:#ffffff; --surface-2:#f3f3f5; --hover:#ededf0;
+  --border:#e0e0e6;
+  --selection:#ffe4a1; --mark:#ffdf8e;
+  --hero-name:#2d4552;
+  --grain-opacity:.035;
+}
+html[data-theme="white"] .autopagerize_page_element{ --post-card-bg:#ffffff; }
+html[data-theme="dark"]{
+  --paper:#161310; --paper-rgb:22,19,16;
+  --bg-gradient:linear-gradient(180deg,#1e1a15 0%,#12100d 100%);
+  --bg-soft:#252019;
+  --ink:#f1e9da; --ink-rgb:241,233,218;
+  --ink-soft:#b2a78f; --ink-faint:#7f7563;
+  --line:#332c22;
+  --glow:#e8b56e; --glow-rgb:232,181,110;
+  --glow-blue:#7ba7bd; --glow-blue-rgb:123,167,189;
+  --accent:#cf6a35; --accent-rgb:207,106,53; --accent-hi:#e8894d;
+  --accent-deep:#9c5027; --accent-deep-rgb:156,80,39; --accent-deep-hi:#bd6530;
+  --gold:#d9a94f;
+  --surface:#221d16; --surface-2:#2b241b; --hover:#322a21;
+  --border:#3d352a;
+  --selection:#53401d; --mark:#7a5f24;
+  --hero-name:#d7e6ec;
+  --grain-opacity:.07;
+}
+html[data-theme="dark"] .autopagerize_page_element{ --post-card-bg:#23201a; }
+
+/* ---------- زر تبديل الألوان ---------- */
+.theme-switcher{position:relative;display:inline-flex;align-items:center;flex-shrink:0}
+.header-nav .theme-switcher{margin-inline-start:12px}
+.header-container > .theme-switcher{display:none;margin-inline-end:10px}
+@media screen and (max-width:768px){
+  .header-container > .theme-switcher{display:inline-flex}
+}
+.theme-btn{
+  width:38px;height:38px;border-radius:50%;
+  border:2px solid var(--accent);background:var(--surface);color:var(--accent);
+  display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;
+  transition:background .2s,transform .2s;
+}
+.theme-btn:hover{background:var(--hover);transform:scale(1.06)}
+.theme-btn svg{display:block}
+.theme-ic-sun{display:none}
+html[data-theme="dark"] .theme-ic-sun{display:block}
+html[data-theme="dark"] .theme-ic-moon{display:none}
+.theme-menu{
+  position:absolute;top:calc(100% + 10px);inset-inline-end:0;z-index:1000;
+  min-width:150px;background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 12px 32px rgba(0,0,0,.18);padding:8px;direction:rtl;
+}
+.theme-menu-title{font-size:12px;color:var(--ink-faint);margin:4px 8px 6px;font-weight:600}
+.theme-option{
+  display:flex;align-items:center;gap:10px;width:100%;
+  background:transparent;border:0;border-radius:10px;padding:8px 10px;cursor:pointer;
+  font-family:inherit;font-size:14px;color:var(--ink);text-align:start;
+}
+.theme-option:hover{background:var(--hover)}
+.theme-option[aria-checked="true"]{background:var(--hover);font-weight:700}
+.theme-dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0}
+.theme-option[aria-checked="true"] .theme-dot{border-color:var(--accent)}
+</style>
+</head>
     
 <body>
 
@@ -3583,7 +3681,31 @@ h4.post-title, .posts h2.post-title, .posts .post-title {
                 </div>
             </div>
             {/block:HasPages}
+        <div class="theme-switcher">
+            <button type="button" class="theme-btn" aria-haspopup="true" aria-expanded="false" aria-label="تغيير لون الموقع">
+                <svg class="theme-ic-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+                <svg class="theme-ic-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            </button>
+            <div class="theme-menu" role="menu" hidden>
+                <p class="theme-menu-title">لون الموقع</p>
+                <button type="button" class="theme-option" role="menuitemradio" aria-checked="true" data-theme-value="warm"><span class="theme-dot" style="background:#f7f4ec"></span>الدافئ</button>
+                <button type="button" class="theme-option" role="menuitemradio" aria-checked="false" data-theme-value="white"><span class="theme-dot" style="background:#ffffff"></span>الأبيض</button>
+                <button type="button" class="theme-option" role="menuitemradio" aria-checked="false" data-theme-value="dark"><span class="theme-dot" style="background:#161310"></span>الداكن</button>
+            </div>
+        </div>
         </nav>
+        <div class="theme-switcher">
+            <button type="button" class="theme-btn" aria-haspopup="true" aria-expanded="false" aria-label="تغيير لون الموقع">
+                <svg class="theme-ic-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+                <svg class="theme-ic-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            </button>
+            <div class="theme-menu" role="menu" hidden>
+                <p class="theme-menu-title">لون الموقع</p>
+                <button type="button" class="theme-option" role="menuitemradio" aria-checked="true" data-theme-value="warm"><span class="theme-dot" style="background:#f7f4ec"></span>الدافئ</button>
+                <button type="button" class="theme-option" role="menuitemradio" aria-checked="false" data-theme-value="white"><span class="theme-dot" style="background:#ffffff"></span>الأبيض</button>
+                <button type="button" class="theme-option" role="menuitemradio" aria-checked="false" data-theme-value="dark"><span class="theme-dot" style="background:#161310"></span>الداكن</button>
+            </div>
+        </div>
         <button type="button" class="mobile-menu-toggle" id="mobileMenuBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="فتح القائمة">
             القائمة <span class="hamburger-icon" aria-hidden="true">≡</span>
         </button>
@@ -4887,5 +5009,49 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 <!-- ===== END HEADER MENU SCRIPTS ===== -->
 
+<script>
+/* ثيمات الألوان: الدافئ / الأبيض / الداكن — مع حفظ اختيار الزائر */
+(function(){
+  var KEY='yblr-theme';
+  var META={warm:'#f7f4ec',white:'#ffffff',dark:'#161310'};
+  function valid(t){return t==='warm'||t==='white'||t==='dark';}
+  function get(){try{var t=localStorage.getItem(KEY);return valid(t)?t:'warm';}catch(e){return 'warm';}}
+  function apply(t){
+    if(!valid(t))t='warm';
+    document.documentElement.setAttribute('data-theme',t);
+    try{localStorage.setItem(KEY,t);}catch(e){}
+    var m=document.querySelector('meta[name="theme-color"]');
+    if(m&&META[t])m.setAttribute('content',META[t]);
+    var opts=document.querySelectorAll('.theme-option');
+    for(var i=0;i<opts.length;i++){
+      opts[i].setAttribute('aria-checked',opts[i].getAttribute('data-theme-value')===t?'true':'false');
+    }
+  }
+  function closeAll(){
+    var menus=document.querySelectorAll('.theme-menu');
+    for(var i=0;i<menus.length;i++){menus[i].hidden=true;}
+    var btns=document.querySelectorAll('.theme-btn');
+    for(var j=0;j<btns.length;j++){btns[j].setAttribute('aria-expanded','false');}
+  }
+  apply(get());
+  document.addEventListener('click',function(ev){
+    var el=ev.target;
+    var opt=el.closest?el.closest('.theme-option'):null;
+    if(opt){apply(opt.getAttribute('data-theme-value'));closeAll();return;}
+    var btn=el.closest?el.closest('.theme-btn'):null;
+    if(btn){
+      var menu=btn.parentElement.querySelector('.theme-menu');
+      var willOpen=!!menu&&menu.hidden;
+      closeAll();
+      if(willOpen){menu.hidden=false;btn.setAttribute('aria-expanded','true');}
+      return;
+    }
+    closeAll();
+  });
+  document.addEventListener('keydown',function(ev){
+    if(ev.key==='Escape')closeAll();
+  });
+})();
+</script>
 </body>
 </html>
